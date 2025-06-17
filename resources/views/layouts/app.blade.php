@@ -14,7 +14,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased bg-gray-50 min-h-screen flex flex-col" x-data="{ sidebarOpen: false }" @keydown.escape.window="sidebarOpen = false">
+    <body class="font-sans antialiased bg-neutral-light min-h-screen flex flex-col" x-data="{ sidebarOpen: false }" @keydown.escape.window="sidebarOpen = false">
         <div class="flex flex-1 min-h-0">
             @auth
                 @include('layouts.sidebar')
@@ -23,14 +23,14 @@
                 @include('layouts.navigation')
 
                 <!-- Page Content -->
-                <main class="flex-1">
+                <main class="flex-1 border-t border-neutral-medium sm:border-t sm:border-neutral-medium">
                     {{ $slot }}
                 </main>
 
                 <!-- Footer -->
                 <footer class="bg-white border-t mt-auto">
                     <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
-                        <p class="text-center text-sm text-gray-500">
+                        <p class="text-center text-sm text-neutral-dark">
                             &copy; {{ date('Y') }} Jornada. Todos os direitos reservados.
                         </p>
                     </div>
