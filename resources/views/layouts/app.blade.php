@@ -38,5 +38,36 @@
             </div>
         </div>
         @stack('scripts')
+        <script>
+           document.addEventListener('DOMContentLoaded', function () {
+    function limpaCampos() {
+        document.getElementById('street').value = '';
+        document.getElementById('neighborhood').value = '';
+        document.getElementById('city').value = '';
+        document.getElementById('state').value = '';
+    }
+
+    document.getElementById('zip_code').addEventListener('blur', function () {
+        const cep = this.value.replace(/\D/g, '');
+        if (cep.length !== 8) {
+            limpaCampos();
+            return;
+        }
+        fetch(`https://viacep.com.br/ws/${cep}/json/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.erro) {
+                    limpaCampos();
+                    return;
+                }
+                document.getElementById('street').value = data.logradouro || '';
+                document.getElementById('neighborhood').value = data.bairro || '';
+                document.getElementById('city').value = data.localidade || '';
+                document.getElementById('state').value = data.uf || '';
+            })
+            .catch(() => limpaCampos());
+    });
+});
+        </script>
     </body>
 </html>
