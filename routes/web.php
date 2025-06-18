@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RootRedirectController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\FinancialCategoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', RootRedirectController::class);
@@ -18,5 +19,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::resource('members', MemberController::class);
+Route::resource('financial-categories', FinancialCategoryController::class);
 
 require __DIR__.'/auth.php';

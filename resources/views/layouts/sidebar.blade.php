@@ -34,6 +34,17 @@
             </x-slot>
             {{ __('Membros') }}
         </x-sidebar-link>
+
+        <x-sidebar-dropdown title="Finanças" icon="dollar-sign">
+            <x-sidebar-link href="{{ route('financial-categories.index') }}" :active="request()->routeIs('financial-categories.*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </x-slot>
+                {{ __('Categorias') }}
+            </x-sidebar-link>
+        </x-sidebar-dropdown>
     </nav>
 </div>
 
@@ -83,6 +94,17 @@
             </x-slot>
             {{ __('Membros') }}
         </x-sidebar-link>
+
+        <x-sidebar-dropdown title="Finanças" icon="dollar-sign">
+            <x-sidebar-link href="{{ route('financial-categories.index') }}" :active="request()->routeIs('financial-categories.*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </x-slot>
+                {{ __('Categorias') }}
+            </x-sidebar-link>
+        </x-sidebar-dropdown>
     </nav>
 </div>
 
