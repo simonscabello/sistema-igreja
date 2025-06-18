@@ -7,8 +7,9 @@
                 <div class="space-y-6">
                     <x-select label="Categoria" name="financial_category_id" :options="$categories->pluck('name', 'id')" required />
 
+
                     <div class="space-y-2">
-                        <label class="block text-sm font-medium text-gray-700">Tipo</label>
+                        <label class="block text-sm font-bold text-gray-700">Tipo</label>
                         <div class="flex gap-4">
                             <label class="relative cursor-pointer">
                                 <input
@@ -38,15 +39,31 @@
                                     bg-white text-orange-700 border-orange-400">
                                     Saída
                                 </div>
+
+                            <label class="relative cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="type"
+                                    value="saida"
+                                    class="sr-only peer"
+                                    {{ old('type') === 'saida' ? 'checked' : '' }}
+                                />
+                                <div class="px-4 py-2 rounded-lg border transition-all duration-200 text-sm font-medium
+                                    peer-checked:bg-orange-500 peer-checked:text-white peer-checked:border-orange-600
+                                    bg-white text-orange-700 border-orange-400">
+                                    Saída
+                                </div>
                             </label>
                         </div>
                     </div>
+
 
                     <x-input-currency label="Valor" name="amount" prefix="R$" required />
                     <x-input-datetime label="Data da Ação" name="action_date" required />
                     <x-textarea label="Descrição" name="description" />
                 </div>
             </div>
+
 
 
             <div class="border-t border-neutral-medium mt-6 pt-6">

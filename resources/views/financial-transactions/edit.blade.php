@@ -8,7 +8,7 @@
                 <div class="space-y-6">
                     <x-select label="Categoria" name="financial_category_id" :options="$categories->pluck('name', 'id')" :selected="$financialTransaction->financial_category_id" required />
                         <div class="space-y-2">
-                            <label class="block text-sm font-medium text-gray-700">Tipo</label>
+                            <label class="block text-sm font-bold text-gray-700">Tipo</label>
                             <div class="flex gap-4">
                                 <label class="relative cursor-pointer">
                                     <input
