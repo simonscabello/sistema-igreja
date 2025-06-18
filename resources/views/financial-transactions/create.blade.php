@@ -9,7 +9,7 @@
 
 
                     <div class="space-y-2">
-                        <label class="block text-sm font-bold text-gray-700">Tipo</label>
+                        <label class="block text-sm font-medium text-gray-700">Tipo</label>
                         <div class="flex gap-4">
                             <label class="relative cursor-pointer">
                                 <input
@@ -20,7 +20,7 @@
                                     {{ old('type') === 'entrada' ? 'checked' : '' }}
                                 />
                                 <div class="px-4 py-2 rounded-lg border transition-all duration-200 text-sm font-medium
-                                    peer-checked:bg-green-600 peer-checked:text-white peer-checked:border-green-600
+                                    peer-checked:bg-green-500 peer-checked:text-white peer-checked:border-green-600
                                     bg-white text-green-700 border-green-400">
                                     Entrada
                                 </div>
@@ -63,10 +63,7 @@
                     <x-textarea label="Descrição" name="description" />
                 </div>
             </div>
-
-
-
-            <div class="border-t border-neutral-medium mt-6 pt-6">
+                        <div class="border-t border-neutral-medium mt-6 pt-6">
                 <div class="flex space-x-3">
                     <a href="{{ route('financial-transactions.index') }}" class="inline-flex items-center px-4 py-2 bg-neutral-light border border-neutral-medium rounded-md font-semibold text-xs text-neutral-dark uppercase tracking-widest hover:bg-neutral-medium focus:outline-none focus:ring-2 focus:ring-neutral-medium focus:ring-offset-2 transition ease-in-out duration-150">
                         Cancelar
