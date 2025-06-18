@@ -6,24 +6,48 @@
             <div class="max-w-2xl">
                 <div class="space-y-6">
                     <x-select label="Categoria" name="financial_category_id" :options="$categories->pluck('name', 'id')" required />
+
                     <div class="space-y-2">
                         <label class="block text-sm font-medium text-gray-700">Tipo</label>
-                        <div class="flex space-x-4">
-                            <label class="cursor-pointer px-4 py-2 rounded-lg border text-sm font-medium transition-all duration-200 {{ old('type') === 'entrada' ? 'bg-green-100 text-green-800 border-green-500' : 'bg-white text-gray-700 border-gray-300' }}">
-                                <input type="radio" name="type" value="entrada" class="appearance-none focus:ring-2 focus:ring-green-500" {{ old('type') === 'entrada' ? 'checked' : '' }}>
-                                Entrada
+                        <div class="flex gap-4">
+                            <label class="relative cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="type"
+                                    value="entrada"
+                                    class="sr-only peer"
+                                    {{ old('type') === 'entrada' ? 'checked' : '' }}
+                                />
+                                <div class="px-4 py-2 rounded-lg border transition-all duration-200 text-sm font-medium
+                                    peer-checked:bg-green-600 peer-checked:text-white peer-checked:border-green-600
+                                    bg-white text-green-700 border-green-400">
+                                    Entrada
+                                </div>
                             </label>
-                            <label class="cursor-pointer px-4 py-2 rounded-lg border text-sm font-medium transition-all duration-200 {{ old('type') === 'saida' ? 'bg-red-100 text-red-800 border-red-500' : 'bg-white text-gray-700 border-gray-300' }}">
-                                <input type="radio" name="type" value="saida" class="appearance-none focus:ring-2 focus:ring-red-500" {{ old('type') === 'saida' ? 'checked' : '' }}>
-                                Saída
+
+                            <label class="relative cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="type"
+                                    value="saida"
+                                    class="sr-only peer"
+                                    {{ old('type') === 'saida' ? 'checked' : '' }}
+                                />
+                                <div class="px-4 py-2 rounded-lg border transition-all duration-200 text-sm font-medium
+                                    peer-checked:bg-orange-500 peer-checked:text-white peer-checked:border-orange-600
+                                    bg-white text-orange-700 border-orange-400">
+                                    Saída
+                                </div>
                             </label>
                         </div>
                     </div>
+
                     <x-input-currency label="Valor" name="amount" prefix="R$" required />
                     <x-input-datetime label="Data da Ação" name="action_date" required />
                     <x-textarea label="Descrição" name="description" />
                 </div>
             </div>
+
 
             <div class="border-t border-neutral-medium mt-6 pt-6">
                 <div class="flex space-x-3">

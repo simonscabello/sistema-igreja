@@ -7,19 +7,40 @@
             <div class="max-w-2xl">
                 <div class="space-y-6">
                     <x-select label="Categoria" name="financial_category_id" :options="$categories->pluck('name', 'id')" :selected="$financialTransaction->financial_category_id" required />
-                    <div class="space-y-2">
-                        <label class="block text-sm font-medium text-gray-700">Tipo</label>
-                        <div class="flex space-x-4">
-                            <label class="cursor-pointer px-4 py-2 rounded-lg border text-sm font-medium transition-all duration-200 {{ old('type', $financialTransaction->type) === 'entrada' ? 'bg-green-100 text-green-800 border-green-500' : 'bg-white text-gray-700 border-gray-300' }}">
-                                <input type="radio" name="type" value="entrada" class="appearance-none focus:ring-2 focus:ring-green-500" {{ old('type', $financialTransaction->type) === 'entrada' ? 'checked' : '' }}>
-                                Entrada
-                            </label>
-                            <label class="cursor-pointer px-4 py-2 rounded-lg border text-sm font-medium transition-all duration-200 {{ old('type', $financialTransaction->type) === 'saida' ? 'bg-red-100 text-red-800 border-red-500' : 'bg-white text-gray-700 border-gray-300' }}">
-                                <input type="radio" name="type" value="saida" class="appearance-none focus:ring-2 focus:ring-red-500" {{ old('type', $financialTransaction->type) === 'saida' ? 'checked' : '' }}>
-                                Saída
-                            </label>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700">Tipo</label>
+                            <div class="flex gap-4">
+                                <label class="relative cursor-pointer">
+                                    <input
+                                        type="radio"
+                                        name="type"
+                                        value="entrada"
+                                        class="sr-only peer"
+                                        {{ old('type', $financialTransaction->type) === 'entrada' ? 'checked' : '' }}
+                                    />
+                                    <div class="px-4 py-2 rounded-lg border transition-all duration-200 text-sm font-medium
+                                        peer-checked:bg-green-500 peer-checked:text-white peer-checked:border-green-600
+                                        bg-white text-green-700 border-green-400">
+                                        Entrada
+                                    </div>
+                                </label>
+
+                                <label class="relative cursor-pointer">
+                                    <input
+                                        type="radio"
+                                        name="type"
+                                        value="saida"
+                                        class="sr-only peer"
+                                        {{ old('type', $financialTransaction->type) === 'saida' ? 'checked' : '' }}
+                                    />
+                                    <div class="px-4 py-2 rounded-lg border transition-all duration-200 text-sm font-medium
+                                        peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-600
+                                        bg-white text-red-700 border-red-400">
+                                        Saída
+                                    </div>
+                                </label>
+                            </div>
                         </div>
-                    </div>
                     <x-input-currency label="Valor" name="amount" prefix="R$" :value="$financialTransaction->amount" required />
                     <x-input-datetime label="Data da Ação" name="action_date" :value="$financialTransaction->action_date" required />
                     <x-textarea label="Descrição" name="description" :value="$financialTransaction->description" />
