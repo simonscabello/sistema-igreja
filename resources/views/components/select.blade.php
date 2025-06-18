@@ -6,7 +6,8 @@
         name="{{ $name }}"
         id="{{ $name }}"
         {{ $required ? 'required' : '' }}
-        {{ $attributes->merge(['class' => 'mt-1 block w-full border-neutral-medium rounded-md shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50']) }}
+        {{ $attributes->merge(['class' => 'mt-1 block w-full border-neutral-medium rounded-md shadow-sm
+        focus:border-primary focus:ring-primary']) }}
     >
         <option value="">Selecione...</option>
         @foreach($options as $key => $option)

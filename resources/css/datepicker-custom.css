@@ -1,0 +1,35 @@
+.datepicker {
+    border-color: #3BA99C;
+    background-color: #F5F9F8;
+}
+
+.datepicker-cell:hover {
+    background-color: #A7D7CD;
+    color: #2C7A71;
+}
+
+.datepicker-cell.today {
+    border-color: #2C7A71;
+}
+
+.datepicker-cell.selected,
+.datepicker-cell.focused {
+    background-color: #3BA99C;
+    color: white;
+}
+
+.datepicker-controls .button:hover {
+    background-color: #A7D7CD;
+    color: #2C7A71;
+}
+
+.datepicker-footer .btn {
+    background-color: #3BA99C;
+    color: white;
+    border: none;
+}
+
+.datepicker-footer .btn:hover {
+    background-color: #2C7A71;
+    color: white;
+}

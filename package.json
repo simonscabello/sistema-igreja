@@ -19,6 +19,7 @@
         "vite": "^6.2.4"
     },
     "dependencies": {
-        "@alpinejs/mask": "^3.14.9"
+        "@alpinejs/mask": "^3.14.9",
+        "flowbite": "^3.1.2"
     }
 }

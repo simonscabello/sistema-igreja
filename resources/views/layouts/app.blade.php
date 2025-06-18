@@ -38,35 +38,81 @@
             </div>
         </div>
         @stack('scripts')
+
+        <!-- Datepicker Localization -->
+        <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/i18n/datepicker.pt-BR.js"></script>
+
         <script>
            document.addEventListener('DOMContentLoaded', function () {
-    function limpaCampos() {
+        function limpaCampos() {
         document.getElementById('street').value = '';
         document.getElementById('neighborhood').value = '';
         document.getElementById('city').value = '';
         document.getElementById('state').value = '';
     }
 
-    document.getElementById('zip_code').addEventListener('blur', function () {
-        const cep = this.value.replace(/\D/g, '');
-        if (cep.length !== 8) {
-            limpaCampos();
-            return;
-        }
-        fetch(`https://viacep.com.br/ws/${cep}/json/`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.erro) {
-                    limpaCampos();
-                    return;
-                }
-                document.getElementById('street').value = data.logradouro || '';
-                document.getElementById('neighborhood').value = data.bairro || '';
-                document.getElementById('city').value = data.localidade || '';
-                document.getElementById('state').value = data.uf || '';
-            })
-            .catch(() => limpaCampos());
+    const zipCodeElement = document.getElementById('zip_code');
+    if (zipCodeElement) {
+        zipCodeElement.addEventListener('blur', function () {
+            const cep = this.value.replace(/\D/g, '');
+            if (cep.length !== 8) {
+                limpaCampos();
+                return;
+            }
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.erro) {
+                        limpaCampos();
+                        return;
+                    }
+                    document.getElementById('street').value = data.logradouro || '';
+                    document.getElementById('neighborhood').value = data.bairro || '';
+                    document.getElementById('city').value = data.localidade || '';
+                    document.getElementById('state').value = data.uf || '';
+                })
+                .catch(() => limpaCampos());
+        });
+    }
+
+    // Configuração do Datepicker em português
+    const datepickerElements = document.querySelectorAll('[datepicker]');
+    datepickerElements.forEach(function(elem) {
+        new Datepicker(elem, {
+            autohide: true,
+            format: "dd/mm/yyyy",
+            language: "pt-BR",
+        });
     });
+});
+
+// Configuração do Datepicker em português
+
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        let locales = {
+            pl: {
+            days: ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"],
+                daysShort: ["Dom.", "Seg.", "Ter.", "Qua.", "Qui.", "Sex.", "Sáb."],
+                daysMin: ["Do", "Se", "Te", "Qa", "Qi", "Sx", "Sa"],
+                months: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
+                monthsShort: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+                today: "Hoje",
+                weekStart: 0,// "0" indica que a semana começa no domingo.
+                clear: "Limpar",
+                format: "dd/mm/yyyy"
+            }
+        };
+        let flowbitePickers = Object.values(FlowbiteInstances.getInstances("Datepicker")).map((instance) => {
+            return instance.getDatepickerInstance();
+        });
+        for (const flowbitePicker of flowbitePickers) {
+            for (const picker of flowbitePicker.datepickers || [flowbitePicker]) {
+                Object.assign(picker.constructor.locales, locales);
+                picker.setOptions({ language: "pl" });
+            }
+        }
+    }, 100);
 });
         </script>
     </body>

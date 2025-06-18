@@ -7,7 +7,7 @@
 
 <div>
     @if($label)
-        <label for="{{ $name }}" class="block text-sm font-bold text-gray-700 mb-1">
+        <label for="{{ $name }}" class="block text-md font-bold text-gray-700 mb-1">
             {{ $label }}
             @if($required)
                 <span class="text-red-500">*</span>
@@ -18,5 +18,6 @@
         name="{{ $name }}"
         id="{{ $name }}"
         @if($required) required @endif
-        {{ $attributes->merge(['class' => 'form-textarea block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary/20 sm:text-sm']) }}>{{ old($name, $value) }}</textarea>
+        {{ $attributes->merge(['class' => 'form-textarea block w-full rounded-md border-gray-300 shadow-sm
+         focus:border-primary focus:ring-primary sm:text-sm']) }}>{{ old($name, $value) }}</textarea>
 </div>
