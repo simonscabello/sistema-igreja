@@ -39,21 +39,6 @@
                                     bg-white text-orange-700 border-orange-400">
                                     Saída
                                 </div>
-
-                            <label class="relative cursor-pointer">
-                                <input
-                                    type="radio"
-                                    name="type"
-                                    value="saida"
-                                    class="sr-only peer"
-                                    {{ old('type') === 'saida' ? 'checked' : '' }}
-                                />
-                                <div class="px-4 py-2 rounded-lg border transition-all duration-200 text-sm font-medium
-                                    peer-checked:bg-orange-500 peer-checked:text-white peer-checked:border-orange-600
-                                    bg-white text-orange-700 border-orange-400">
-                                    Saída
-                                </div>
-                            </label>
                         </div>
                     </div>
 
