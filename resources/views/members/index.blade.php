@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-page-card title="Membros">
+    <x-page-card title="Membros" actions="{{ route('members.create') }}">
         <div class="flex justify-between items-center mb-4">
             <div class="flex-1">
                 <form action="{{ route('members.index') }}" method="GET" class="flex gap-2">
@@ -7,11 +7,7 @@
                     <x-primary-button type="submit">Buscar</x-primary-button>
                 </form>
             </div>
-            <div>
-                <x-link-button href="{{ route('members.create') }}">
-                    Novo Membro
-                </x-link-button>
-            </div>
+
         </div>
 
         <div class="overflow-x-auto">

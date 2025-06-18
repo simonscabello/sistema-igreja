@@ -1,16 +1,13 @@
 <x-app-layout>
-    <x-page-card title="Categorias Financeiras">
+    <x-page-card title="Categorias Financeiras" actions="{{ route('financial-categories.create') }}">
         <div class="flex justify-between items-center mb-4">
             <div class="flex-1">
                 <form action="{{ route('financial-categories.index') }}" method="GET" class="flex gap-2">
-                    <x-text-input name="search" placeholder="Buscar categorias..." value="{{ request('search') }}" />
-                    <x-primary-button type="submit">Buscar</x-primary-button>
+                    <x-text-input  name="search" placeholder="Buscar categorias..." value="{{ request('search') }}" />
+                    <div class="flex items-end">
+                        <x-primary-button type="submit" class="px-4 py-3 text-sm">Buscar</x-primary-button>
+                    </div>
                 </form>
-            </div>
-            <div>
-                <x-link-button href="{{ route('financial-categories.create') }}">
-                    Nova Categoria
-                </x-link-button>
             </div>
         </div>
 

@@ -9,8 +9,8 @@
         {{ $attributes->merge(['class' => 'mt-1 block w-full border-neutral-medium rounded-md shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50']) }}
     >
         <option value="">Selecione...</option>
-        @foreach($options as $option)
-            <option value="{{ $option }}" {{ $selected == $option ? 'selected' : '' }}>
+        @foreach($options as $key => $option)
+            <option value="{{ $key }}" {{ $selected == $key ? 'selected' : '' }}>
                 {{ $option }}
             </option>
         @endforeach

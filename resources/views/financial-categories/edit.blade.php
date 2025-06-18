@@ -4,13 +4,17 @@
             @csrf
             @method('PUT')
 
-            <div class="space-y-6">
-                <x-text-input label="Nome" name="name" :value="$financialCategory->name" required />
-                <x-textarea label="Descrição" name="description" :value="$financialCategory->description" />
-                <input type="hidden" name="active" value="0">
-                <x-checkbox label="Ativo" name="active" :checked="$financialCategory->active" />
+            <div class="max-w-2xl">
+                <div class="space-y-6">
+                    <x-text-input label="Nome" name="name" :value="$financialCategory->name" required />
+                    <x-textarea label="Descrição" name="description" :value="$financialCategory->description" />
+                    <input type="hidden" name="active" value="0">
+                    <x-checkbox label="Ativo" name="active" :checked="$financialCategory->active" />
+                </div>
+            </div>
 
-                <div class="flex justify-end space-x-3">
+            <div class="border-t border-neutral-medium mt-6 pt-6">
+                <div class="flex space-x-3">
                     <a href="{{ route('financial-categories.index') }}" class="inline-flex items-center px-4 py-2 bg-neutral-light border border-neutral-medium rounded-md font-semibold text-xs text-neutral-dark uppercase tracking-widest hover:bg-neutral-medium focus:outline-none focus:ring-2 focus:ring-neutral-medium focus:ring-offset-2 transition ease-in-out duration-150">
                         Cancelar
                     </a>
