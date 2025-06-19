@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-page-card :title="__('Painel de Controle')">
-        <div class="text-neutral-dark">
+        <div class="text-neutral-dark dark:text-gray-300">
             {{ __('Você está logado!') }}
         </div>
     </x-page-card>

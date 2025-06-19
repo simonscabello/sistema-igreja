@@ -2,10 +2,10 @@
 
 @php
     $classes = [
-        'success' => 'text-green-800 bg-green-50 dark:bg-gray-800 dark:text-green-400',
-        'warning' => 'text-yellow-800 bg-yellow-50 dark:bg-gray-800 dark:text-yellow-400',
-        'error' => 'text-red-800 bg-red-50 dark:bg-gray-800 dark:text-red-400',
-        'info' => 'text-blue-800 bg-blue-50 dark:bg-gray-800 dark:text-blue-400'
+        'success' => 'text-green-800 bg-green-50 border border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800',
+        'warning' => 'text-yellow-800 bg-yellow-50 border border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800',
+        'error' => 'text-red-800 bg-red-50 border border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800',
+        'info' => 'text-blue-800 bg-blue-50 border border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800'
     ];
 
     $icons = [
@@ -16,10 +16,10 @@
     ];
 
     $buttonClasses = [
-        'success' => 'bg-green-50 text-green-500 focus:ring-green-400 hover:bg-green-200 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700',
-        'warning' => 'bg-yellow-50 text-yellow-500 focus:ring-yellow-400 hover:bg-yellow-200 dark:bg-gray-800 dark:text-yellow-400 dark:hover:bg-gray-700',
-        'error' => 'bg-red-50 text-red-500 focus:ring-red-400 hover:bg-red-200 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700',
-        'info' => 'bg-blue-50 text-blue-500 focus:ring-blue-400 hover:bg-blue-200 dark:bg-gray-800 dark:text-blue-400 dark:hover:bg-gray-700'
+        'success' => 'bg-green-50 text-green-500 focus:ring-green-400 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400 dark:hover:bg-green-900/50 dark:focus:ring-green-400',
+        'warning' => 'bg-yellow-50 text-yellow-500 focus:ring-yellow-400 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:hover:bg-yellow-900/50 dark:focus:ring-yellow-400',
+        'error' => 'bg-red-50 text-red-500 focus:ring-red-400 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50 dark:focus:ring-red-400',
+        'info' => 'bg-blue-50 text-blue-500 focus:ring-blue-400 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50 dark:focus:ring-blue-400'
     ];
 @endphp
 

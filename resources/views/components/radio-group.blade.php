@@ -20,9 +20,9 @@
                     value="{{ $optionValue }}"
                     @if(old($name, $value) == $optionValue) checked @endif
                     @if($required) required @endif
-                    {{ $attributes->merge(['class' => 'form-radio text-primary focus:ring-primary']) }}
+                    {{ $attributes->merge(['class' => 'form-radio text-primary focus:ring-primary bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600']) }}
                 >
-                <label for="{{ $name }}_{{ $optionValue }}" class="ml-2 text-md text-gray-700 cursor-pointer select-none">
+                <label for="{{ $name }}_{{ $optionValue }}" class="ml-2 text-md text-gray-700 dark:text-gray-300 cursor-pointer select-none">
                     {{ $optionLabel }}
                 </label>
             </div>

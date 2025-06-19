@@ -1,9 +1,9 @@
 <!-- Sidebar Desktop -->
-<div class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-neutral-medium sm:flex hidden flex-col">
+<div class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 border-r border-neutral-medium dark:border-gray-700 sm:flex hidden flex-col transition-colors duration-300">
     <!-- Topo alinhado com topbar -->
-    <div class="flex items-center justify-center h-16 px-4 bg-neutral-light border-b border-neutral-medium gap-2">
+    <div class="flex items-center justify-center h-16 px-4 bg-neutral-light dark:bg-gray-700 border-b border-neutral-medium dark:border-gray-600 gap-2 transition-colors duration-300">
         <x-application-logo class="w-8 h-8" />
-        <h1 class="text-xl font-semibold text-neutral-dark">{{ config('app.name') }}</h1>
+        <h1 class="text-xl font-semibold text-gray-800 dark:text-white">{{ config('app.name') }}</h1>
     </div>
 
     <!-- Menu Items -->
@@ -64,14 +64,14 @@
      x-transition:leave="transition ease-in duration-300"
      x-transition:leave-start="translate-x-0"
      x-transition:leave-end="-translate-x-full"
-     class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-neutral-medium sm:hidden transform transition-transform duration-300 ease-in-out"
+     class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 border-r border-neutral-medium dark:border-gray-700 sm:hidden transform transition-all duration-300 ease-in-out"
      @click.away="sidebarOpen = false"
      style="display: none;">
 
     <!-- Topo alinhado com topbar -->
-    <div class="flex items-center justify-center h-16 px-4 bg-neutral-light border-b border-neutral-medium gap-2">
+    <div class="flex items-center justify-center h-16 px-4 bg-neutral-light dark:bg-gray-700 border-b border-neutral-medium dark:border-gray-600 gap-2 transition-colors duration-300">
         <x-application-logo class="w-8 h-8" />
-        <h1 class="text-xl font-semibold text-neutral-dark">{{ config('app.name') }}</h1>
+        <h1 class="text-xl font-semibold text-neutral-dark dark:text-white">{{ config('app.name') }}</h1>
     </div>
 
     <!-- Menu Items -->
@@ -125,7 +125,7 @@
 </div>
 
 <!-- Overlay Mobile -->
-<div class="fixed inset-0 z-40 bg-neutral-dark bg-opacity-75 sm:hidden"
+<div class="fixed inset-0 z-40 bg-neutral-dark dark:bg-black bg-opacity-75 dark:bg-opacity-75 sm:hidden"
      x-show="sidebarOpen"
      x-transition:enter="transition-opacity ease-linear duration-300"
      x-transition:enter-start="opacity-0"

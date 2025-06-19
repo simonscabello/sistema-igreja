@@ -1,0 +1,46 @@
+/* SweetAlert Dark Theme Styles */
+.dark-swal-popup {
+    border: 1px solid #374151 !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8) !important;
+}
+
+.dark-swal-title {
+    color: #f3f4f6 !important;
+}
+
+.dark-swal-content {
+    color: #d1d5db !important;
+}
+
+.dark-swal-confirm {
+    background-color: #3BA99C !important;
+    border-color: #3BA99C !important;
+    color: white !important;
+}
+
+.dark-swal-confirm:hover {
+    background-color: #2C7A71 !important;
+    border-color: #2C7A71 !important;
+}
+
+.dark-swal-cancel {
+    background-color: #F44336 !important;
+    border-color: #F44336 !important;
+    color: white !important;
+}
+
+.dark-swal-cancel:hover {
+    background-color: #d32f2f !important;
+    border-color: #d32f2f !important;
+}
+
+/* Estilos para o ícone de warning no tema dark */
+.dark .swal2-icon.swal2-warning {
+    border-color: #fbbf24 !important;
+    color: #fbbf24 !important;
+}
+
+/* Estilos para o backdrop no tema dark */
+.dark .swal2-backdrop-show {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+}

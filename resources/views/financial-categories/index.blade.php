@@ -18,22 +18,22 @@
         </div>
 
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-neutral-medium">
+            <table class="min-w-full divide-y divide-neutral-medium dark:divide-gray-700">
                 <thead>
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark uppercase tracking-wider">Nome</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark uppercase tracking-wider">Descrição</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-neutral-dark uppercase tracking-wider">Ações</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Nome</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Descrição</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Ações</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-neutral-medium">
+                <tbody class="bg-white dark:bg-gray-800 divide-y divide-neutral-medium dark:divide-gray-700">
                     @forelse ($categories as $category)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $category->name }}</td>
-                            <td class="px-6 py-4">{{ $category->description }}</td>
+                        <tr class="hover:bg-neutral-light dark:hover:bg-gray-700 transition-colors duration-200">
+                            <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $category->name }}</td>
+                            <td class="px-6 py-4 text-neutral-dark dark:text-gray-300">{{ $category->description }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $category->active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $category->active ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' }}">
                                     {{ $category->active ? 'Ativo' : 'Inativo' }}
                                 </span>
                             </td>
@@ -52,7 +52,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-6 py-4 text-center text-neutral-medium">
+                            <td colspan="4" class="px-6 py-4 text-center text-neutral-medium dark:text-gray-500">
                                 Nenhuma categoria encontrada.
                             </td>
                         </tr>

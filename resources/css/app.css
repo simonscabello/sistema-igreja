@@ -1,4 +1,5 @@
 @import "./datepicker-custom.css";
+@import "./sweetalert-custom.css";
 @tailwind base;
 @tailwind components;
 @import 'flowbite';

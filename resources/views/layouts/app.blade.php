@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,7 +14,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased bg-neutral-light min-h-screen flex flex-col" x-data="{ sidebarOpen: false }" @keydown.escape.window="sidebarOpen = false">
+    <body class="font-sans antialiased bg-neutral-light dark:bg-gray-900 min-h-screen flex flex-col transition-colors duration-300" x-data="{ sidebarOpen: false }" @keydown.escape.window="sidebarOpen = false">
         <div class="flex flex-1 min-h-0">
             @auth
                 @include('layouts.sidebar')
@@ -28,9 +28,9 @@
                 </main>
 
                 <!-- Footer -->
-                <footer class="bg-white border-t mt-auto">
+                <footer class="bg-white dark:bg-gray-800 border-t border-neutral-medium dark:border-gray-700 mt-auto transition-colors duration-300">
                     <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
-                        <p class="text-center text-sm text-neutral-dark">
+                        <p class="text-center text-sm text-neutral-dark dark:text-gray-300">
                             &copy; {{ date('Y') }} {{ config('app.name') }}. Todos os direitos reservados.
                         </p>
                     </div>

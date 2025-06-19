@@ -17,23 +17,23 @@
         </div>
 
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-neutral-medium">
+            <table class="min-w-full divide-y divide-neutral-medium dark:divide-gray-700">
                 <thead>
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark uppercase tracking-wider">Nome</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark uppercase tracking-wider">Email</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark uppercase tracking-wider">Telefone</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark uppercase tracking-wider">Cidade</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-neutral-dark uppercase tracking-wider">Ações</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Nome</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Email</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Telefone</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Cidade</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Ações</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-neutral-medium">
+                <tbody class="bg-white dark:bg-gray-800 divide-y divide-neutral-medium dark:divide-gray-700">
                     @forelse($members as $member)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $member->full_name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $member->email }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $member->mobile }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $member->city }}</td>
+                        <tr class="hover:bg-neutral-light dark:hover:bg-gray-700 transition-colors duration-200">
+                            <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $member->full_name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $member->email }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $member->mobile }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $member->city }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <x-link-button href="{{ route('members.edit', $member) }}">
                                     Editar
@@ -49,7 +49,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-4 text-center text-neutral-medium">
+                            <td colspan="5" class="px-6 py-4 text-center text-neutral-medium dark:text-gray-500">
                                 Nenhum membro encontrado.
                             </td>
                         </tr>

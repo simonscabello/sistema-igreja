@@ -23,7 +23,7 @@
             </div>
 
             <div class="border-t border-neutral-medium pt-6">
-                <h3 class="text-lg font-medium text-neutral-dark mb-4">Endereço</h3>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <x-text-input label="CEP" name="zip_code" id="zip_code" placeholder="Digite o CEP" required />
                     <x-text-input label="Rua" name="street" id="street" placeholder="Digite a rua" />
