@@ -1,5 +1,11 @@
 <x-app-layout>
     <x-page-card title="Editar Transação Financeira">
+        @if($errors->any())
+            <x-alert type="error" dismissible>
+                <span class="font-medium">Erro!</span> Por favor, corrija os erros abaixo.
+            </x-alert>
+        @endif
+
         <form action="{{ route('financial-transactions.update', $financialTransaction) }}" method="POST">
             @csrf
             @method('PUT')

@@ -1,5 +1,11 @@
 <x-app-layout>
     <x-page-card title="Categorias Financeiras" actions="{{ route('financial-categories.create') }}">
+        @if(session('success'))
+            <x-alert type="success" dismissible>
+                <span class="font-medium">Sucesso!</span> {{ session('success') }}
+            </x-alert>
+        @endif
+
         <div class="flex justify-between items-center mb-4">
             <div class="flex-1">
                 <form action="{{ route('financial-categories.index') }}" method="GET" class="flex gap-2">

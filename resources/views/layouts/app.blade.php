@@ -42,6 +42,9 @@
         <!-- Datepicker Localization -->
         <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/i18n/datepicker.pt-BR.js"></script>
 
+        <!-- SweetAlert2 -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
         <script>
            document.addEventListener('DOMContentLoaded', function () {
         function limpaCampos() {

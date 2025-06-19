@@ -1,5 +1,11 @@
 <x-app-layout>
     <x-page-card title="Transações Financeiras" actions="{{ route('financial-transactions.create') }}">
+        @if(session('success'))
+            <x-alert type="success" dismissible>
+                <span class="font-medium">Sucesso!</span> {{ session('success') }}
+            </x-alert>
+        @endif
+
         <div class="mb-4">
             <form action="{{ route('financial-transactions.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 items-end">
                 <div>

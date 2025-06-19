@@ -1,5 +1,11 @@
 <x-app-layout>
     <x-page-card title="Editar Membro">
+        @if($errors->any())
+            <x-alert type="error" dismissible>
+                <span class="font-medium">Erro!</span> Por favor, corrija os erros abaixo.
+            </x-alert>
+        @endif
+
         <form action="{{ route('members.update', $member) }}" method="POST" class="space-y-6">
             @csrf
             @method('PUT')
