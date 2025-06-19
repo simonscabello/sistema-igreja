@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Member;
+use App\Http\Requests\StoreMemberRequest;
+use App\Http\Requests\UpdateMemberRequest;
 
 class MemberController extends Controller
 {
@@ -40,29 +42,9 @@ class MemberController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreMemberRequest $request)
     {
-        $validated = $request->validate([
-            'full_name' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:20',
-            'mobile' => 'required|string|max:20',
-            'gender' => 'required|in:Masculino,Feminino,Outro',
-            'marital_status' => 'nullable|in:Solteiro,Casado,Divorciado,Viúvo',
-            'birth_date' => 'required|date',
-            'baptism_date' => 'nullable|date',
-            'admission_date' => 'nullable|date',
-            'wedding_date' => 'nullable|date',
-            'zip_code' => 'required|string|max:9',
-            'street' => 'nullable|string|max:255',
-            'neighborhood' => 'nullable|string|max:255',
-            'city' => 'nullable|string|max:255',
-            'state' => 'nullable|string|max:2',
-            'number' => 'nullable|string|max:20',
-            'complement' => 'nullable|string|max:255',
-        ]);
-
-        Member::create($validated);
+        Member::create($request->validated());
 
         return redirect()->route('members.index')
             ->with('success', 'Membro cadastrado com sucesso.');
@@ -87,29 +69,9 @@ class MemberController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Member $member)
+    public function update(UpdateMemberRequest $request, Member $member)
     {
-        $validated = $request->validate([
-            'full_name' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:20',
-            'mobile' => 'required|string|max:20',
-            'gender' => 'required|in:Masculino,Feminino,Outro',
-            'marital_status' => 'nullable|in:Solteiro,Casado,Divorciado,Viúvo',
-            'birth_date' => 'required|date',
-            'baptism_date' => 'nullable|date',
-            'admission_date' => 'nullable|date',
-            'wedding_date' => 'nullable|date',
-            'zip_code' => 'required|string|max:9',
-            'street' => 'nullable|string|max:255',
-            'neighborhood' => 'nullable|string|max:255',
-            'city' => 'nullable|string|max:255',
-            'state' => 'nullable|string|max:2',
-            'number' => 'nullable|string|max:20',
-            'complement' => 'nullable|string|max:255',
-        ]);
-
-        $member->update($validated);
+        $member->update($request->validated());
 
         return redirect()->route('members.index')
             ->with('success', 'Membro atualizado com sucesso.');
