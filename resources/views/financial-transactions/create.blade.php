@@ -6,12 +6,39 @@
             </x-alert>
         @endif
 
-        <form action="{{ route('financial-transactions.store') }}" method="POST">
+        <form action="{{ route('financial-transactions.store') }}" method="POST" x-data="{
+            selectedCategory: '{{ old('financial_category_id') }}',
+            categories: {{ $categories->toJson() }},
+            get subcategories() {
+                if (!this.selectedCategory) return [];
+                const category = this.categories.find(c => c.id == this.selectedCategory);
+                return category ? category.subcategories : [];
+            }
+        }">
             @csrf
 
             <div class="max-w-2xl">
                 <div class="space-y-6">
-                    <x-select label="Categoria" name="financial_category_id" :options="$categories->pluck('name', 'id')" required />
+                    <x-select label="Categoria"
+                              name="financial_category_id"
+                              :options="$categories->pluck('name', 'id')->toArray()"
+                              :selected="old('financial_category_id')"
+                              x-model="selectedCategory"
+                              required />
+
+                    <div>
+                        <x-input-label for="financial_subcategory_id" value="Subcategoria" />
+                        <select id="financial_subcategory_id"
+                                name="financial_subcategory_id"
+                                required
+                                class="mt-1 block w-full border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white">
+                            <option value="">Selecione uma subcategoria</option>
+                            <template x-for="subcategory in subcategories" :key="subcategory.id">
+                                <option :value="subcategory.id" x-text="subcategory.name"></option>
+                            </template>
+                        </select>
+                        <x-input-error :messages="$errors->get('financial_subcategory_id')" class="mt-2" />
+                    </div>
 
                     <div class="space-y-2">
                         <label class="block text-md font-bold text-gray-700 dark:text-gray-300 ">Tipo</label>
@@ -56,7 +83,6 @@
                         </div>
                     </div>
 
-
                     <x-input-currency label="Valor" name="amount" prefix="R$" required />
 
                     <x-input-date label="Data da Ação" name="action_date" required />
@@ -65,7 +91,7 @@
 
                 </div>
             </div>
-                        <div class="border-t border-neutral-medium mt-6 pt-6">
+            <div class="border-t border-neutral-medium mt-6 pt-6">
                 <div class="flex space-x-3">
                     <a href="{{ route('financial-transactions.index') }}" class="inline-flex items-center px-4 py-2 bg-neutral-light border border-neutral-medium rounded-md font-semibold text-xs text-neutral-dark uppercase tracking-widest hover:bg-neutral-medium focus:outline-none focus:ring-2 focus:ring-neutral-medium focus:ring-offset-2 transition ease-in-out duration-150">
                         Cancelar

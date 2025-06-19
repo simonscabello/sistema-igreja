@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\FinancialTransaction;
 use App\Models\FinancialCategory;
+use App\Models\FinancialSubcategory;
 use App\Http\Requests\StoreFinancialTransactionRequest;
 use App\Http\Requests\UpdateFinancialTransactionRequest;
 use Illuminate\Http\Request;
@@ -12,13 +13,16 @@ class FinancialTransactionController extends Controller
 {
     public function index(Request $request)
     {
-        $query = FinancialTransaction::with('category');
+        $query = FinancialTransaction::with(['subcategory.financialCategory']);
 
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('description', 'like', "%{$search}%")
-                  ->orWhereHas('category', function ($q) use ($search) {
+                  ->orWhereHas('subcategory', function ($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('subcategory.financialCategory', function ($q) use ($search) {
                       $q->where('name', 'like', "%{$search}%");
                   });
             });
@@ -28,19 +32,19 @@ class FinancialTransactionController extends Controller
             $query->where('type', $request->input('type'));
         }
 
-        if ($request->filled('category')) {
-            $query->where('financial_category_id', $request->input('category'));
+        if ($request->filled('subcategory')) {
+            $query->where('financial_subcategory_id', $request->input('subcategory'));
         }
 
         $transactions = $query->latest('action_date')->paginate(10);
-        $categories = FinancialCategory::where('active', true)->get();
+        $categories = FinancialCategory::with('subcategories')->where('active', true)->get();
 
         return view('financial-transactions.index', compact('transactions', 'categories'));
     }
 
     public function create()
     {
-        $categories = FinancialCategory::where('active', true)->get();
+        $categories = FinancialCategory::with('subcategories')->where('active', true)->get();
         return view('financial-transactions.create', compact('categories'));
     }
 
@@ -52,7 +56,7 @@ class FinancialTransactionController extends Controller
 
     public function edit(FinancialTransaction $financialTransaction)
     {
-        $categories = FinancialCategory::where('active', true)->get();
+        $categories = FinancialCategory::with('subcategories')->where('active', true)->get();
         return view('financial-transactions.edit', compact('financialTransaction', 'categories'));
     }
 

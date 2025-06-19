@@ -35,7 +35,7 @@
             {{ __('Membros') }}
         </x-sidebar-link>
 
-        <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial-categories.*') || request()->routeIs('financial-transactions.*')">
+        <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial-categories.*') || request()->routeIs('financial-transactions.*') || request()->routeIs('subcategories.*')">
             <x-sidebar-link href="{{ route('financial-categories.index') }}" :active="request()->routeIs('financial-categories.*')">
                 <x-slot name="icon">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -43,6 +43,14 @@
                     </svg>
                 </x-slot>
                 {{ __('Categorias') }}
+            </x-sidebar-link>
+            <x-sidebar-link href="{{ route('subcategories.index') }}" :active="request()->routeIs('subcategories.*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                </x-slot>
+                {{ __('Subcategorias') }}
             </x-sidebar-link>
             <x-sidebar-link href="{{ route('financial-transactions.index') }}" :active="request()->routeIs('financial-transactions.*')">
                 <x-slot name="icon">
@@ -103,7 +111,7 @@
             {{ __('Membros') }}
         </x-sidebar-link>
 
-        <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial-categories.*') || request()->routeIs('financial-transactions.*')">
+        <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial-categories.*') || request()->routeIs('financial-transactions.*') || request()->routeIs('subcategories.*')">
             <x-sidebar-link href="{{ route('financial-categories.index') }}" :active="request()->routeIs('financial-categories.*')">
                 <x-slot name="icon">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,6 +119,14 @@
                     </svg>
                 </x-slot>
                 {{ __('Categorias') }}
+            </x-sidebar-link>
+            <x-sidebar-link href="{{ route('subcategories.index') }}" :active="request()->routeIs('subcategories.*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                </x-slot>
+                {{ __('Subcategorias') }}
             </x-sidebar-link>
             <x-sidebar-link href="{{ route('financial-transactions.index') }}" :active="request()->routeIs('financial-transactions.*')">
                 <x-slot name="icon">

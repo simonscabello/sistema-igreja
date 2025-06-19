@@ -14,4 +14,9 @@ class FinancialCategory extends Model
     protected $casts = [
         'active' => 'boolean',
     ];
+
+    public function subcategories()
+    {
+        return $this->hasMany(FinancialSubcategory::class, 'financial_category_id');
+    }
 }

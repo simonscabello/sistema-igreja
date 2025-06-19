@@ -13,7 +13,7 @@
                     <x-text-input name="search" placeholder="Buscar transações..." value="{{ request('search') }}" />
                 </div>
                 <x-select label="Tipo" name="type" :options="['' => 'Todos os tipos', 'entrada' => 'Entradas', 'saida' => 'Saídas']" :selected="request('type')" />
-                <x-select label="Categoria" name="category" :options="$categories->pluck('name', 'id')->prepend('Todas as categorias', '')" :selected="request('category')" />
+                <x-select label="Subcategoria" name="subcategory" :options="$categories->flatMap(function($category) { return $category->subcategories->pluck('name', 'id'); })->prepend('Todas as subcategorias', '')" :selected="request('subcategory')" />
                 <div class="flex items-end">
                     <x-primary-button type="submit" class="px-4 py-3 text-sm">Buscar</x-primary-button>
                 </div>
@@ -26,6 +26,7 @@
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Data</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Categoria</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Subcategoria</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Tipo</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Valor</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Descrição</th>
@@ -36,7 +37,8 @@
                     @forelse ($transactions as $transaction)
                         <tr class="hover:bg-neutral-light dark:hover:bg-gray-700 transition-colors duration-200">
                             <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $transaction->action_date->format('d/m/Y') }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $transaction->category->name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $transaction->subcategory->financialCategory->name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $transaction->subcategory->name }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $transaction->type === 'entrada' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' }}">
                                     {{ $transaction->type === 'entrada' ? 'Entrada' : 'Saída' }}
@@ -59,7 +61,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-4 text-center text-neutral-medium dark:text-gray-500">
+                            <td colspan="7" class="px-6 py-4 text-center text-neutral-medium dark:text-gray-500">
                                 Nenhuma transação encontrada.
                             </td>
                         </tr>

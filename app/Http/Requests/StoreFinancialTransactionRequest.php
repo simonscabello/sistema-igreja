@@ -15,7 +15,7 @@ class StoreFinancialTransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'financial_category_id' => ['required', 'exists:financial_categories,id'],
+            'financial_subcategory_id' => ['required', 'exists:financial_subcategories,id'],
             'type' => ['required', 'in:entrada,saida'],
             'amount' => ['required', 'numeric', 'min:0'],
             'action_date' => ['required', 'date'],
@@ -26,7 +26,7 @@ class StoreFinancialTransactionRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'financial_category_id' => 'categoria',
+            'financial_subcategory_id' => 'subcategoria',
             'type' => 'tipo',
             'amount' => 'valor',
             'action_date' => 'data da ação',

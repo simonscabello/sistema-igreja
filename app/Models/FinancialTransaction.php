@@ -10,7 +10,7 @@ class FinancialTransaction extends Model
     use HasFactory;
 
     protected $fillable = [
-        'financial_category_id',
+        'financial_subcategory_id',
         'type',
         'amount',
         'action_date',
@@ -22,8 +22,20 @@ class FinancialTransaction extends Model
         'action_date' => 'date',
     ];
 
+    public function subcategory()
+    {
+        return $this->belongsTo(FinancialSubcategory::class, 'financial_subcategory_id');
+    }
+
     public function category()
     {
-        return $this->belongsTo(FinancialCategory::class, 'financial_category_id');
+        return $this->hasOneThrough(
+            FinancialCategory::class,
+            FinancialSubcategory::class,
+            'id',
+            'id',
+            'financial_subcategory_id',
+            'financial_category_id'
+        );
     }
 }
