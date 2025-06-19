@@ -10,10 +10,10 @@
                 <x-text-input label="Celular" name="mobile" placeholder="Digite o celular" required />
                 <x-select label="Gênero" name="gender" :options="['Masculino', 'Feminino', 'Outro']" required />
                 <x-select label="Estado Civil" name="marital_status" :options="['Solteiro', 'Casado', 'Divorciado', 'Viúvo']" />
-                <x-text-input label="Data de Nascimento" name="birth_date" type="date" required />
-                <x-text-input label="Data de Batismo" name="baptism_date" type="date" />
-                <x-text-input label="Data de Admissão" name="admission_date" type="date" />
-                <x-text-input label="Data de Casamento" name="wedding_date" type="date" />
+                <x-input-date label="Data de Nascimento" name="birth_date" required />
+                <x-input-date label="Data de Batismo" name="baptism_date" />
+                <x-input-date label="Data de Admissão" name="admission_date" />
+                <x-input-date label="Data de Casamento" name="wedding_date" />
             </div>
 
             <div class="border-t border-neutral-medium pt-6">

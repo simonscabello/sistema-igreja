@@ -11,10 +11,10 @@
                 <x-text-input label="Celular" name="mobile" :value="$member->mobile" placeholder="Digite o celular" required />
                 <x-select label="Gênero" name="gender" :options="['Masculino', 'Feminino', 'Outro']" :selected="$member->gender" required />
                 <x-select label="Estado Civil" name="marital_status" :options="['Solteiro', 'Casado', 'Divorciado', 'Viúvo']" :selected="$member->marital_status" />
-                <x-text-input label="Data de Nascimento" name="birth_date" type="date" :value="$member->birth_date?->format('Y-m-d')" required />
-                <x-text-input label="Data de Batismo" name="baptism_date" type="date" :value="$member->baptism_date?->format('Y-m-d')" />
-                <x-text-input label="Data de Admissão" name="admission_date" type="date" :value="$member->admission_date?->format('Y-m-d')" />
-                <x-text-input label="Data de Casamento" name="wedding_date" type="date" :value="$member->wedding_date?->format('Y-m-d')" />
+                <x-input-date label="Data de Nascimento" name="birth_date" :value="$member->birth_date" required />
+                <x-input-date label="Data de Batismo" name="baptism_date" :value="$member->baptism_date" />
+                <x-input-date label="Data de Admissão" name="admission_date" :value="$member->admission_date" />
+                <x-input-date label="Data de Casamento" name="wedding_date" :value="$member->wedding_date" />
             </div>
 
             <div class="border-t border-neutral-medium pt-6">

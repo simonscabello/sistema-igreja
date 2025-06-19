@@ -8,24 +8,24 @@
                     <x-select label="Categoria" name="financial_category_id" :options="$categories->pluck('name', 'id')" required />
 
                     <div class="space-y-2">
-                        <label class="block text-md font-bold text-gray-700 ">Tipo</label>
+                        <label class="block text-md font-bold text-gray-700">Tipo</label>
                         <div class="flex gap-4">
                             <label class="relative cursor-pointer">
                                 <input
                                     type="radio"
                                     name="type"
                                     value="entrada"
-                                    class="sr-only peer "
+                                    class="sr-only peer"
                                     {{ old('type') === 'entrada' ? 'checked' : '' }}
                                 />
-                                <div class="px-4 py-2 rounded-lg border transition-all duration-200 text-md font-medium
-                                    peer-checked:bg-primary peer-checked:text-white peer-checked:border-primary
-                                    bg-white text-primary border-primary">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                <div class="px-6 py-4 rounded-lg border transition-all duration-200 text-md font-medium
+                                    peer-checked:bg-green-500 peer-checked:text-white peer-checked:border-green-500
+                                    bg-white text-green-600 border-green-400 hover:bg-green-50
+                                    flex flex-col items-center justify-center gap-2 min-w-[120px]">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m0 0l-5-5m5 5l5-5" />
                                     </svg>
-
-                                    Entrada
+                                    <span>Entrada</span>
                                 </div>
                             </label>
 
@@ -37,15 +37,16 @@
                                     class="sr-only peer"
                                     {{ old('type') === 'saida' ? 'checked' : '' }}
                                 />
-                                <div class="px-4 py-2 rounded-lg border transition-all duration-200 text-md font-medium
-                                    peer-checked:bg-orange-500 peer-checked:text-white peer-checked:border-orange-500
-                                    bg-white text-orange-500 border-orange-500">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                <div class="px-6 py-4 rounded-lg border transition-all duration-200 text-md font-medium
+                                    peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500
+                                    bg-white text-red-600 border-red-400 hover:bg-red-50
+                                    flex flex-col items-center justify-center gap-2 min-w-[120px]">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19V5m0 0l-5 5m5-5l5 5" />
                                     </svg>
-
-                                    Saída
+                                    <span>Saída</span>
                                 </div>
+                            </label>
                         </div>
                     </div>
 

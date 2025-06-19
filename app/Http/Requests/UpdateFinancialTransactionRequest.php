@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Carbon\Carbon;
 
 class UpdateFinancialTransactionRequest extends FormRequest
 {
@@ -39,6 +40,13 @@ class UpdateFinancialTransactionRequest extends FormRequest
             $valor = str_replace(['.', ','], ['', '.'], $this->amount);
             $this->merge([
                 'amount' => floatval($valor)
+            ]);
+        }
+
+        if ($this->has('action_date')) {
+            $data = Carbon::createFromFormat('d/m/Y', $this->action_date)->format('Y-m-d');
+            $this->merge([
+                'action_date' => $data
             ]);
         }
     }

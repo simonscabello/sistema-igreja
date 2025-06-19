@@ -6,6 +6,17 @@
     'placeholder' => 'Selecione uma data',
 ])
 
+@php
+    $formattedValue = null;
+    if ($value) {
+        try {
+            $formattedValue = \Carbon\Carbon::parse($value)->format('d/m/Y');
+        } catch (Exception $e) {
+            $formattedValue = $value;
+        }
+    }
+@endphp
+
 <div class="space-y-2">
     @if($label)
         <label for="{{ $name }}" class="block text-md font-bold text-gray-700">{{ $label }}</label>
@@ -22,7 +33,7 @@
             type="text"
             name="{{ $name }}"
             id="{{ $name }}"
-            value="{{ old($name, $value) }}"
+            value="{{ old($name, $formattedValue) }}"
             placeholder="{{ $placeholder }}"
             @if($required) required @endif
             {{ $attributes->merge(['class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:border-primary focus:ring-primary block w-full ps-10 p-2.5']) }}

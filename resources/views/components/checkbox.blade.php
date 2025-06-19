@@ -16,7 +16,7 @@
         {{ $attributes->merge(['class' => 'form-checkbox rounded text-primary focus:ring-primary']) }}
     >
     @if($label)
-        <label for="{{ $name }}" class="text-sm font-bold text-gray-700 cursor-pointer select-none">
+        <label for="{{ $name }}" class="text-md font-bold text-gray-700 cursor-pointer select-none">
             {{ $label }}
             @if($required)
                 <span class="text-red-500">*</span>

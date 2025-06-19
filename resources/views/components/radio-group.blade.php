@@ -22,7 +22,7 @@
                     @if($required) required @endif
                     {{ $attributes->merge(['class' => 'form-radio text-primary focus:ring-primary']) }}
                 >
-                <label for="{{ $name }}_{{ $optionValue }}" class="ml-2 text-sm text-gray-700 cursor-pointer select-none">
+                <label for="{{ $name }}_{{ $optionValue }}" class="ml-2 text-md text-gray-700 cursor-pointer select-none">
                     {{ $optionLabel }}
                 </label>
             </div>
