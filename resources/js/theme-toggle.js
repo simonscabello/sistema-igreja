@@ -1,23 +1,23 @@
 // Gerenciamento de tema dark/light
 document.addEventListener('DOMContentLoaded', function() {
-    const html = document.documentElement;
-    const storedTheme = localStorage.getItem('theme');
-
-    // Aplicar tema inicial (dark como padrão)
-    if (!storedTheme || storedTheme === 'dark') {
-        html.classList.add('dark');
-    } else {
-        html.classList.remove('dark');
-    }
-
     // Função para alternar tema
     window.toggleTheme = function() {
-        html.classList.toggle('dark');
-        const isDark = html.classList.contains('dark');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        const html = document.documentElement;
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        // Atualizar localStorage
+        localStorage.setItem('theme', newTheme);
+        
+        // Atualizar classe no HTML
+        if (newTheme === 'dark') {
+            html.classList.add('dark');
+        } else {
+            html.classList.remove('dark');
+        }
 
         // Atualizar ícone do botão
-        updateThemeIcon(isDark);
+        updateThemeIcon(newTheme === 'dark');
     };
 
     // Função para atualizar ícone baseado no tema atual
@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Aplicar ícone inicial
-    updateThemeIcon(html.classList.contains('dark'));
+    // Aplicar ícone inicial baseado no tema atual
+    const currentTheme = localStorage.getItem('theme') || 'dark';
+    updateThemeIcon(currentTheme === 'dark');
 });

@@ -27,4 +27,24 @@ class UpdateFinancialCategoryRequest extends FormRequest
             'active' => ['boolean'],
         ];
     }
+
+    public function attributes(): array
+    {
+        return [
+            'name' => 'nome',
+            'description' => 'descrição',
+            'active' => 'ativo',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'O nome é obrigatório.',
+            'name.string' => 'O nome deve ser um texto.',
+            'name.max' => 'O nome não pode ter mais de 255 caracteres.',
+            'description.string' => 'A descrição deve ser um texto.',
+            'active.boolean' => 'O campo ativo deve ser verdadeiro ou falso.',
+        ];
+    }
 }

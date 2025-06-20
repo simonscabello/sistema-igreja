@@ -10,8 +10,8 @@
         focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white']) }}
     >
         <option value="">Selecione...</option>
-        @foreach($options as $key => $option)
-            <option value="{{ $key }}" {{ $selected == $key ? 'selected' : '' }}>
+        @foreach($options as $option)
+            <option value="{{ $option }}" {{ $selected == $option ? 'selected' : '' }}>
                 {{ $option }}
             </option>
         @endforeach

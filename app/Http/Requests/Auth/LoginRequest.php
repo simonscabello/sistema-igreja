@@ -32,6 +32,25 @@ class LoginRequest extends FormRequest
         ];
     }
 
+    public function attributes(): array
+    {
+        return [
+            'email' => 'email',
+            'password' => 'senha',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'O email é obrigatório.',
+            'email.string' => 'O email deve ser um texto.',
+            'email.email' => 'O email deve ser um endereço válido.',
+            'password.required' => 'A senha é obrigatória.',
+            'password.string' => 'A senha deve ser um texto.',
+        ];
+    }
+
     /**
      * Attempt to authenticate the request's credentials.
      *

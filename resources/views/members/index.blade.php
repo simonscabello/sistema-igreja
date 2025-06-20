@@ -10,7 +10,9 @@
             <div class="flex-1">
                 <form action="{{ route('members.index') }}" method="GET" class="flex gap-2">
                     <x-text-input name="search" placeholder="Buscar membros..." value="{{ request('search') }}" />
-                    <x-primary-button type="submit">Buscar</x-primary-button>
+                    <div class="flex items-end">
+                        <x-primary-button type="submit" class="px-4 py-3 text-sm">Buscar</x-primary-button>
+                    </div>
                 </form>
             </div>
 

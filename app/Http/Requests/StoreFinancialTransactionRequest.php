@@ -34,6 +34,22 @@ class StoreFinancialTransactionRequest extends FormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'financial_subcategory_id.required' => 'A subcategoria é obrigatória.',
+            'financial_subcategory_id.exists' => 'A subcategoria selecionada não existe.',
+            'type.required' => 'O tipo é obrigatório.',
+            'type.in' => 'O tipo deve ser entrada ou saida.',
+            'amount.required' => 'O valor é obrigatório.',
+            'amount.numeric' => 'O valor deve ser um número.',
+            'amount.min' => 'O valor deve ser maior ou igual a zero.',
+            'action_date.required' => 'A data da ação é obrigatória.',
+            'action_date.date' => 'A data da ação deve ser uma data válida.',
+            'description.string' => 'A descrição deve ser um texto.',
+        ];
+    }
+
     protected function prepareForValidation()
     {
         if ($this->has('amount')) {
