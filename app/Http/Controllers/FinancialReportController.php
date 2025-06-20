@@ -11,7 +11,7 @@ class FinancialReportController extends Controller
 {
     public function __invoke(Request $request)
     {
-        $month = $request->get('month', now()->month);
+        $month = $this->normalizeMonth($request->get('month', now()->month));
         $year = $request->get('year', now()->year);
 
         $transactions = FinancialTransaction::with('subcategory.financialCategory')
@@ -44,6 +44,23 @@ class FinancialReportController extends Controller
         }
 
         return view('reports.financial.monthly', compact('report'));
+    }
+
+    private function normalizeMonth($month)
+    {
+        if (is_numeric($month)) {
+            $month = (int) $month;
+            return $month >= 1 && $month <= 12 ? $month : now()->month;
+        }
+
+        $monthNames = [
+            'janeiro' => 1, 'fevereiro' => 2, 'março' => 3, 'abril' => 4,
+            'maio' => 5, 'junho' => 6, 'julho' => 7, 'agosto' => 8,
+            'setembro' => 9, 'outubro' => 10, 'novembro' => 11, 'dezembro' => 12
+        ];
+
+        $monthLower = mb_strtolower(trim($month));
+        return $monthNames[$monthLower] ?? now()->month;
     }
 
     private function groupTransactionsByType($transactions, string $type): array
