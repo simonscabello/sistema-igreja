@@ -7,13 +7,14 @@
         @endif
 
         <div class="mb-4">
-            <form action="{{ route('financial-transactions.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 items-end">
+            <form action="{{ route('financial-transactions.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-2 items-end">
                 <div>
                     <x-input-label value="Busca" />
                     <x-text-input name="search" placeholder="Buscar transações..." value="{{ request('search') }}" />
                 </div>
                 <x-select label="Tipo" name="type" :options="['' => 'Todos os tipos', 'entrada' => 'Entradas', 'saida' => 'Saídas']" :selected="request('type')" />
                 <x-select label="Subcategoria" name="subcategory" :options="$categories->flatMap(function($category) { return $category->subcategories->pluck('name', 'id'); })->prepend('Todas as subcategorias', '')" :selected="request('subcategory')" />
+                <x-select label="Campanha" name="campaign" :options="$campaigns->pluck('name', 'id')->prepend('Todas as campanhas', '')" :selected="request('campaign')" />
                 <div class="flex items-end">
                     <x-primary-button type="submit" class="px-4 py-3 text-sm">Buscar</x-primary-button>
                 </div>
@@ -27,6 +28,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Data</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Categoria</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Subcategoria</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Campanha</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Tipo</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Valor</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Descrição</th>
@@ -39,6 +41,15 @@
                             <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $transaction->action_date->format('d/m/Y') }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $transaction->subcategory->financialCategory->name }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $transaction->subcategory->name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">
+                                @if($transaction->campaign)
+                                    <a href="{{ route('campaigns.show', $transaction->campaign) }}" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
+                                        {{ $transaction->campaign->name }}
+                                    </a>
+                                @else
+                                    <span class="text-gray-400">-</span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $transaction->type === 'entrada' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' }}">
                                     {{ $transaction->type === 'entrada' ? 'Entrada' : 'Saída' }}
@@ -61,7 +72,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-4 text-center text-neutral-medium dark:text-gray-500">
+                            <td colspan="8" class="px-6 py-4 text-center text-neutral-medium dark:text-gray-500">
                                 Nenhuma transação encontrada.
                             </td>
                         </tr>

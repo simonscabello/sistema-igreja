@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\FinancialTransaction;
 use App\Models\FinancialCategory;
 use App\Models\FinancialSubcategory;
+use App\Models\Campaign;
 use App\Http\Requests\StoreFinancialTransactionRequest;
 use App\Http\Requests\UpdateFinancialTransactionRequest;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ class FinancialTransactionController extends Controller
 {
     public function index(Request $request)
     {
-        $query = FinancialTransaction::with(['subcategory.financialCategory']);
+        $query = FinancialTransaction::with(['subcategory.financialCategory', 'campaign']);
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -23,6 +24,9 @@ class FinancialTransactionController extends Controller
                       $q->where('name', 'like', "%{$search}%");
                   })
                   ->orWhereHas('subcategory.financialCategory', function ($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('campaign', function ($q) use ($search) {
                       $q->where('name', 'like', "%{$search}%");
                   });
             });
@@ -36,16 +40,22 @@ class FinancialTransactionController extends Controller
             $query->where('financial_subcategory_id', $request->input('subcategory'));
         }
 
+        if ($request->filled('campaign')) {
+            $query->where('campaign_id', $request->input('campaign'));
+        }
+
         $transactions = $query->latest('action_date')->paginate(10);
         $categories = FinancialCategory::with('subcategories')->where('active', true)->get();
+        $campaigns = Campaign::where('status', 'ativo')->get();
 
-        return view('financial-transactions.index', compact('transactions', 'categories'));
+        return view('financial-transactions.index', compact('transactions', 'categories', 'campaigns'));
     }
 
     public function create()
     {
         $categories = FinancialCategory::with('subcategories')->where('active', true)->get();
-        return view('financial-transactions.create', compact('categories'));
+        $campaigns = Campaign::where('status', 'ativo')->get();
+        return view('financial-transactions.create', compact('categories', 'campaigns'));
     }
 
     public function store(StoreFinancialTransactionRequest $request)
@@ -57,7 +67,8 @@ class FinancialTransactionController extends Controller
     public function edit(FinancialTransaction $financialTransaction)
     {
         $categories = FinancialCategory::with('subcategories')->where('active', true)->get();
-        return view('financial-transactions.edit', compact('financialTransaction', 'categories'));
+        $campaigns = Campaign::where('status', 'ativo')->get();
+        return view('financial-transactions.edit', compact('financialTransaction', 'categories', 'campaigns'));
     }
 
     public function update(UpdateFinancialTransactionRequest $request, FinancialTransaction $financialTransaction)

@@ -11,6 +11,7 @@ class FinancialTransaction extends Model
 
     protected $fillable = [
         'financial_subcategory_id',
+        'campaign_id',
         'type',
         'amount',
         'action_date',
@@ -37,5 +38,10 @@ class FinancialTransaction extends Model
             'financial_subcategory_id',
             'financial_category_id'
         );
+    }
+
+    public function campaign()
+    {
+        return $this->belongsTo(Campaign::class);
     }
 }

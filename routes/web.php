@@ -8,6 +8,7 @@ use App\Http\Controllers\FinancialCategoryController;
 use App\Http\Controllers\FinancialTransactionController;
 use App\Http\Controllers\FinancialSubcategoryController;
 use App\Http\Controllers\FinancialReportController;
+use App\Http\Controllers\CampaignController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', RootRedirectController::class);
@@ -26,6 +27,7 @@ Route::resource('members', MemberController::class);
 Route::resource('visitors', VisitorController::class);
 Route::resource('financial-categories', FinancialCategoryController::class);
 Route::resource('financial-transactions', FinancialTransactionController::class);
+Route::resource('campaigns', CampaignController::class);
 
 Route::prefix('subcategorias')->group(function () {
     Route::get('/', [FinancialSubcategoryController::class, 'index'])->name('subcategories.index');

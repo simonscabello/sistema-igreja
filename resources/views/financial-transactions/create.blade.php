@@ -40,6 +40,21 @@
                         <x-input-error :messages="$errors->get('financial_subcategory_id')" class="mt-2" />
                     </div>
 
+                    <div>
+                        <x-input-label for="campaign_id" value="Campanha (Opcional)" />
+                        <select id="campaign_id"
+                                name="campaign_id"
+                                class="mt-1 block w-full border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white">
+                            <option value="">Nenhuma campanha</option>
+                            @foreach($campaigns as $campaign)
+                                <option value="{{ $campaign->id }}" {{ old('campaign_id', request('campaign_id')) == $campaign->id ? 'selected' : '' }}>
+                                    {{ $campaign->name }} (R$ {{ number_format($campaign->goal_amount, 2, ',', '.') }})
+                                </option>
+                            @endforeach
+                        </select>
+                        <x-input-error :messages="$errors->get('campaign_id')" class="mt-2" />
+                    </div>
+
                     <div class="space-y-2">
                         <label class="block text-md font-bold text-gray-700 dark:text-gray-300 ">Tipo</label>
                         <div class="flex gap-4">

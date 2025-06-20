@@ -44,7 +44,7 @@
             {{ __('Visitantes') }}
         </x-sidebar-link>
 
-        <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial-categories.*') || request()->routeIs('financial-transactions.*') || request()->routeIs('subcategories.*') || request()->routeIs('reports.financial.*')">
+        <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial-categories.*') || request()->routeIs('financial-transactions.*') || request()->routeIs('subcategories.*') || request()->routeIs('campaigns.*') || request()->routeIs('reports.financial.*')">
             <x-sidebar-link href="{{ route('financial-categories.index') }}" :active="request()->routeIs('financial-categories.*')">
                 <x-slot name="icon">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,6 +68,14 @@
                     </svg>
                 </x-slot>
                 {{ __('Transações') }}
+            </x-sidebar-link>
+            <x-sidebar-link href="{{ route('campaigns.index') }}" :active="request()->routeIs('campaigns.*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </x-slot>
+                {{ __('Campanhas') }}
             </x-sidebar-link>
             <x-sidebar-link href="{{ route('reports.financial.monthly') }}" :active="request()->routeIs('reports.financial.*')">
                 <x-slot name="icon">
@@ -137,7 +145,7 @@
             {{ __('Visitantes') }}
         </x-sidebar-link>
 
-        <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial-categories.*') || request()->routeIs('financial-transactions.*') || request()->routeIs('subcategories.*') || request()->routeIs('reports.financial.*')">
+        <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial-categories.*') || request()->routeIs('financial-transactions.*') || request()->routeIs('subcategories.*') || request()->routeIs('campaigns.*') || request()->routeIs('reports.financial.*')">
             <x-sidebar-link href="{{ route('financial-categories.index') }}" :active="request()->routeIs('financial-categories.*')">
                 <x-slot name="icon">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -161,6 +169,14 @@
                     </svg>
                 </x-slot>
                 {{ __('Transações') }}
+            </x-sidebar-link>
+            <x-sidebar-link href="{{ route('campaigns.index') }}" :active="request()->routeIs('campaigns.*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </x-slot>
+                {{ __('Campanhas') }}
             </x-sidebar-link>
             <x-sidebar-link href="{{ route('reports.financial.monthly') }}" :active="request()->routeIs('reports.financial.*')">
                 <x-slot name="icon">

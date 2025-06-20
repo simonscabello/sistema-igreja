@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             FinancialSubcategorySeeder::class,
             TransactionReportSeeder::class,
+            CampaignSeeder::class,
         ]);
     }
 }

@@ -16,6 +16,7 @@ class UpdateFinancialTransactionRequest extends FormRequest
     {
         return [
             'financial_subcategory_id' => ['required', 'exists:financial_subcategories,id'],
+            'campaign_id' => ['nullable', 'exists:campaigns,id'],
             'type' => ['required', 'in:entrada,saida'],
             'amount' => ['required', 'numeric', 'min:0'],
             'action_date' => ['required', 'date'],
@@ -27,6 +28,7 @@ class UpdateFinancialTransactionRequest extends FormRequest
     {
         return [
             'financial_subcategory_id' => 'subcategoria',
+            'campaign_id' => 'campanha',
             'type' => 'tipo',
             'amount' => 'valor',
             'action_date' => 'data da ação',
@@ -39,6 +41,7 @@ class UpdateFinancialTransactionRequest extends FormRequest
         return [
             'financial_subcategory_id.required' => 'A subcategoria é obrigatória.',
             'financial_subcategory_id.exists' => 'A subcategoria selecionada não existe.',
+            'campaign_id.exists' => 'A campanha selecionada não existe.',
             'type.required' => 'O tipo é obrigatório.',
             'type.in' => 'O tipo deve ser entrada ou saida.',
             'amount.required' => 'O valor é obrigatório.',
