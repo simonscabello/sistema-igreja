@@ -6,6 +6,16 @@
     'required' => false,
 ])
 
+@php
+    $displayValue = '';
+    if ($value !== null && $value !== '' && $value !== 0) {
+        $numericValue = floatval($value);
+        if ($numericValue > 0) {
+            $displayValue = number_format($numericValue, 2, ',', '.');
+        }
+    }
+@endphp
+
 <div>
     @if($label)
         <x-input-label :value="$label" />
@@ -18,10 +28,8 @@
             type="text"
             name="{{ $name }}"
             id="{{ $name }}"
-            value="{{ old($name, $value ? number_format($value, 2, ',', '.') : '') }}"
+            value="{{ old($name, $displayValue) }}"
             @if($required) required @endif
-            x-data
-            x-mask:dynamic="$money($input, ',', '.', 2)"
             {{ $attributes->merge(['class' => 'block w-full rounded-md border-neutral-medium dark:border-gray-600 pl-8 pr-12 focus:border-primary focus:ring-primary sm:text-sm bg-white dark:bg-gray-700 text-neutral-dark dark:text-white placeholder-gray-500 dark:placeholder-gray-400']) }}
         >
     </div>

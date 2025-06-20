@@ -26,12 +26,10 @@
                 <thead>
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Data</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Categoria</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Subcategoria</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Campanha</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Tipo</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Valor</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Descrição</th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Ações</th>
                     </tr>
                 </thead>
@@ -39,7 +37,6 @@
                     @forelse ($transactions as $transaction)
                         <tr class="hover:bg-neutral-light dark:hover:bg-gray-700 transition-colors duration-200">
                             <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $transaction->action_date->format('d/m/Y') }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $transaction->subcategory->financialCategory->name }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $transaction->subcategory->name }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">
                                 @if($transaction->campaign)
@@ -56,7 +53,6 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">R$ {{ number_format($transaction->amount, 2, ',', '.') }}</td>
-                            <td class="px-6 py-4 text-neutral-dark dark:text-gray-300">{{ $transaction->description }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <x-link-button href="{{ route('financial-transactions.edit', $transaction) }}">
                                     Editar
@@ -72,7 +68,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-4 text-center text-neutral-medium dark:text-gray-500">
+                            <td colspan="6" class="px-6 py-4 text-center text-neutral-medium dark:text-gray-500">
                                 Nenhuma transação encontrada.
                             </td>
                         </tr>

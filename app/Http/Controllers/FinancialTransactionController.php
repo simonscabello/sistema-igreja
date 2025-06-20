@@ -58,6 +58,12 @@ class FinancialTransactionController extends Controller
         return view('financial-transactions.create', compact('categories', 'campaigns'));
     }
 
+    public function show(FinancialTransaction $financialTransaction)
+    {
+        $financialTransaction->load(['subcategory.financialCategory', 'campaign']);
+        return view('financial-transactions.show', compact('financialTransaction'));
+    }
+
     public function store(StoreFinancialTransactionRequest $request)
     {
         FinancialTransaction::create($request->validated());
