@@ -37,16 +37,12 @@
                             <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $member->mobile }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $member->city }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <x-link-button href="{{ route('members.show', $member) }}" class="mr-2">
+                                    Ver
+                                </x-link-button>
                                 <x-link-button href="{{ route('members.edit', $member) }}">
                                     Editar
                                 </x-link-button>
-                                <form action="{{ route('members.destroy', $member) }}" method="POST" class="inline-block">
-                                    @csrf
-                                    @method('DELETE')
-                                    <x-danger-button type="submit">
-                                        Excluir
-                                    </x-danger-button>
-                                </form>
                             </td>
                         </tr>
                     @empty

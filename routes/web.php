@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RootRedirectController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\FinancialCategoryController;
 use App\Http\Controllers\FinancialTransactionController;
 use App\Http\Controllers\FinancialSubcategoryController;
@@ -22,6 +23,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::resource('members', MemberController::class);
+Route::resource('visitors', VisitorController::class);
 Route::resource('financial-categories', FinancialCategoryController::class);
 Route::resource('financial-transactions', FinancialTransactionController::class);
 

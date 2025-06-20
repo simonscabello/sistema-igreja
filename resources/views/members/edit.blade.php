@@ -15,8 +15,8 @@
                 <x-text-input label="Email" name="email" type="email" :value="old('email', $member->email)" placeholder="Digite o email" />
                 <x-text-input label="Telefone" name="phone" :value="old('phone', $member->phone)" placeholder="Digite o telefone" />
                 <x-text-input label="Celular" name="mobile" :value="old('mobile', $member->mobile)" placeholder="Digite o celular" required />
-                <x-select label="Gênero" name="gender" :options="['Masculino', 'Feminino']" :selected="old('gender', $member->gender)" required />
-                <x-select label="Estado Civil" name="marital_status" :options="['Solteiro', 'Casado', 'Divorciado', 'Viúvo']" :selected="old('marital_status', $member->marital_status)" />
+                <x-select label="Gênero" name="gender" :options="['Masculino' => 'Masculino', 'Feminino' => 'Feminino', 'Outro' => 'Outro']" :selected="old('gender', $member->gender)" required />
+                <x-select label="Estado Civil" name="marital_status" :options="['Solteiro' => 'Solteiro', 'Casado' => 'Casado', 'Divorciado' => 'Divorciado', 'Viúvo' => 'Viúvo']" :selected="old('marital_status', $member->marital_status)" />
                 <x-input-date label="Data de Nascimento" name="birth_date" :value="old('birth_date', $member->birth_date)" required />
                 <x-input-date label="Data de Batismo" name="baptism_date" :value="old('baptism_date', $member->baptism_date)" />
                 <x-input-date label="Data de Admissão" name="admission_date" :value="old('admission_date', $member->admission_date)" />
