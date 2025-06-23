@@ -44,6 +44,17 @@
             {{ __('Visitantes') }}
         </x-sidebar-link>
 
+        <x-sidebar-dropdown title="Louvor" icon="music" :active="request()->routeIs('songs.*')">
+            <x-sidebar-link href="{{ route('songs.index') }}" :active="request()->routeIs('songs.*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                    </svg>
+                </x-slot>
+                {{ __('Músicas') }}
+            </x-sidebar-link>
+        </x-sidebar-dropdown>
+
         <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial-categories.*') || request()->routeIs('financial-transactions.*') || request()->routeIs('subcategories.*') || request()->routeIs('campaigns.*') || request()->routeIs('reports.financial.*')">
             <x-sidebar-link href="{{ route('financial-categories.index') }}" :active="request()->routeIs('financial-categories.*')">
                 <x-slot name="icon">
@@ -145,6 +156,17 @@
             {{ __('Visitantes') }}
         </x-sidebar-link>
 
+        <x-sidebar-dropdown title="Louvor" icon="music" :active="request()->routeIs('songs.*')">
+            <x-sidebar-link href="{{ route('songs.index') }}" :active="request()->routeIs('songs.*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                    </svg>
+                </x-slot>
+                {{ __('Músicas') }}
+            </x-sidebar-link>
+        </x-sidebar-dropdown>
+
         <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial-categories.*') || request()->routeIs('financial-transactions.*') || request()->routeIs('subcategories.*') || request()->routeIs('campaigns.*') || request()->routeIs('reports.financial.*')">
             <x-sidebar-link href="{{ route('financial-categories.index') }}" :active="request()->routeIs('financial-categories.*')">
                 <x-slot name="icon">
@@ -199,6 +221,5 @@
      x-transition:leave="transition-opacity ease-linear duration-300"
      x-transition:leave-start="opacity-100"
      x-transition:leave-end="opacity-0"
-     @click="sidebarOpen = false"
      style="display: none;">
 </div>
