@@ -10,6 +10,7 @@ use App\Http\Controllers\FinancialSubcategoryController;
 use App\Http\Controllers\FinancialReportController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\SongController;
+use App\Http\Controllers\WorshipSetController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', RootRedirectController::class);
@@ -49,6 +50,17 @@ Route::prefix('louvor/musicas')->name('songs.')->group(function () {
     Route::get('/{song}/edit', [SongController::class, 'edit'])->name('edit');
     Route::put('/{song}', [SongController::class, 'update'])->name('update');
     Route::delete('/{song}', [SongController::class, 'destroy'])->name('destroy');
+});
+
+Route::prefix('louvor/repertorios')->name('worship-sets.')->group(function () {
+    Route::get('/', [WorshipSetController::class, 'index'])->name('index');
+    Route::get('/create', [WorshipSetController::class, 'create'])->name('create');
+    Route::post('/', [WorshipSetController::class, 'store'])->name('store');
+    Route::get('/{worshipSet}', [WorshipSetController::class, 'show'])->name('show');
+    Route::get('/{worshipSet}/edit', [WorshipSetController::class, 'edit'])->name('edit');
+    Route::put('/{worshipSet}', [WorshipSetController::class, 'update'])->name('update');
+    Route::delete('/{worshipSet}', [WorshipSetController::class, 'destroy'])->name('destroy');
+    Route::get('/{worshipSet}/clone', [WorshipSetController::class, 'clone'])->name('clone');
 });
 
 require __DIR__.'/auth.php';

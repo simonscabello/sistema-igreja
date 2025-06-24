@@ -44,57 +44,72 @@
             {{ __('Visitantes') }}
         </x-sidebar-link>
 
-        <x-sidebar-dropdown title="Louvor" icon="music" :active="request()->routeIs('songs.*')">
-            <x-sidebar-link href="{{ route('songs.index') }}" :active="request()->routeIs('songs.*')">
-                <x-slot name="icon">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                    </svg>
-                </x-slot>
-                {{ __('Músicas') }}
-            </x-sidebar-link>
-        </x-sidebar-dropdown>
-
-        <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial-categories.*') || request()->routeIs('financial-transactions.*') || request()->routeIs('subcategories.*') || request()->routeIs('campaigns.*') || request()->routeIs('reports.financial.*')">
+        <!-- Dropdown Finanças -->
+        <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial-*') || request()->routeIs('subcategories.*') || request()->routeIs('campaigns.*') || request()->routeIs('reports.financial.*')">
             <x-sidebar-link href="{{ route('financial-categories.index') }}" :active="request()->routeIs('financial-categories.*')">
                 <x-slot name="icon">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </x-slot>
                 {{ __('Categorias') }}
             </x-sidebar-link>
+
             <x-sidebar-link href="{{ route('subcategories.index') }}" :active="request()->routeIs('subcategories.*')">
                 <x-slot name="icon">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
                 </x-slot>
                 {{ __('Subcategorias') }}
             </x-sidebar-link>
+
             <x-sidebar-link href="{{ route('financial-transactions.index') }}" :active="request()->routeIs('financial-transactions.*')">
                 <x-slot name="icon">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </x-slot>
                 {{ __('Transações') }}
             </x-sidebar-link>
+
             <x-sidebar-link href="{{ route('campaigns.index') }}" :active="request()->routeIs('campaigns.*')">
                 <x-slot name="icon">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                 </x-slot>
                 {{ __('Campanhas') }}
             </x-sidebar-link>
+
             <x-sidebar-link href="{{ route('reports.financial.monthly') }}" :active="request()->routeIs('reports.financial.*')">
                 <x-slot name="icon">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
                 </x-slot>
                 {{ __('Relatório Mensal') }}
+            </x-sidebar-link>
+        </x-sidebar-dropdown>
+
+        <!-- Dropdown Músicas -->
+        <x-sidebar-dropdown title="Músicas" icon="music" :active="request()->routeIs('songs.*') || request()->routeIs('worship-sets.*')">
+            <x-sidebar-link href="{{ route('songs.index') }}" :active="request()->routeIs('songs.*')">
+                <x-slot name="icon">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                    </svg>
+                </x-slot>
+                {{ __('Repertório') }}
+            </x-sidebar-link>
+
+            <x-sidebar-link href="{{ route('worship-sets.index') }}" :active="request()->routeIs('worship-sets.*')">
+                <x-slot name="icon">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                </x-slot>
+                {{ __('Repertório por Culto') }}
             </x-sidebar-link>
         </x-sidebar-dropdown>
     </nav>
@@ -109,8 +124,7 @@
      x-transition:leave-start="translate-x-0"
      x-transition:leave-end="-translate-x-full"
      class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 border-r border-neutral-medium dark:border-gray-700 sm:hidden transform transition-all duration-300 ease-in-out"
-     @click.away="sidebarOpen = false"
-     style="display: none;">
+     @click.away="sidebarOpen = false">
 
     <!-- Topo alinhado com topbar -->
     <div class="flex items-center justify-center h-16 px-4 bg-neutral-light dark:bg-gray-700 border-b border-neutral-medium dark:border-gray-600 gap-2 transition-colors duration-300">
@@ -156,57 +170,72 @@
             {{ __('Visitantes') }}
         </x-sidebar-link>
 
-        <x-sidebar-dropdown title="Louvor" icon="music" :active="request()->routeIs('songs.*')">
-            <x-sidebar-link href="{{ route('songs.index') }}" :active="request()->routeIs('songs.*')">
-                <x-slot name="icon">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                    </svg>
-                </x-slot>
-                {{ __('Músicas') }}
-            </x-sidebar-link>
-        </x-sidebar-dropdown>
-
-        <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial-categories.*') || request()->routeIs('financial-transactions.*') || request()->routeIs('subcategories.*') || request()->routeIs('campaigns.*') || request()->routeIs('reports.financial.*')">
+        <!-- Dropdown Finanças -->
+        <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial-*') || request()->routeIs('subcategories.*') || request()->routeIs('campaigns.*') || request()->routeIs('reports.financial.*')">
             <x-sidebar-link href="{{ route('financial-categories.index') }}" :active="request()->routeIs('financial-categories.*')">
                 <x-slot name="icon">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </x-slot>
                 {{ __('Categorias') }}
             </x-sidebar-link>
+
             <x-sidebar-link href="{{ route('subcategories.index') }}" :active="request()->routeIs('subcategories.*')">
                 <x-slot name="icon">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
                 </x-slot>
                 {{ __('Subcategorias') }}
             </x-sidebar-link>
+
             <x-sidebar-link href="{{ route('financial-transactions.index') }}" :active="request()->routeIs('financial-transactions.*')">
                 <x-slot name="icon">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </x-slot>
                 {{ __('Transações') }}
             </x-sidebar-link>
+
             <x-sidebar-link href="{{ route('campaigns.index') }}" :active="request()->routeIs('campaigns.*')">
                 <x-slot name="icon">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                 </x-slot>
                 {{ __('Campanhas') }}
             </x-sidebar-link>
+
             <x-sidebar-link href="{{ route('reports.financial.monthly') }}" :active="request()->routeIs('reports.financial.*')">
                 <x-slot name="icon">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
                 </x-slot>
                 {{ __('Relatório Mensal') }}
+            </x-sidebar-link>
+        </x-sidebar-dropdown>
+
+        <!-- Dropdown Músicas -->
+        <x-sidebar-dropdown title="Músicas" icon="music" :active="request()->routeIs('songs.*') || request()->routeIs('worship-sets.*')">
+            <x-sidebar-link href="{{ route('songs.index') }}" :active="request()->routeIs('songs.*')">
+                <x-slot name="icon">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                    </svg>
+                </x-slot>
+                {{ __('Repertório') }}
+            </x-sidebar-link>
+
+            <x-sidebar-link href="{{ route('worship-sets.index') }}" :active="request()->routeIs('worship-sets.*')">
+                <x-slot name="icon">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                </x-slot>
+                {{ __('Repertório por Culto') }}
             </x-sidebar-link>
         </x-sidebar-dropdown>
     </nav>
@@ -220,6 +249,5 @@
      x-transition:enter-end="opacity-100"
      x-transition:leave="transition-opacity ease-linear duration-300"
      x-transition:leave-start="opacity-100"
-     x-transition:leave-end="opacity-0"
-     style="display: none;">
+     x-transition:leave-end="opacity-0">
 </div>

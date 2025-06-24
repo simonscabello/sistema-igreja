@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" 
-      x-data="{ theme: localStorage.getItem('theme') || 'dark' }"
+      x-data="{ theme: localStorage.getItem('theme') || 'dark', sidebarOpen: false }"
       :class="{ 'dark': theme === 'dark' }"
       x-init="$watch('theme', val => localStorage.setItem('theme', val))">
     <head>
@@ -27,7 +27,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased bg-neutral-light dark:bg-gray-900 min-h-screen flex flex-col transition-colors duration-300" x-data="{ sidebarOpen: false }" @keydown.escape.window="sidebarOpen = false">
+    <body class="font-sans antialiased bg-neutral-light dark:bg-gray-900 min-h-screen flex flex-col transition-colors duration-300" @keydown.escape.window="sidebarOpen = false">
         <div class="flex flex-1 min-h-0">
             @auth
                 @include('layouts.sidebar')

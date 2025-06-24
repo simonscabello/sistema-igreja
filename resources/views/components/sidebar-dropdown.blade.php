@@ -1,6 +1,6 @@
 @props(['title', 'icon', 'active' => false])
 
-<div x-data="{ open: @js($active) }" class="relative">
+<div x-data="{ open: {{ $active ? 'true' : 'false' }} }" class="relative">
     <button @click="open = !open" class="w-full px-3 py-2 text-md font-medium rounded-md text-neutral-dark dark:text-gray-300 hover:bg-neutral-light dark:hover:bg-gray-700 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary transition flex items-center border-l-4 {{ $active ? 'bg-primary-light/40 dark:bg-primary/20 text-primary-dark dark:text-primary border-primary' : 'border-transparent' }}">
         <div class="flex items-center flex-1 gap-2">
             @if($icon === 'dollar-sign')

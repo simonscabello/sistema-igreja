@@ -22,4 +22,11 @@ class Song extends Model
     {
         return $this->belongsToMany(Tag::class);
     }
+
+    public function worshipSets()
+    {
+        return $this->belongsToMany(WorshipSet::class, 'song_worship_set')
+                    ->withPivot('order', 'key_used')
+                    ->withTimestamps();
+    }
 }
