@@ -114,7 +114,6 @@ class WorshipSetController extends Controller
         $clonedSet->date = now()->addDay();
         $clonedSet->singer = '';
         $clonedSet->preacher = '';
-        $clonedSet->used_keys = '';
         $clonedSet->order_notes = '';
         $clonedSet->observations = '';
         

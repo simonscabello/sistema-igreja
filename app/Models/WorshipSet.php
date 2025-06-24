@@ -12,7 +12,6 @@ class WorshipSet extends Model
     protected $fillable = [
         'singer',
         'preacher',
-        'used_keys',
         'date',
         'period',
         'order_notes',

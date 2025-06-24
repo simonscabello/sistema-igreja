@@ -29,17 +29,6 @@
                             <dt class="text-sm font-medium text-neutral-medium dark:text-gray-400">Ministro</dt>
                             <dd class="mt-1 text-sm text-neutral-dark dark:text-white">{{ $worshipSet->preacher }}</dd>
                         </div>
-                        
-                        @if($worshipSet->used_keys)
-                        <div class="md:col-span-2">
-                            <dt class="text-sm font-medium text-neutral-medium dark:text-gray-400">Tons Utilizados</dt>
-                            <dd class="mt-1">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                                    {{ $worshipSet->used_keys }}
-                                </span>
-                            </dd>
-                        </div>
-                        @endif
                     </div>
                 </div>
 

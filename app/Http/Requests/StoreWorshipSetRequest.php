@@ -18,7 +18,6 @@ class StoreWorshipSetRequest extends FormRequest
             'preacher' => 'required|string|max:255',
             'songs' => 'required|array|min:1',
             'songs.*' => 'exists:songs,id',
-            'used_keys' => 'nullable|string|max:255',
             'date' => 'required|date',
             'period' => 'required|in:manha,noite',
             'order_notes' => 'nullable|string',

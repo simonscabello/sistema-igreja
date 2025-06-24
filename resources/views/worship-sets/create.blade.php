@@ -24,11 +24,6 @@
                     </x-select>
                     <x-input-error :messages="$errors->get('period')" class="mt-2" />
                 </div>
-
-                <div class="md:col-span-2">
-                    <x-text-input id="used_keys" name="used_keys" type="text" class="mt-1 block w-full" :value="old('used_keys', $clonedSet?->used_keys ?? '')" placeholder="Ex: C, Dm, F#m" label="Tons Utilizados" />
-                    <x-input-error :messages="$errors->get('used_keys')" class="mt-2" />
-                </div>
             </div>
 
             <div>
