@@ -42,7 +42,8 @@ class WorshipSetController extends Controller
     public function create()
     {
         $songs = Song::orderBy('name')->get();
-        return view('worship-sets.create', compact('songs'));
+        $clonedSet = null;
+        return view('worship-sets.create', compact('songs', 'clonedSet'));
     }
 
     public function store(StoreWorshipSetRequest $request)
@@ -116,6 +117,9 @@ class WorshipSetController extends Controller
         $clonedSet->used_keys = '';
         $clonedSet->order_notes = '';
         $clonedSet->observations = '';
+        
+        // Carregar as músicas do repertório original para o clone
+        $clonedSet->songs = $worshipSet->songs;
         
         return view('worship-sets.create', compact('songs', 'clonedSet'));
     }

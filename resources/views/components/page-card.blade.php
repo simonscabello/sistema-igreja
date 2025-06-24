@@ -12,7 +12,7 @@
                     @endif
                     @if(isset($actions))
                         <x-link-button href="{{ $actions }}">
-                          + Adicionar
+                          + {{ str_contains($actions, 'worship-sets') ? 'Novo Repertório' : 'Adicionar' }}
                         </x-link-button>
                     @endif
 

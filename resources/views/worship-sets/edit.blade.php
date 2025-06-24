@@ -6,35 +6,27 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <x-input-label for="singer" value="Cantor" />
                     <x-text-input id="singer" name="singer" type="text" class="mt-1 block w-full" :value="old('singer', $worshipSet->singer)" required autofocus label="Cantor" />
                     <x-input-error :messages="$errors->get('singer')" class="mt-2" />
                 </div>
 
                 <div>
-                    <x-input-label for="preacher" value="Ministro" />
                     <x-text-input id="preacher" name="preacher" type="text" class="mt-1 block w-full" :value="old('preacher', $worshipSet->preacher)" required label="Ministro" />
                     <x-input-error :messages="$errors->get('preacher')" class="mt-2" />
                 </div>
 
                 <div>
-                    <x-input-label for="date" value="Data" />
                     <x-text-input id="date" name="date" type="date" class="mt-1 block w-full" :value="old('date', $worshipSet->date->format('Y-m-d'))" required label="Data" />
                     <x-input-error :messages="$errors->get('date')" class="mt-2" />
                 </div>
 
                 <div>
-                    <x-input-label for="period" value="Período" />
-                    <x-select id="period" name="period" class="mt-1 block w-full" required label="Período">
-                        <option value="">Selecione...</option>
-                        <option value="manha" {{ old('period', $worshipSet->period) === 'manha' ? 'selected' : '' }}>Manhã</option>
-                        <option value="noite" {{ old('period', $worshipSet->period) === 'noite' ? 'selected' : '' }}>Noite</option>
+                    <x-select id="period" name="period" class="mt-1 block w-full" required label="Período" :options="['manha' => 'Manhã', 'noite' => 'Noite']" :selected="old('period', $worshipSet->period)">
                     </x-select>
                     <x-input-error :messages="$errors->get('period')" class="mt-2" />
                 </div>
 
                 <div class="md:col-span-2">
-                    <x-input-label for="used_keys" value="Tons Utilizados" />
                     <x-text-input id="used_keys" name="used_keys" type="text" class="mt-1 block w-full" :value="old('used_keys', $worshipSet->used_keys)" placeholder="Ex: C, Dm, F#m" label="Tons Utilizados" />
                     <x-input-error :messages="$errors->get('used_keys')" class="mt-2" />
                 </div>
@@ -69,13 +61,11 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <x-input-label for="order_notes" value="Ordem das Músicas / Observações" />
                     <x-textarea id="order_notes" name="order_notes" class="mt-1 block w-full" rows="4" placeholder="Observações sobre a ordem das músicas..." label="Ordem das Músicas / Observações">{{ old('order_notes', $worshipSet->order_notes) }}</x-textarea>
                     <x-input-error :messages="$errors->get('order_notes')" class="mt-2" />
                 </div>
 
                 <div>
-                    <x-input-label for="observations" value="Observações Gerais" />
                     <x-textarea id="observations" name="observations" class="mt-1 block w-full" rows="4" placeholder="Observações gerais sobre o culto..." label="Observações Gerais">{{ old('observations', $worshipSet->observations) }}</x-textarea>
                     <x-input-error :messages="$errors->get('observations')" class="mt-2" />
                 </div>

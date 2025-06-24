@@ -5,36 +5,28 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <x-input-label for="singer" value="Cantor" />
-                    <x-text-input id="singer" name="singer" type="text" class="mt-1 block w-full" :value="old('singer', $clonedSet->singer ?? '')" required autofocus label="Cantor" />
+                    <x-text-input id="singer" name="singer" type="text" class="mt-1 block w-full" :value="old('singer', $clonedSet?->singer ?? '')" required autofocus label="Cantor" />
                     <x-input-error :messages="$errors->get('singer')" class="mt-2" />
                 </div>
 
                 <div>
-                    <x-input-label for="preacher" value="Ministro" />
-                    <x-text-input id="preacher" name="preacher" type="text" class="mt-1 block w-full" :value="old('preacher', $clonedSet->preacher ?? '')" required label="Ministro" />
+                    <x-text-input id="preacher" name="preacher" type="text" class="mt-1 block w-full" :value="old('preacher', $clonedSet?->preacher ?? '')" required label="Ministro" />
                     <x-input-error :messages="$errors->get('preacher')" class="mt-2" />
                 </div>
 
                 <div>
-                    <x-input-label for="date" value="Data" />
-                    <x-text-input id="date" name="date" type="date" class="mt-1 block w-full" :value="old('date', $clonedSet->date?->format('Y-m-d') ?? '')" required label="Data" />
+                    <x-text-input id="date" name="date" type="date" class="mt-1 block w-full" :value="old('date', $clonedSet?->date?->format('Y-m-d') ?? '')" required label="Data" />
                     <x-input-error :messages="$errors->get('date')" class="mt-2" />
                 </div>
 
                 <div>
-                    <x-input-label for="period" value="Período" />
-                    <x-select id="period" name="period" class="mt-1 block w-full" required label="Período">
-                        <option value="">Selecione...</option>
-                        <option value="manha" {{ old('period', $clonedSet->period ?? '') === 'manha' ? 'selected' : '' }}>Manhã</option>
-                        <option value="noite" {{ old('period', $clonedSet->period ?? '') === 'noite' ? 'selected' : '' }}>Noite</option>
+                    <x-select id="period" name="period" class="mt-1 block w-full" required label="Período" :options="['manha' => 'Manhã', 'noite' => 'Noite']" :selected="old('period', $clonedSet?->period ?? '')">
                     </x-select>
                     <x-input-error :messages="$errors->get('period')" class="mt-2" />
                 </div>
 
                 <div class="md:col-span-2">
-                    <x-input-label for="used_keys" value="Tons Utilizados" />
-                    <x-text-input id="used_keys" name="used_keys" type="text" class="mt-1 block w-full" :value="old('used_keys', $clonedSet->used_keys ?? '')" placeholder="Ex: C, Dm, F#m" label="Tons Utilizados" />
+                    <x-text-input id="used_keys" name="used_keys" type="text" class="mt-1 block w-full" :value="old('used_keys', $clonedSet?->used_keys ?? '')" placeholder="Ex: C, Dm, F#m" label="Tons Utilizados" />
                     <x-input-error :messages="$errors->get('used_keys')" class="mt-2" />
                 </div>
             </div>
@@ -44,7 +36,7 @@
                 <div class="mt-1">
                     <select id="songs" name="songs[]" multiple class="border-neutral-medium dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-primary rounded-md shadow-sm w-full" size="8" required>
                         @foreach($songs as $song)
-                            <option value="{{ $song->id }}" {{ in_array($song->id, old('songs', isset($clonedSet) ? $clonedSet->songs->pluck('id')->toArray() : [])) ? 'selected' : '' }}>
+                            <option value="{{ $song->id }}" {{ in_array($song->id, old('songs', $clonedSet?->songs?->pluck('id')->toArray() ?? [])) ? 'selected' : '' }}>
                                 {{ $song->name }} @if($song->key)({{ $song->key }})@endif
                             </option>
                         @endforeach
@@ -57,7 +49,7 @@
             </div>
 
             <div id="selected-songs-container" class="space-y-2">
-                @if(isset($clonedSet) && $clonedSet->songs->count() > 0)
+                @if(isset($clonedSet) && $clonedSet->songs && $clonedSet->songs->count() > 0)
                     @foreach($clonedSet->songs as $index => $song)
                         <div class="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-700 rounded">
                             <span class="text-sm font-medium text-gray-600 dark:text-gray-300">{{ $index + 1 }}.</span>
@@ -70,14 +62,12 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <x-input-label for="order_notes" value="Ordem das Músicas / Observações" />
-                    <x-textarea id="order_notes" name="order_notes" class="mt-1 block w-full" rows="4" placeholder="Observações sobre a ordem das músicas..." label="Ordem das Músicas / Observações">{{ old('order_notes', $clonedSet->order_notes ?? '') }}</x-textarea>
+                    <x-textarea id="order_notes" name="order_notes" class="mt-1 block w-full" rows="4" placeholder="Observações sobre a ordem das músicas..." label="Ordem das Músicas / Observações">{{ old('order_notes', $clonedSet?->order_notes ?? '') }}</x-textarea>
                     <x-input-error :messages="$errors->get('order_notes')" class="mt-2" />
                 </div>
 
                 <div>
-                    <x-input-label for="observations" value="Observações Gerais" />
-                    <x-textarea id="observations" name="observations" class="mt-1 block w-full" rows="4" placeholder="Observações gerais sobre o culto..." label="Observações Gerais">{{ old('observations', $clonedSet->observations ?? '') }}</x-textarea>
+                    <x-textarea id="observations" name="observations" class="mt-1 block w-full" rows="4" placeholder="Observações gerais sobre o culto..." label="Observações Gerais">{{ old('observations', $clonedSet?->observations ?? '') }}</x-textarea>
                     <x-input-error :messages="$errors->get('observations')" class="mt-2" />
                 </div>
             </div>
