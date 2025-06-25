@@ -9,41 +9,41 @@
         <form action="{{ route('members.store') }}" method="POST" class="space-y-6" enctype="multipart/form-data" x-data="{ photoPreview: null }">
             @csrf
 
-            <div class="flex gap-6 flex-wrap">
-                <!-- Foto -->
-                <div class="flex-shrink-0">
-                    <div class="flex flex-col items-center">
-                        <div class="relative mb-4">
-                            <div id="foto-preview">
-                                <template x-if="!photoPreview">
-                                    <div class="w-32 h-32 rounded-full border-2 border-primary bg-primary dark:bg-primary/20 flex items-center justify-center text-white font-semibold text-2xl">AV</div>
-                                </template>
-                                <template x-if="photoPreview">
-                                    <img :src="photoPreview" alt="Preview da foto" class="w-32 h-32 rounded-full object-cover border-2 border-primary">
-                                </template>
+            <!-- Linha da foto e texto auxiliar -->
+            <div class="flex items-center gap-6 w-full mb-2">
+                <div class="relative">
+                    <div id="foto-preview">
+                        <template x-if="!photoPreview">
+                            <div class="w-32 h-32 rounded-full border-2 border-primary bg-gray-100 dark:bg-gray-600 flex items-center justify-center relative overflow-hidden">
+                                <svg class="absolute w-24 h-24 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
                             </div>
-                            <input type="file" name="foto_perfil" id="foto_perfil" accept="image/*" class="hidden" @change="photoPreview = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null" />
-                            <label for="foto_perfil" class="absolute inset-0 flex items-center justify-center cursor-pointer bg-black bg-opacity-10 rounded-full hover:bg-opacity-20 transition-all">
-                                <svg class="w-6 h-6 text-white opacity-0 hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                </svg>
-                            </label>
-                        </div>
-                        <span class="text-sm text-neutral-medium text-center">Clique para selecionar uma foto<br>(jpg, jpeg, png, até 5MB)</span>
-                        @error('foto_perfil')
-                            <span class="text-sm text-red-500 mt-2">{{ $message }}</span>
-                        @enderror
+                        </template>
+                        <template x-if="photoPreview">
+                            <img :src="photoPreview" alt="Preview da foto" class="w-32 h-32 rounded-full object-cover border-2 border-primary">
+                        </template>
                     </div>
+                    <input type="file" name="foto_perfil" id="foto_perfil" accept="image/*" class="hidden" @change="photoPreview = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null" />
+                    <label for="foto_perfil" class="absolute inset-0 flex items-center justify-center cursor-pointer bg-black bg-opacity-10 rounded-full hover:bg-opacity-20 transition-all">
+                        <svg class="w-6 h-6 text-white opacity-0 hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </label>
                 </div>
-                <!-- Primeira linha de campos ao lado da foto -->
-                <div class="flex-1 min-w-0">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <x-text-input label="Nome Completo" name="full_name" :value="old('full_name')" placeholder="Digite o nome completo" required="true" />
-                        <x-text-input label="Email" name="email" type="email" :value="old('email')" placeholder="Digite o email" />
-                        <x-text-input label="Celular" name="mobile" :value="old('mobile')" placeholder="Digite o celular" required="true" />
-                        <x-text-input label="Telefone" name="phone" :value="old('phone')" placeholder="Digite o telefone" />
-                    </div>
+                <span class="text-sm text-neutral-medium">Clique para selecionar uma foto<br>(jpg, jpeg, png, até 5MB)</span>
+                @error('foto_perfil')
+                    <span class="text-sm text-red-500 mt-2">{{ $message }}</span>
+                @enderror
+            </div>
+            <hr class="border-neutral-medium mb-6">
+
+            <!-- Primeira linha de campos ao lado da foto -->
+            <div class="flex-1 min-w-0">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <x-text-input label="Nome Completo" name="full_name" :value="old('full_name')" placeholder="Digite o nome completo" required="true" />
+                    <x-text-input label="Email" name="email" type="email" :value="old('email')" placeholder="Digite o email" />
+                    <x-text-input label="Celular" name="mobile" :value="old('mobile')" placeholder="Digite o celular" required="true" />
+                    <x-text-input label="Telefone" name="phone" :value="old('phone')" placeholder="Digite o telefone" />
                 </div>
             </div>
 
