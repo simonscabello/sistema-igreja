@@ -10,7 +10,7 @@
             @csrf
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <x-text-input label="Nome" name="name" :value="old('name')" placeholder="Digite o nome" required />
+                <x-text-input label="Nome" name="name" :value="old('name')" placeholder="Digite o nome" required="true" />
                 <x-text-input label="Celular" name="mobile" :value="old('mobile')" placeholder="Digite o celular" />
                 <x-select 
                     label="Faixa Etária" 

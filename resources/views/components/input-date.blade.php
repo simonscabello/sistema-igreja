@@ -19,7 +19,7 @@
 
 <div class="space-y-2">
     @if($label)
-        <label for="{{ $name }}" class="block text-md font-bold text-gray-700 dark:text-gray-300">{{ $label }}</label>
+        <x-input-label :value="$label" :required="$required" />
     @endif
     <div class="relative max-w-sm">
         <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">

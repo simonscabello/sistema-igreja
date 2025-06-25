@@ -10,13 +10,13 @@
             @csrf
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <x-text-input label="Nome Completo" name="full_name" :value="old('full_name')" placeholder="Digite o nome completo" required />
+                <x-text-input label="Nome Completo" name="full_name" :value="old('full_name')" placeholder="Digite o nome completo" required="true" />
                 <x-text-input label="Email" name="email" type="email" :value="old('email')" placeholder="Digite o email" />
+                <x-text-input label="Celular" name="mobile" :value="old('mobile')" placeholder="Digite o celular" required="true" />
                 <x-text-input label="Telefone" name="phone" :value="old('phone')" placeholder="Digite o telefone" />
-                <x-text-input label="Celular" name="mobile" :value="old('mobile')" placeholder="Digite o celular" required />
-                <x-select label="Gênero" name="gender" :options="['Masculino' => 'Masculino', 'Feminino' => 'Feminino', 'Outro' => 'Outro']" :selected="old('gender')" required />
+                <x-select label="Gênero" name="gender" :options="['Masculino' => 'Masculino', 'Feminino' => 'Feminino', 'Outro' => 'Outro']" :selected="old('gender')" required="true" />
                 <x-select label="Estado Civil" name="marital_status" :options="['Solteiro' => 'Solteiro', 'Casado' => 'Casado', 'Divorciado' => 'Divorciado', 'Viúvo' => 'Viúvo']" :selected="old('marital_status')" />
-                <x-input-date label="Data de Nascimento" name="birth_date" :value="old('birth_date')" required />
+                <x-input-date label="Data de Nascimento" name="birth_date" :value="old('birth_date')" required="true" />
                 <x-input-date label="Data de Batismo" name="baptism_date" :value="old('baptism_date')" />
                 <x-input-date label="Data de Admissão" name="admission_date" :value="old('admission_date')" />
                 <x-input-date label="Data de Casamento" name="wedding_date" :value="old('wedding_date')" />
@@ -25,7 +25,7 @@
             <div class="border-t border-neutral-medium pt-6">
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <x-text-input label="CEP" name="zip_code" id="zip_code" :value="old('zip_code')" placeholder="Digite o CEP" required />
+                    <x-text-input label="CEP" name="zip_code" id="zip_code" :value="old('zip_code')" placeholder="Digite o CEP" required="true" />
                     <x-text-input label="Rua" name="street" id="street" :value="old('street')" placeholder="Digite a rua" />
                     <x-text-input label="Bairro" name="neighborhood" id="neighborhood" :value="old('neighborhood')" placeholder="Digite o bairro" />
                     <x-text-input label="Cidade" name="city" id="city" :value="old('city')" placeholder="Digite a cidade" />

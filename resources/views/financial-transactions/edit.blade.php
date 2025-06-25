@@ -27,7 +27,7 @@
                             id="financial_category_id"
                             :options="$categories->pluck('name', 'id')"
                             :selected="old('financial_category_id', $financialTransaction->subcategory->financial_category_id)"
-                            required
+                            required="true"
                         />
                         <x-input-error :messages="$errors->get('financial_category_id')" class="mt-2" />
                     </div>
@@ -39,7 +39,7 @@
                             id="financial_subcategory_id"
                             :options="$categories->find(old('financial_category_id', $financialTransaction->subcategory->financial_category_id))?->subcategories->pluck('name', 'id') ?? collect()"
                             :selected="old('financial_subcategory_id', $financialTransaction->financial_subcategory_id)"
-                            required
+                            required="true"
                         />
                         <x-input-error :messages="$errors->get('financial_subcategory_id')" class="mt-2" />
                     </div>
@@ -60,7 +60,7 @@
                     </div>
 
                     <div class="space-y-2">
-                        <label class="block text-md font-bold text-gray-700 dark:text-gray-300">Tipo</label>
+                        <label class="block text-md font-bold text-gray-700 dark:text-gray-300">Tipo <span class="text-red-500 ml-1">*</span></label>
                         <div class="flex gap-4">
                             <label class="relative cursor-pointer">
                                 <input
@@ -102,8 +102,8 @@
                         </div>
                     </div>
 
-                    <x-input-currency label="Valor" name="amount" prefix="R$" :value="$financialTransaction->amount" required />
-                    <x-input-date label="Data da Ação" name="action_date" :value="$financialTransaction->action_date" required />
+                    <x-input-currency label="Valor" name="amount" prefix="R$" :value="$financialTransaction->amount" required="true" />
+                    <x-input-date label="Data da Ação" name="action_date" :value="$financialTransaction->action_date" required="true" />
                     <x-textarea label="Descrição" name="description" :value="$financialTransaction->description" />
                 </div>
             </div>

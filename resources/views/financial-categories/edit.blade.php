@@ -12,7 +12,7 @@
 
             <div class="max-w-2xl">
                 <div class="space-y-6">
-                    <x-text-input label="Nome" name="name" :value="$financialCategory->name" required />
+                    <x-text-input label="Nome" name="name" :value="$financialCategory->name" required="true" />
                     <x-textarea label="Descrição" name="description" :value="$financialCategory->description" />
                     <div class="flex flex-col items-start gap-1">
                         <span class="text-sm font-medium text-neutral-dark dark:text-gray-300 mb-1">Ativo</span>

@@ -6,29 +6,29 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <x-text-input id="singer" name="singer" type="text" class="mt-1 block w-full" :value="old('singer', $worshipSet->singer)" required autofocus label="Cantor" />
+                    <x-text-input id="singer" name="singer" type="text" class="mt-1 block w-full" :value="old('singer', $worshipSet->singer)" required autofocus label="Cantor" required="true" />
                     <x-input-error :messages="$errors->get('singer')" class="mt-2" />
                 </div>
 
                 <div>
-                    <x-text-input id="preacher" name="preacher" type="text" class="mt-1 block w-full" :value="old('preacher', $worshipSet->preacher)" required label="Ministro" />
+                    <x-text-input id="preacher" name="preacher" type="text" class="mt-1 block w-full" :value="old('preacher', $worshipSet->preacher)" required label="Ministro" required="true" />
                     <x-input-error :messages="$errors->get('preacher')" class="mt-2" />
                 </div>
 
                 <div>
-                    <x-text-input id="date" name="date" type="date" class="mt-1 block w-full" :value="old('date', $worshipSet->date->format('Y-m-d'))" required label="Data" />
+                    <x-text-input id="date" name="date" type="date" class="mt-1 block w-full" :value="old('date', $worshipSet->date->format('Y-m-d'))" required label="Data" required="true" />
                     <x-input-error :messages="$errors->get('date')" class="mt-2" />
                 </div>
 
                 <div>
-                    <x-select id="period" name="period" class="mt-1 block w-full" required label="Período" :options="['manha' => 'Manhã', 'noite' => 'Noite']" :selected="old('period', $worshipSet->period)">
+                    <x-select id="period" name="period" class="mt-1 block w-full" required label="Período" required="true" :options="['manha' => 'Manhã', 'noite' => 'Noite']" :selected="old('period', $worshipSet->period)">
                     </x-select>
                     <x-input-error :messages="$errors->get('period')" class="mt-2" />
                 </div>
             </div>
 
             <div>
-                <x-input-label for="songs" value="Músicas" />
+                <x-input-label for="songs" value="Músicas" required="true" />
                 <div class="mt-1">
                     <select id="songs" name="songs[]" multiple class="border-neutral-medium dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-primary rounded-md shadow-sm w-full" size="8" required>
                         @foreach($songs as $song)

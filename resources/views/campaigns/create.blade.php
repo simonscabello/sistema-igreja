@@ -12,7 +12,7 @@
             <div class="max-w-2xl">
                 <div class="space-y-6">
                     <div>
-                        <x-input-label for="name" value="Nome" />
+                        <x-input-label for="name" value="Nome" required="true" />
                         <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name')" required autofocus />
                         <x-input-error :messages="$errors->get('name')" class="mt-2" />
                     </div>
@@ -23,7 +23,7 @@
                     </div>
 
                     <div>
-                        <x-input-currency name="goal_amount" label="Meta (R$)" class="mt-1 block w-full" :value="old('goal_amount')" required />
+                        <x-input-currency name="goal_amount" label="Meta (R$)" class="mt-1 block w-full" :value="old('goal_amount')" required="true" />
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -39,7 +39,7 @@
                     </div>
 
                     <div>
-                        <x-select name="status" label="Status" :options="['' => 'Selecione um status', 'ativo' => 'Ativo', 'encerrado' => 'Encerrado', 'cancelada' => 'Cancelada']" :selected="old('status')" class="mt-1 block w-full" required />
+                        <x-select name="status" label="Status" :options="['' => 'Selecione um status', 'ativo' => 'Ativo', 'encerrado' => 'Encerrado', 'cancelada' => 'Cancelada']" :selected="old('status')" class="mt-1 block w-full" required="true" />
                     </div>
 
                     <div class="flex items-center justify-end gap-4">

@@ -11,7 +11,7 @@
 
             <div class="max-w-2xl">
                 <div class="space-y-6">
-                    <x-select label="Categoria" name="financial_category_id" :options="$categories->pluck('name', 'id')->toArray()" :selected="old('financial_category_id')" required />
+                    <x-select label="Categoria" name="financial_category_id" :options="$categories->pluck('name', 'id')->toArray()" :selected="old('financial_category_id')" required="true" />
 
                     <div>
                         <div class="flex justify-between items-center mb-4">

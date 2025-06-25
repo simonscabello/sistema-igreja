@@ -24,10 +24,10 @@
                               :options="$categories->pluck('name', 'id')->toArray()"
                               :selected="old('financial_category_id')"
                               x-model="selectedCategory"
-                              required />
+                              required="true" />
 
                     <div>
-                        <x-input-label for="financial_subcategory_id" value="Subcategoria" />
+                        <x-input-label for="financial_subcategory_id" value="Subcategoria" required="true" />
                         <select id="financial_subcategory_id"
                                 name="financial_subcategory_id"
                                 required
@@ -56,7 +56,7 @@
                     </div>
 
                     <div class="space-y-2">
-                        <label class="block text-md font-bold text-gray-700 dark:text-gray-300 ">Tipo</label>
+                        <label class="block text-md font-bold text-gray-700 dark:text-gray-300 ">Tipo <span class="text-red-500 ml-1">*</span></label>
                         <div class="flex gap-4">
                             <label class="relative cursor-pointer">
                                 <input
@@ -98,9 +98,9 @@
                         </div>
                     </div>
 
-                    <x-input-currency label="Valor" name="amount" prefix="R$" required />
+                    <x-input-currency label="Valor" name="amount" prefix="R$" required="true" />
 
-                    <x-input-date label="Data da Ação" name="action_date" required />
+                    <x-input-date label="Data da Ação" name="action_date" required="true" />
 
                     <x-textarea label="Descrição" name="description" />
 

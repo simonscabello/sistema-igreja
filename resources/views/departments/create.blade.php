@@ -10,7 +10,7 @@
             @csrf
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <x-text-input label="Título" name="title" :value="old('title')" placeholder="Digite o título do departamento" required />
+                <x-text-input label="Título" name="title" :value="old('title')" placeholder="Digite o título do departamento" required="true" />
                 <x-checkbox label="Ativo" name="is_active" :checked="old('is_active', true)" />
             </div>
 

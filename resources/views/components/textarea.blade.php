@@ -7,12 +7,7 @@
 
 <div>
     @if($label)
-        <label for="{{ $name }}" class="block text-md font-bold text-gray-700 dark:text-gray-300">
-            {{ $label }}
-            @if($required)
-                <span class="text-red-500">*</span>
-            @endif
-        </label>
+        <x-input-label :value="$label" :required="$required" />
     @endif
     <textarea
         name="{{ $name }}"

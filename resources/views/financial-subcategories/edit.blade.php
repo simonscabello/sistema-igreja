@@ -12,9 +12,9 @@
 
             <div class="max-w-2xl">
                 <div class="space-y-6">
-                    <x-select label="Categoria" name="financial_category_id" :options="$categories->pluck('name', 'id')->toArray()" :selected="old('financial_category_id', $financialSubcategory->financial_category_id)" required />
+                    <x-select label="Categoria" name="financial_category_id" :options="$categories->pluck('name', 'id')->toArray()" :selected="old('financial_category_id', $financialSubcategory->financial_category_id)" required="true" />
 
-                    <x-text-input label="Nome da Subcategoria" name="name" :value="old('name', $financialSubcategory->name)" required />
+                    <x-text-input label="Nome da Subcategoria" name="name" :value="old('name', $financialSubcategory->name)" required="true" />
 
                     <div class="flex flex-col items-start gap-1">
                         <span class="text-sm font-medium text-neutral-dark dark:text-gray-300 mb-1">Ativo</span>

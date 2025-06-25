@@ -11,7 +11,7 @@
 
             <div class="max-w-2xl">
                 <div class="space-y-6">
-                    <x-text-input label="Nome" name="name" required />
+                    <x-text-input label="Nome" name="name" required="true" />
                     <x-textarea label="Descrição" name="description" />
                     <input type="hidden" name="active" value="0">
                     <label class="inline-flex items-center cursor-pointer">

@@ -1,7 +1,7 @@
 @props(['label', 'name', 'options', 'selected' => null, 'required' => false])
 
 <div>
-    <x-input-label :value="$label" />
+    <x-input-label :value="$label" :required="$required" />
     <select
         name="{{ $name }}"
         id="{{ $name }}"

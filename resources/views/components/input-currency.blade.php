@@ -18,7 +18,7 @@
 
 <div>
     @if($label)
-        <x-input-label :value="$label" />
+        <x-input-label :value="$label" :required="$required" />
     @endif
     <div class="relative mt-1 rounded-md shadow-sm">
         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
