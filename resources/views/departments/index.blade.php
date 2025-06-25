@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-page-card title="Departamentos">
+    <x-page-card title="Departamentos" actions="{{ route('departamentos.create') }}">
         @if(session('success'))
             <x-alert type="success" dismissible>
                 <span class="font-medium">Sucesso!</span> {{ session('success') }}
@@ -28,9 +28,6 @@
                         </button>
                     </form>
                 </div>
-                <x-link-button href="{{ route('departamentos.create') }}">
-                    Novo Departamento
-                </x-link-button>
             </div>
         </div>
 
