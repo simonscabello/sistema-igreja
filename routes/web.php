@@ -12,6 +12,7 @@ use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\SongController;
 use App\Http\Controllers\WorshipSetController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\FileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', RootRedirectController::class);
@@ -63,6 +64,12 @@ Route::prefix('louvor/repertorios')->name('worship-sets.')->group(function () {
     Route::put('/{worshipSet}', [WorshipSetController::class, 'update'])->name('update');
     Route::delete('/{worshipSet}', [WorshipSetController::class, 'destroy'])->name('destroy');
     Route::get('/{worshipSet}/clone', [WorshipSetController::class, 'clone'])->name('clone');
+});
+
+Route::prefix('members/{member}')->group(function () {
+    Route::get('files', [FileController::class, 'index'])->name('members.files.index');
+    Route::post('files', [FileController::class, 'store'])->name('members.files.store');
+    Route::delete('files/{file}', [FileController::class, 'destroy'])->name('members.files.destroy');
 });
 
 require __DIR__.'/auth.php';

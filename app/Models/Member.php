@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Traits\HasFiles;
 
 class Member extends Model
 {
-    use HasFactory;
+    use HasFactory, HasFiles;
 
     protected $fillable = [
         'full_name',
