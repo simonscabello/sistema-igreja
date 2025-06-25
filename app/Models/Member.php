@@ -35,4 +35,21 @@ class Member extends Model
         'admission_date' => 'date',
         'wedding_date' => 'date',
     ];
+
+    public function responsibleDepartments()
+    {
+        return $this->belongsToMany(Department::class, 'department_responsible_member')
+                    ->withTimestamps();
+    }
+
+    public function departments()
+    {
+        return $this->belongsToMany(Department::class, 'department_member')
+                    ->withTimestamps();
+    }
+
+    public function getAllDepartmentsAttribute()
+    {
+        return $this->responsibleDepartments->merge($this->departments);
+    }
 }

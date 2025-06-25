@@ -11,6 +11,7 @@ use App\Http\Controllers\FinancialReportController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\SongController;
 use App\Http\Controllers\WorshipSetController;
+use App\Http\Controllers\DepartmentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', RootRedirectController::class);
@@ -27,6 +28,7 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('members', MemberController::class);
 Route::resource('visitors', VisitorController::class);
+Route::resource('departamentos', DepartmentController::class);
 Route::resource('financial-categories', FinancialCategoryController::class);
 Route::resource('financial-transactions', FinancialTransactionController::class);
 Route::resource('campaigns', CampaignController::class);
