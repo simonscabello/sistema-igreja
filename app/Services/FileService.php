@@ -6,7 +6,10 @@ use App\Models\File;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageManagerStatic as Image;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Encoders\JpegEncoder;
+use Intervention\Image\Encoders\PngEncoder;
 
 class FileService
 {
@@ -59,17 +62,28 @@ class FileService
 
     private function processImage(UploadedFile $file, $disk)
     {
-        $image = Image::make($file->getRealPath());
-        if ($image->width() > 1920) {
-            $image->resize(1920, null, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
+        $manager = new ImageManager(new Driver());
+        $image = $manager->read($file->getRealPath());
+        
+        // Redimensionar para no máximo 500x500px para fotos de perfil
+        if ($image->width() > 500 || $image->height() > 500) {
+            $image->resize(500, 500);
         }
-        $image->encode($file->getClientOriginalExtension(), 80);
+        
         $filename = uniqid('img_') . '.' . $file->getClientOriginalExtension();
         $path = 'uploads/' . $filename;
-        Storage::disk($disk)->put($path, (string) $image);
+        
+        // Usar encoder específico baseado na extensão
+        $extension = strtolower($file->getClientOriginalExtension());
+        if ($extension === 'jpg' || $extension === 'jpeg') {
+            $imageData = $image->toJpeg(80)->toString();
+        } else {
+            $imageData = $image->toPng()->toString();
+        }
+        
+        // Usar Storage facade para garantir que o diretório seja criado
+        Storage::disk($disk)->put($path, $imageData);
+        
         return $path;
     }
 } 

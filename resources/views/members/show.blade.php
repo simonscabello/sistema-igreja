@@ -1,5 +1,8 @@
 <x-app-layout>
     <x-page-card title="Detalhes do Membro">
+        <div class="flex flex-col items-center mb-8">
+            <x-avatar :member="$member" size="w-40 h-40" />
+        </div>
         <div class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>

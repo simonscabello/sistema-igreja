@@ -6,7 +6,7 @@
             </x-alert>
         @endif
 
-        <form action="{{ route('members.store') }}" method="POST" class="space-y-6">
+        <form action="{{ route('members.store') }}" method="POST" class="space-y-6" enctype="multipart/form-data" x-data="{ photoPreview: null }">
             @csrf
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -23,7 +23,6 @@
             </div>
 
             <div class="border-t border-neutral-medium pt-6">
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <x-text-input label="CEP" name="zip_code" id="zip_code" :value="old('zip_code')" placeholder="Digite o CEP" required="true" />
                     <x-text-input label="Rua" name="street" id="street" :value="old('street')" placeholder="Digite a rua" />
@@ -33,6 +32,30 @@
                     <x-text-input label="Número" name="number" :value="old('number')" placeholder="Digite o número" />
                     <x-text-input label="Complemento" name="complement" :value="old('complement')" placeholder="Digite o complemento" />
                 </div>
+            </div>
+
+            <div class="flex flex-col items-center mb-6">
+                <div class="relative mb-2">
+                    <div id="foto-preview">
+                        <template x-if="!photoPreview">
+                            <div class="w-32 h-32 rounded-full border-2 border-primary bg-primary dark:bg-primary/20 flex items-center justify-center text-white font-semibold text-2xl">
+                                AV
+                            </div>
+                        </template>
+                        <template x-if="photoPreview">
+                            <img :src="photoPreview" 
+                                 alt="Preview da foto" 
+                                 class="w-32 h-32 rounded-full object-cover border-2 border-primary">
+                        </template>
+                    </div>
+                    <input type="file" name="foto_perfil" id="foto_perfil" accept="image/*" class="hidden" 
+                           @change="photoPreview = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null" />
+                    <label for="foto_perfil" class="absolute inset-0 flex items-center justify-center cursor-pointer bg-black bg-opacity-10 rounded-full"></label>
+                </div>
+                <span class="text-sm text-neutral-medium">Clique para selecionar uma foto (jpg, jpeg, png, até 5MB)</span>
+                @error('foto_perfil')
+                    <span class="text-sm text-red-500">{{ $message }}</span>
+                @enderror
             </div>
 
             <div class="border-t border-neutral-medium mt-6 pt-6">

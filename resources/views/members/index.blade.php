@@ -32,7 +32,12 @@
                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-neutral-medium dark:divide-gray-700">
                     @forelse($members as $member)
                         <tr class="hover:bg-neutral-light dark:hover:bg-gray-700 transition-colors duration-200">
-                            <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $member->full_name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <x-avatar :member="$member" class="mr-3" />
+                                    <span class="text-neutral-dark dark:text-gray-300">{{ $member->full_name }}</span>
+                                </div>
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $member->email }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $member->mobile }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $member->city }}</td>

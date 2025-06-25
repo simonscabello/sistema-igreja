@@ -53,7 +53,6 @@
                 </footer>
             </div>
         </div>
-        @stack('scripts')
 
         <!-- Choices.js -->
         <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
@@ -115,7 +114,7 @@ window.addEventListener("load", () => {
         let locales = {
             pl: {
             days: ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"],
-                daysShort: ["Dom.", "Seg.", "Ter.", "Qua.", "Qui.", "Sex.", "Sáb."],
+                daysShort: ["Dom.", "Seg.", "Ter.", "Qa", "Qui.", "Sex.", "Sáb."],
                 daysMin: ["Do", "Se", "Te", "Qa", "Qi", "Sx", "Sa"],
                 months: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
                 monthsShort: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
@@ -137,5 +136,7 @@ window.addEventListener("load", () => {
     }, 100);
 });
         </script>
+
+        @stack('scripts')
     </body>
 </html>

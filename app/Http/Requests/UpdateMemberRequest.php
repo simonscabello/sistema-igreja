@@ -32,6 +32,7 @@ class UpdateMemberRequest extends FormRequest
             'state' => 'nullable|string|max:2',
             'number' => 'nullable|string|max:20',
             'complement' => 'nullable|string|max:255',
+            'foto_perfil' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
         ];
     }
 

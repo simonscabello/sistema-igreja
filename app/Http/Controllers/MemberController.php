@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Member;
 use App\Http\Requests\StoreMemberRequest;
 use App\Http\Requests\UpdateMemberRequest;
+use App\Services\FileService;
 
 class MemberController extends Controller
 {
@@ -42,10 +43,12 @@ class MemberController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMemberRequest $request)
+    public function store(StoreMemberRequest $request, FileService $fileService)
     {
-        Member::create($request->validated());
-
+        $member = Member::create($request->validated());
+        if ($request->hasFile('foto_perfil')) {
+            $fileService->uploadFile($request->file('foto_perfil'), $member, 'foto_perfil');
+        }
         return redirect()->route('members.index')
             ->with('success', 'Membro cadastrado com sucesso.');
     }
@@ -69,10 +72,16 @@ class MemberController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMemberRequest $request, Member $member)
+    public function update(UpdateMemberRequest $request, Member $member, FileService $fileService)
     {
         $member->update($request->validated());
-
+        if ($request->hasFile('foto_perfil')) {
+            $fotoAtual = $member->foto->first();
+            if ($fotoAtual) {
+                $fileService->deleteFile($fotoAtual);
+            }
+            $fileService->uploadFile($request->file('foto_perfil'), $member, 'foto_perfil');
+        }
         return redirect()->route('members.index')
             ->with('success', 'Membro atualizado com sucesso.');
     }

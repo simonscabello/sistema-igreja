@@ -6,7 +6,7 @@
             </x-alert>
         @endif
 
-        <form action="{{ route('members.update', $member) }}" method="POST" class="space-y-6">
+        <form action="{{ route('members.update', $member) }}" method="POST" class="space-y-6" enctype="multipart/form-data" x-data="{ photoPreview: null }">
             @csrf
             @method('PUT')
 
@@ -33,6 +33,28 @@
                     <x-text-input label="Número" name="number" :value="old('number', $member->number)" placeholder="Digite o número" />
                     <x-text-input label="Complemento" name="complement" :value="old('complement', $member->complement)" placeholder="Digite o complemento" />
                 </div>
+            </div>
+
+            <div class="flex flex-col items-center mb-6">
+                <div class="relative mb-2">
+                    <div id="foto-preview">
+                        <template x-if="!photoPreview">
+                            <x-avatar :member="$member" size="w-32 h-32" />
+                        </template>
+                        <template x-if="photoPreview">
+                            <img :src="photoPreview" 
+                                 alt="Preview da foto" 
+                                 class="w-32 h-32 rounded-full object-cover border-2 border-primary">
+                        </template>
+                    </div>
+                    <input type="file" name="foto_perfil" id="foto_perfil" accept="image/*" class="hidden" 
+                           @change="photoPreview = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null" />
+                    <label for="foto_perfil" class="absolute inset-0 flex items-center justify-center cursor-pointer bg-black bg-opacity-10 rounded-full"></label>
+                </div>
+                <span class="text-sm text-neutral-medium">Clique para selecionar uma foto (jpg, jpeg, png, até 5MB)</span>
+                @error('foto_perfil')
+                    <span class="text-sm text-red-500">{{ $message }}</span>
+                @enderror
             </div>
 
             <div class="border-t border-neutral-medium mt-6 pt-6">

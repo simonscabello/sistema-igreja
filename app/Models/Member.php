@@ -53,4 +53,9 @@ class Member extends Model
     {
         return $this->responsibleDepartments->merge($this->departments);
     }
+
+    public function foto()
+    {
+        return $this->files('foto_perfil');
+    }
 }
