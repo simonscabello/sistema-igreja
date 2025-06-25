@@ -5,7 +5,8 @@ import mask from '@alpinejs/mask';
 import 'flowbite';
 import './delete-action-alert';
 import './theme-toggle';
-import './department-selects';
+import './departments/department-selects';
+import './departments/department-edit';
 
 window.Alpine = Alpine;
 Alpine.plugin(mask);
