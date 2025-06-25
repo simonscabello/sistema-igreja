@@ -1,5 +1,11 @@
 <x-app-layout>
     <x-page-card title="Departamentos">
+        @if(session('success'))
+            <x-alert type="success" dismissible>
+                <span class="font-medium">Sucesso!</span> {{ session('success') }}
+            </x-alert>
+        @endif
+
         <div class="mb-6">
             <div class="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
                 <div class="flex-1">

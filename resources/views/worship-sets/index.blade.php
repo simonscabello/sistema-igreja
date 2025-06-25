@@ -1,5 +1,11 @@
 <x-app-layout>
     <x-page-card title="Repertórios por Culto" actions="{{ route('worship-sets.create') }}">
+        @if(session('success'))
+            <x-alert type="success" dismissible>
+                <span class="font-medium">Sucesso!</span> {{ session('success') }}
+            </x-alert>
+        @endif
+
         <div class="mb-6">
             <form method="GET" action="{{ route('worship-sets.index') }}" class="flex flex-col sm:flex-row gap-4">
                 <div class="flex-1">
