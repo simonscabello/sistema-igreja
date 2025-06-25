@@ -1,4 +1,9 @@
 <x-guest-layout>
+    <!-- Logo -->
+    <div class="flex justify-center mb-6">
+        <x-application-logo class="w-16 h-16 fill-current text-gray-500 dark:text-gray-400" />
+    </div>
+
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
