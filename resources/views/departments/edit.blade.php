@@ -22,7 +22,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block font-bold text-md text-gray-700 dark:text-gray-300 mb-2">Líderes</label>
-                    <select name="responsible_members[]" multiple 
+                    <select name="responsible_members[]" id="responsible_members" multiple 
                             class="w-full border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white min-h-[120px]">
                         @foreach($members as $member)
                             <option value="{{ $member->id }}" 
@@ -31,7 +31,6 @@
                             </option>
                         @endforeach
                     </select>
-                    <p class="mt-1 text-sm text-neutral-medium dark:text-gray-400">Pressione Ctrl (ou Cmd no Mac) para selecionar múltiplos membros</p>
                     @error('responsible_members')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -39,7 +38,7 @@
 
                 <div>
                     <label class="block font-bold text-md text-gray-700 dark:text-gray-300 mb-2">Membros</label>
-                    <select name="members[]" multiple 
+                    <select name="members[]" id="members" multiple 
                             class="w-full border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white min-h-[120px]">
                         @foreach($members as $member)
                             <option value="{{ $member->id }}" 
@@ -48,7 +47,6 @@
                             </option>
                         @endforeach
                     </select>
-                    <p class="mt-1 text-sm text-neutral-medium dark:text-gray-400">Pressione Ctrl (ou Cmd no Mac) para selecionar múltiplos membros</p>
                     @error('members')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror

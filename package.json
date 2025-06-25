@@ -20,6 +20,7 @@
     },
     "dependencies": {
         "@alpinejs/mask": "^3.14.9",
+        "choices.js": "^11.1.0",
         "flowbite": "^3.1.2"
     }
 }

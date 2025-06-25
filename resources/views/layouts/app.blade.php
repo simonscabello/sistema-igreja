@@ -24,6 +24,9 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <!-- Choices.js CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -51,6 +54,9 @@
             </div>
         </div>
         @stack('scripts')
+
+        <!-- Choices.js -->
+        <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
         <!-- Datepicker Localization -->
         <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/i18n/datepicker.pt-BR.js"></script>
