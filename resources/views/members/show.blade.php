@@ -15,7 +15,7 @@
                 <!-- Informações Pessoais -->
                 <div class="mb-6">
                     <h3 class="text-lg font-medium text-neutral-dark dark:text-gray-300 mb-4">Informações Pessoais</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                         <div>
                             <dt class="text-sm font-medium text-neutral-medium dark:text-gray-400">Nome Completo</dt>
                             <dd class="text-sm text-neutral-dark dark:text-gray-300">{{ $member->full_name }}</dd>
