@@ -24,7 +24,7 @@
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Nome</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Telefone</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Cidade</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Data de nascimento</th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Ações</th>
                     </tr>
                 </thead>
@@ -41,7 +41,7 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $member->mobile }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $member->city }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $member->birth_date ? \Carbon\Carbon::parse($member->birth_date)->format('d/m/Y') : '-' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <x-link-button href="{{ route('members.show', $member) }}" class="mr-2">
                                     Ver
