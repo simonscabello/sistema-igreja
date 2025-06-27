@@ -23,7 +23,6 @@
                 <thead>
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Nome</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Email</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Telefone</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Cidade</th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Ações</th>
@@ -35,10 +34,12 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                     <x-avatar :member="$member" class="mr-3" />
-                                    <span class="text-neutral-dark dark:text-gray-300">{{ $member->full_name }}</span>
+                                    <div class="ps-3">
+                                        <div class="text-base font-semibold text-neutral-dark dark:text-gray-300">{{ $member->full_name }}</div>
+                                        <div class="font-normal text-gray-500 dark:text-gray-400">{{ $member->email }}</div>
+                                    </div>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $member->email }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $member->mobile }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $member->city }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -52,7 +53,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-4 text-center text-neutral-medium dark:text-gray-500">
+                            <td colspan="4" class="px-6 py-4 text-center text-neutral-medium dark:text-gray-500">
                                 Nenhum membro encontrado.
                             </td>
                         </tr>
