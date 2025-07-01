@@ -6,19 +6,32 @@
             </x-alert>
         @endif
 
-        <div class="mb-4">
-            <form action="{{ route('financial-transactions.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-2 items-end">
-                <div>
-                    <x-input-label value="Busca" />
+        <div class="flex justify-between items-center mb-4">
+            <div class="flex-1">
+                <form action="{{ route('financial-transactions.index') }}" method="GET" class="flex gap-2">
                     <x-text-input name="search" placeholder="Buscar transações..." value="{{ request('search') }}" />
-                </div>
-                <x-select label="Tipo" name="type" :options="['' => 'Todos os tipos', 'entrada' => 'Entradas', 'saida' => 'Saídas']" :selected="request('type')" />
-                <x-select label="Subcategoria" name="subcategory" :options="$categories->flatMap(function($category) { return $category->subcategories->pluck('name', 'id'); })->prepend('Todas as subcategorias', '')" :selected="request('subcategory')" />
-                <x-select label="Campanha" name="campaign" :options="$campaigns->pluck('name', 'id')->prepend('Todas as campanhas', '')" :selected="request('campaign')" />
-                <div class="flex items-end">
-                    <x-primary-button type="submit" class="px-4 py-3 text-sm">Buscar</x-primary-button>
-                </div>
-            </form>
+                    <select name="type" class="border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white px-4 py-3 text-sm">
+                        <option value="">Todos os tipos</option>
+                        <option value="entrada" {{ request('type') === 'entrada' ? 'selected' : '' }}>Entradas</option>
+                        <option value="saida" {{ request('type') === 'saida' ? 'selected' : '' }}>Saídas</option>
+                    </select>
+                    <select name="subcategory" class="border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white px-4 py-3 text-sm">
+                        <option value="">Todas as subcategorias</option>
+                        @foreach($categories->flatMap(function($category) { return $category->subcategories->pluck('name', 'id'); }) as $id => $name)
+                            <option value="{{ $id }}" {{ request('subcategory') == $id ? 'selected' : '' }}>{{ $name }}</option>
+                        @endforeach
+                    </select>
+                    <select name="campaign" class="border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white px-4 py-3 text-sm">
+                        <option value="">Todas as campanhas</option>
+                        @foreach($campaigns->pluck('name', 'id') as $id => $name)
+                            <option value="{{ $id }}" {{ request('campaign') == $id ? 'selected' : '' }}>{{ $name }}</option>
+                        @endforeach
+                    </select>
+                    <div class="flex items-end">
+                        <x-primary-button type="submit" class="px-4 py-3 text-sm">Buscar</x-primary-button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">

@@ -6,30 +6,21 @@
             </x-alert>
         @endif
 
-        <div class="mb-4">
-            <form method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 items-end">
-                <div>
-                    <x-input-label value="Busca" />
-                    <x-text-input
-                        type="text"
-                        name="search"
-                        placeholder="Buscar campanhas..."
-                        value="{{ request('search') }}"
-                    />
-                </div>
-                <div>
-                    <x-input-label value="Status" />
-                    <select name="status" onchange="this.form.submit()" class="border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-700 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm w-full">
+        <div class="flex justify-between items-center mb-4">
+            <div class="flex-1">
+                <form action="{{ route('campaigns.index') }}" method="GET" class="flex gap-2">
+                    <x-text-input name="search" placeholder="Buscar campanhas..." value="{{ request('search') }}" />
+                    <select name="status" class="border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white px-4 py-3 text-sm">
                         <option value="">Todos os status</option>
                         <option value="ativo" {{ request('status') === 'ativo' ? 'selected' : '' }}>Ativo</option>
                         <option value="encerrado" {{ request('status') === 'encerrado' ? 'selected' : '' }}>Encerrado</option>
                         <option value="cancelada" {{ request('status') === 'cancelada' ? 'selected' : '' }}>Cancelada</option>
                     </select>
-                </div>
-                <div class="flex items-end">
-                    <x-primary-button type="submit" class="px-4 py-3 text-sm">Buscar</x-primary-button>
-                </div>
-            </form>
+                    <div class="flex items-end">
+                        <x-primary-button type="submit" class="px-4 py-3 text-sm">Buscar</x-primary-button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">

@@ -6,28 +6,19 @@
             </x-alert>
         @endif
 
-        <div class="mb-6">
-            <div class="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-                <div class="flex-1">
-                    <form method="GET" class="flex gap-2">
-                        <div class="flex-1">
-                            <input type="text"
-                                   name="search"
-                                   value="{{ request('search') }}"
-                                   placeholder="Buscar por título ou descrição..."
-                                   class="w-full border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white">
-                        </div>
-                        <select name="status"
-                                class="border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white">
-                            <option value="">Todos os status</option>
-                            <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Ativos</option>
-                            <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inativos</option>
-                        </select>
-                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-primary border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition ease-in-out duration-150">
-                            Buscar
-                        </button>
-                    </form>
-                </div>
+        <div class="flex justify-between items-center mb-4">
+            <div class="flex-1">
+                <form action="{{ route('departments.index') }}" method="GET" class="flex gap-2">
+                    <x-text-input name="search" placeholder="Buscar departamentos..." value="{{ request('search') }}" />
+                    <select name="status" class="border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white px-4 py-3 text-sm">
+                        <option value="">Todos os status</option>
+                        <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Ativos</option>
+                        <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inativos</option>
+                    </select>
+                    <div class="flex items-end">
+                        <x-primary-button type="submit" class="px-4 py-3 text-sm">Buscar</x-primary-button>
+                    </div>
+                </form>
             </div>
         </div>
 

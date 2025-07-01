@@ -6,45 +6,27 @@
             </x-alert>
         @endif
 
-        <div class="mb-6">
-            <form method="GET" action="{{ route('worship-sets.index') }}" class="flex flex-col sm:flex-row gap-4">
-                <div class="flex-1">
-                    <x-text-input
-                        type="text"
-                        name="search"
-                        placeholder="Buscar por cantor ou ministro..."
-                        :value="request('search')"
-                        class="w-full"
-                    />
-                </div>
-                <div class="flex gap-2">
-                    <select name="period" class="w-32 border-neutral-medium dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-primary rounded-md shadow-sm">
+        <div class="flex justify-between items-center mb-4">
+            <div class="flex-1">
+                <form action="{{ route('worship-sets.index') }}" method="GET" class="flex gap-2">
+                    <x-text-input name="search" placeholder="Buscar por cantor ou ministro..." value="{{ request('search') }}" />
+                    <select name="period" class="border-neutral-medium dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-primary rounded-md shadow-sm px-4 py-3 text-sm">
                         <option value="">Período</option>
                         <option value="manha" {{ request('period') === 'manha' ? 'selected' : '' }}>Manhã</option>
                         <option value="noite" {{ request('period') === 'noite' ? 'selected' : '' }}>Noite</option>
                     </select>
-                    <x-text-input
-                        type="date"
-                        name="date_from"
-                        :value="request('date_from')"
-                        class="w-40"
-                    />
-                    <x-text-input
-                        type="date"
-                        name="date_to"
-                        :value="request('date_to')"
-                        class="w-40"
-                    />
-                    <x-primary-button type="submit">
-                        Filtrar
-                    </x-primary-button>
-                    @if(request('search') || request('period') || request('date_from') || request('date_to'))
-                        <a href="{{ route('worship-sets.index') }}" class="inline-flex items-center px-4 py-2 bg-neutral-medium dark:bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-neutral-dark dark:text-gray-300 uppercase tracking-widest hover:bg-neutral-dark dark:hover:bg-gray-500 focus:bg-neutral-dark dark:focus:bg-gray-500 active:bg-neutral-dark dark:active:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
-                            Limpar
-                        </a>
-                    @endif
-                </div>
-            </form>
+                    <x-text-input type="date" name="date_from" value="{{ request('date_from') }}" class="px-4 py-3 text-sm" />
+                    <x-text-input type="date" name="date_to" value="{{ request('date_to') }}" class="px-4 py-3 text-sm" />
+                    <div class="flex items-end gap-2">
+                        <x-primary-button type="submit" class="px-4 py-3 text-sm">Buscar</x-primary-button>
+                        @if(request('search') || request('period') || request('date_from') || request('date_to'))
+                            <a href="{{ route('worship-sets.index') }}" class="inline-flex items-center px-4 py-3 text-sm bg-neutral-medium dark:bg-gray-600 border border-transparent rounded-md font-semibold text-neutral-dark dark:text-gray-300 uppercase tracking-widest hover:bg-neutral-dark dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
+                                Limpar
+                            </a>
+                        @endif
+                    </div>
+                </form>
+            </div>
         </div>
 
         <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">

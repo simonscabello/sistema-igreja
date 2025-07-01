@@ -6,22 +6,11 @@
             </x-alert>
         @endif
 
-        <div class="flex flex-col lg:flex-row gap-4 mb-6">
+        <div class="flex justify-between items-center mb-4">
             <div class="flex-1">
                 <form action="{{ route('songs.index') }}" method="GET" class="flex gap-2">
                     <x-text-input name="search" placeholder="Buscar músicas..." value="{{ request('search') }}" />
-                    <div class="flex items-end">
-                        <x-primary-button type="submit" class="px-4 py-3 text-sm">Buscar</x-primary-button>
-                    </div>
-                </form>
-            </div>
-
-            <div class="lg:w-64">
-                <form action="{{ route('songs.index') }}" method="GET" class="flex gap-2">
-                    @if(request('search'))
-                        <input type="hidden" name="search" value="{{ request('search') }}">
-                    @endif
-                    <select name="tag" class="border-neutral-medium dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-primary rounded-md shadow-sm w-full">
+                    <select name="tag" class="border-neutral-medium dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-primary rounded-md shadow-sm px-4 py-3 text-sm">
                         <option value="">Todas as tags</option>
                         @foreach($tags as $tag)
                             <option value="{{ $tag->id }}" {{ request('tag') == $tag->id ? 'selected' : '' }}>
@@ -30,7 +19,7 @@
                         @endforeach
                     </select>
                     <div class="flex items-end">
-                        <x-primary-button type="submit" class="px-4 py-3 text-sm">Filtrar</x-primary-button>
+                        <x-primary-button type="submit" class="px-4 py-3 text-sm">Buscar</x-primary-button>
                     </div>
                 </form>
             </div>
