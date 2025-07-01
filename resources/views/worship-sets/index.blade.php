@@ -9,12 +9,12 @@
         <div class="flex justify-between items-center mb-4">
             <div class="flex-1">
                 <form action="{{ route('worship-sets.index') }}" method="GET" class="flex gap-2">
-                    <x-text-input name="search" placeholder="Buscar por cantor ou ministro..." value="{{ request('search') }}" class="flex-1 min-w-0 px-4 py-3 text-md placeholder:text-md" />
-                    <x-select label="" name="period" :options="['' => 'Período', 'manha' => 'Manhã', 'noite' => 'Noite']" :selected="request('period')" class="w-44 px-4 py-3 text-md" />
-                    <x-input-date name="date_from" :value="request('date_from')" placeholder="Data inicial" class="px-4 py-4 text-md" />
-                    <x-input-date name="date_to" :value="request('date_to')" placeholder="Data final" class="px-4 py-4 text-md" />
+                    <x-text-input name="search" placeholder="Buscar por cantor ou ministro..." value="{{ request('search') }}" />
+                    <x-select label="" name="period" :options="['' => 'Período', 'manha' => 'Manhã', 'noite' => 'Noite']" :selected="request('period')" />
+                    <x-input-date name="date_from" :value="request('date_from')" placeholder="Data inicial" class="mt-1" />
+                    <x-input-date name="date_to" :value="request('date_to')" placeholder="Data final" class="mt-1" />
                     <div class="flex items-end gap-2">
-                        <x-primary-button type="submit" class="px-4 py-4 text-sm">Buscar</x-primary-button>
+                        <x-primary-button type="submit" class="px-4 py-3 text-sm">Buscar</x-primary-button>
                         @if(request('search') || request('period') || request('date_from') || request('date_to'))
                             <a href="{{ route('worship-sets.index') }}" class="inline-flex items-center px-4 py-4 text-sm bg-neutral-medium dark:bg-gray-600 border border-transparent rounded-md font-semibold text-neutral-dark dark:text-gray-300 uppercase tracking-widest hover:bg-neutral-dark dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
                                 Limpar

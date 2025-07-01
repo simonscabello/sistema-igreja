@@ -9,10 +9,10 @@
         <div class="flex justify-between items-center mb-4">
             <div class="flex-1">
                 <form action="{{ route('songs.index') }}" method="GET" class="flex gap-2">
-                    <x-text-input name="search" placeholder="Buscar músicas..." value="{{ request('search') }}" class="flex-1 min-w-0 px-4 py-3 text-md placeholder:text-md" />
-                    <x-select label="" name="tag" :options="$tags->pluck('name', 'id')->prepend('Todas as tags', '')" :selected="request('tag')" class="w-44 px-4 py-3 text-md" />
+                    <x-text-input name="search" placeholder="Buscar músicas..." value="{{ request('search') }}" />
+                    <x-select label="" name="tag" :options="$tags->pluck('name', 'id')->prepend('Todas as tags', '')" :selected="request('tag')" />
                     <div class="flex items-end">
-                        <x-primary-button type="submit" class="px-4 py-4 text-sm">Buscar</x-primary-button>
+                        <x-primary-button type="submit" class="px-4 py-3 text-sm">Buscar</x-primary-button>
                     </div>
                 </form>
             </div>
