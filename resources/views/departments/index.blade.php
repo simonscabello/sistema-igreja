@@ -9,12 +9,8 @@
         <div class="flex justify-between items-center mb-4">
             <div class="flex-1">
                 <form action="{{ route('departments.index') }}" method="GET" class="flex gap-2">
-                    <x-text-input name="search" placeholder="Buscar departamentos..." value="{{ request('search') }}" />
-                    <select name="status" class="border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white px-4 py-3 text-sm">
-                        <option value="">Todos os status</option>
-                        <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Ativos</option>
-                        <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inativos</option>
-                    </select>
+                    <x-text-input name="search" placeholder="Buscar departamentos..." value="{{ request('search') }}" class="flex-1 min-w-0 px-4 py-3 text-sm" />
+                    <x-select label="" name="status" :options="['' => 'Todos os status', 'active' => 'Ativos', 'inactive' => 'Inativos']" :selected="request('status')" class="w-44 px-4 py-3 text-sm" />
                     <div class="flex items-end">
                         <x-primary-button type="submit" class="px-4 py-3 text-sm">Buscar</x-primary-button>
                     </div>

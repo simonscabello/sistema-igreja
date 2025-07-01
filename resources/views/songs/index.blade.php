@@ -9,15 +9,8 @@
         <div class="flex justify-between items-center mb-4">
             <div class="flex-1">
                 <form action="{{ route('songs.index') }}" method="GET" class="flex gap-2">
-                    <x-text-input name="search" placeholder="Buscar músicas..." value="{{ request('search') }}" />
-                    <select name="tag" class="border-neutral-medium dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-primary rounded-md shadow-sm px-4 py-3 text-sm">
-                        <option value="">Todas as tags</option>
-                        @foreach($tags as $tag)
-                            <option value="{{ $tag->id }}" {{ request('tag') == $tag->id ? 'selected' : '' }}>
-                                {{ $tag->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <x-text-input name="search" placeholder="Buscar músicas..." value="{{ request('search') }}" class="flex-1 min-w-0 px-4 py-3 text-sm" />
+                    <x-select label="" name="tag" :options="$tags->pluck('name', 'id')->prepend('Todas as tags', '')" :selected="request('tag')" class="w-44 px-4 py-3 text-sm" />
                     <div class="flex items-end">
                         <x-primary-button type="submit" class="px-4 py-3 text-sm">Buscar</x-primary-button>
                     </div>

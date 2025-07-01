@@ -9,12 +9,8 @@
         <div class="flex justify-between items-center mb-4">
             <div class="flex-1">
                 <form action="{{ route('worship-sets.index') }}" method="GET" class="flex gap-2">
-                    <x-text-input name="search" placeholder="Buscar por cantor ou ministro..." value="{{ request('search') }}" />
-                    <select name="period" class="border-neutral-medium dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-primary rounded-md shadow-sm px-4 py-3 text-sm">
-                        <option value="">Período</option>
-                        <option value="manha" {{ request('period') === 'manha' ? 'selected' : '' }}>Manhã</option>
-                        <option value="noite" {{ request('period') === 'noite' ? 'selected' : '' }}>Noite</option>
-                    </select>
+                    <x-text-input name="search" placeholder="Buscar por cantor ou ministro..." value="{{ request('search') }}" class="flex-1 min-w-0 px-4 py-3 text-sm" />
+                    <x-select label="" name="period" :options="['' => 'Período', 'manha' => 'Manhã', 'noite' => 'Noite']" :selected="request('period')" class="w-44 px-4 py-3 text-sm" />
                     <x-text-input type="date" name="date_from" value="{{ request('date_from') }}" class="px-4 py-3 text-sm" />
                     <x-text-input type="date" name="date_to" value="{{ request('date_to') }}" class="px-4 py-3 text-sm" />
                     <div class="flex items-end gap-2">
