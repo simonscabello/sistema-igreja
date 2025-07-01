@@ -81,13 +81,13 @@
 
             <div class="border-t border-neutral-medium pt-6">
                 <div class="flex gap-4">
-                    <a href="{{ route('departamentos.index') }}" class="inline-flex items-center px-4 py-2 bg-neutral-light border border-neutral-medium rounded-md font-semibold text-xs text-neutral-dark uppercase tracking-widest hover:bg-neutral-medium focus:outline-none focus:ring-2 focus:ring-neutral-medium focus:ring-offset-2 transition ease-in-out duration-150">
+                    <a href="{{ route('departments.index') }}" class="inline-flex items-center px-4 py-2 bg-neutral-light border border-neutral-medium rounded-md font-semibold text-xs text-neutral-dark uppercase tracking-widest hover:bg-neutral-medium focus:outline-none focus:ring-2 focus:ring-neutral-medium focus:ring-offset-2 transition ease-in-out duration-150">
                         Voltar
                     </a>
-                    <x-link-button href="{{ route('departamentos.edit', $departamento) }}">
+                    <x-link-button href="{{ route('departments.edit', $departamento) }}">
                         Editar
                     </x-link-button>
-                    <form action="{{ route('departamentos.destroy', $departamento) }}" method="POST" class="inline-block">
+                    <form action="{{ route('departments.destroy', $departamento) }}" method="POST" class="inline-block">
                         @csrf
                         @method('DELETE')
                         <x-danger-button type="submit">
@@ -98,4 +98,4 @@
             </div>
         </div>
     </x-page-card>
-</x-app-layout> 
+</x-app-layout>

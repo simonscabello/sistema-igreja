@@ -61,7 +61,7 @@ class DepartmentController extends Controller
             $department->members()->attach($request->members);
         }
 
-        return redirect()->route('departamentos.index')
+        return redirect()->route('departments.index')
             ->with('success', 'Departamento cadastrado com sucesso.');
     }
 
@@ -94,7 +94,7 @@ class DepartmentController extends Controller
         $departamento->responsibleMembers()->sync($request->responsible_members ?? []);
         $departamento->members()->sync($request->members ?? []);
 
-        return redirect()->route('departamentos.index')
+        return redirect()->route('departments.index')
             ->with('success', 'Departamento atualizado com sucesso.');
     }
 
@@ -105,7 +105,7 @@ class DepartmentController extends Controller
     {
         $departamento->delete();
 
-        return redirect()->route('departamentos.index')
+        return redirect()->route('departments.index')
             ->with('success', 'Departamento excluído com sucesso.');
     }
 }

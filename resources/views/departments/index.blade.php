@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-page-card title="Departamentos" actions="{{ route('departamentos.create') }}">
+    <x-page-card title="Departamentos" actions="{{ route('departments.create') }}">
         @if(session('success'))
             <x-alert type="success" dismissible>
                 <span class="font-medium">Sucesso!</span> {{ session('success') }}
@@ -11,13 +11,13 @@
                 <div class="flex-1">
                     <form method="GET" class="flex gap-2">
                         <div class="flex-1">
-                            <input type="text" 
-                                   name="search" 
-                                   value="{{ request('search') }}" 
+                            <input type="text"
+                                   name="search"
+                                   value="{{ request('search') }}"
                                    placeholder="Buscar por título ou descrição..."
                                    class="w-full border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white">
                         </div>
-                        <select name="status" 
+                        <select name="status"
                                 class="border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white">
                             <option value="">Todos os status</option>
                             <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Ativos</option>
@@ -70,10 +70,10 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <x-link-button href="{{ route('departamentos.show', $department) }}" class="mr-2">
+                                <x-link-button href="{{ route('departments.show', $department) }}" class="mr-2">
                                     Ver
                                 </x-link-button>
-                                <x-link-button href="{{ route('departamentos.edit', $department) }}">
+                                <x-link-button href="{{ route('departments.edit', $department) }}">
                                     Editar
                                 </x-link-button>
                             </td>
@@ -93,4 +93,4 @@
             {{ $departments->links() }}
         </div>
     </x-page-card>
-</x-app-layout> 
+</x-app-layout>

@@ -6,7 +6,7 @@
             </x-alert>
         @endif
 
-        <form action="{{ route('departamentos.store') }}" method="POST" class="space-y-6">
+        <form action="{{ route('departments.store') }}" method="POST" class="space-y-6">
             @csrf
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -21,7 +21,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block font-bold text-md text-gray-700 dark:text-gray-300 mb-2">Líderes</label>
-                    <select name="responsible_members[]" id="responsible_members" multiple 
+                    <select name="responsible_members[]" id="responsible_members" multiple
                             class="w-full border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white min-h-[120px]">
                         @foreach($members as $member)
                             <option value="{{ $member->id }}" {{ in_array($member->id, old('responsible_members', [])) ? 'selected' : '' }}>
@@ -36,7 +36,7 @@
 
                 <div>
                     <label class="block font-bold text-md text-gray-700 dark:text-gray-300 mb-2">Membros</label>
-                    <select name="members[]" id="members" multiple 
+                    <select name="members[]" id="members" multiple
                             class="w-full border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white min-h-[120px]">
                         @foreach($members as $member)
                             <option value="{{ $member->id }}" {{ in_array($member->id, old('members', [])) ? 'selected' : '' }}>
@@ -52,7 +52,7 @@
 
             <div class="border-t border-neutral-medium mt-6 pt-6">
                 <div class="flex gap-4">
-                    <a href="{{ route('departamentos.index') }}" class="inline-flex items-center px-4 py-2 bg-neutral-light border border-neutral-medium rounded-md font-semibold text-xs text-neutral-dark uppercase tracking-widest hover:bg-neutral-medium focus:outline-none focus:ring-2 focus:ring-neutral-medium focus:ring-offset-2 transition ease-in-out duration-150">
+                    <a href="{{ route('departments.index') }}" class="inline-flex items-center px-4 py-2 bg-neutral-light border border-neutral-medium rounded-md font-semibold text-xs text-neutral-dark uppercase tracking-widest hover:bg-neutral-medium focus:outline-none focus:ring-2 focus:ring-neutral-medium focus:ring-offset-2 transition ease-in-out duration-150">
                         Cancelar
                     </a>
                     <x-primary-button type="submit">
@@ -62,4 +62,4 @@
             </div>
         </form>
     </x-page-card>
-</x-app-layout> 
+</x-app-layout>
