@@ -9,10 +9,10 @@
         <div class="mb-6">
             <form method="GET" action="{{ route('worship-sets.index') }}" class="flex flex-col sm:flex-row gap-4">
                 <div class="flex-1">
-                    <x-text-input 
-                        type="text" 
-                        name="search" 
-                        placeholder="Buscar por cantor ou ministro..." 
+                    <x-text-input
+                        type="text"
+                        name="search"
+                        placeholder="Buscar por cantor ou ministro..."
                         :value="request('search')"
                         class="w-full"
                     />
@@ -23,15 +23,15 @@
                         <option value="manha" {{ request('period') === 'manha' ? 'selected' : '' }}>Manhã</option>
                         <option value="noite" {{ request('period') === 'noite' ? 'selected' : '' }}>Noite</option>
                     </select>
-                    <x-text-input 
-                        type="date" 
-                        name="date_from" 
+                    <x-text-input
+                        type="date"
+                        name="date_from"
                         :value="request('date_from')"
                         class="w-40"
                     />
-                    <x-text-input 
-                        type="date" 
-                        name="date_to" 
+                    <x-text-input
+                        type="date"
+                        name="date_to"
                         :value="request('date_to')"
                         class="w-40"
                     />
@@ -47,22 +47,14 @@
             </form>
         </div>
 
-        <div class="overflow-x-auto">
+        <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
             <table class="min-w-full divide-y divide-neutral-medium dark:divide-gray-700">
                 <thead class="bg-neutral-light dark:bg-gray-700">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">
-                            Data
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">
-                            Período
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">
-                            Músicas
-                        </th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">
-                            Ações
-                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Data</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Período</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Músicas</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Ações</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-neutral-medium dark:divide-gray-700">
@@ -117,4 +109,4 @@
             {{ $worshipSets->links() }}
         </div>
     </x-page-card>
-</x-app-layout> 
+</x-app-layout>

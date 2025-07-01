@@ -22,12 +22,12 @@
     <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
         <h3 class="font-semibold mb-4">Arquivos vinculados</h3>
         <table class="w-full text-left">
-            <thead>
+            <thead class="bg-neutral-light dark:bg-gray-700">
                 <tr>
-                    <th class="py-2">Nome</th>
-                    <th class="py-2">Tamanho</th>
-                    <th class="py-2">Visualizar</th>
-                    <th class="py-2">Ações</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Nome</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Tamanho</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Visualizar</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -53,4 +53,4 @@
         </table>
     </div>
 </div>
-@endsection 
+@endsection

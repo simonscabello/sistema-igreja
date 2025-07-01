@@ -17,9 +17,9 @@
             </div>
         </div>
 
-        <div class="overflow-x-auto">
+        <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
             <table class="min-w-full divide-y divide-neutral-medium dark:divide-gray-700">
-                <thead>
+                <thead class="bg-neutral-light dark:bg-gray-700">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Nome</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Celular</th>
@@ -81,4 +81,4 @@
             {{ $visitors->links() }}
         </div>
     </x-page-card>
-</x-app-layout> 
+</x-app-layout>
