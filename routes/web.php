@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\Route;
 // Rota raiz
 Route::get('/', RootRedirectController::class);
 
-// Rotas públicas (sem autenticação)
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
