@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FinancialSubcategory extends Model
 {
@@ -19,12 +21,12 @@ class FinancialSubcategory extends Model
         'active' => 'boolean',
     ];
 
-    public function financialCategory()
+    public function financialCategory(): BelongsTo
     {
         return $this->belongsTo(FinancialCategory::class, 'financial_category_id');
     }
 
-    public function transactions()
+    public function transactions(): HasMany
     {
         return $this->hasMany(FinancialTransaction::class, 'financial_subcategory_id');
     }

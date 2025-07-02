@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Collection;
 
 class Department extends Model
 {
@@ -19,25 +21,25 @@ class Department extends Model
         'is_active' => 'boolean',
     ];
 
-    public function responsibleMembers()
+    public function responsibleMembers(): BelongsToMany
     {
         return $this->belongsToMany(Member::class, 'department_responsible_member')
                     ->withTimestamps();
     }
 
-    public function members()
+    public function members(): BelongsToMany
     {
         return $this->belongsToMany(Member::class, 'department_member')
                     ->withTimestamps();
     }
 
-    public function getAllMembersAttribute()
+    public function getAllMembersAttribute(): Collection
     {
         return $this->responsibleMembers->merge($this->members);
     }
 
-    public function getMembersCountAttribute()
+    public function getMembersCountAttribute(): int
     {
         return $this->responsibleMembers->count() + $this->members->count();
     }
-} 
+}

@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\FinancialTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Contracts\View\View;
 use Carbon\Carbon;
 
 class FinancialReportController extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): View|JsonResponse
     {
         $month = $this->normalizeMonth($request->get('month', now()->month));
         $year = $request->get('year', now()->year);
@@ -46,7 +47,7 @@ class FinancialReportController extends Controller
         return view('reports.financial.monthly', compact('report'));
     }
 
-    private function normalizeMonth($month)
+    private function normalizeMonth(int|string $month): int
     {
         if (is_numeric($month)) {
             $month = (int) $month;
@@ -66,9 +67,9 @@ class FinancialReportController extends Controller
     private function groupTransactionsByType($transactions, string $type): array
     {
         $filteredTransactions = $transactions->where('type', $type);
-        
+
         $grouped = [];
-        
+
         foreach ($filteredTransactions as $transaction) {
             $categoryName = $transaction->subcategory->financialCategory->name;
             $subcategoryName = $transaction->subcategory->name;
@@ -91,4 +92,4 @@ class FinancialReportController extends Controller
 
         return $grouped;
     }
-} 
+}

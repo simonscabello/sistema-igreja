@@ -6,20 +6,21 @@ use App\Models\Campaign;
 use App\Http\Requests\StoreCampaignRequest;
 use App\Http\Requests\UpdateCampaignRequest;
 use Illuminate\Http\Request;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class CampaignController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $query = Campaign::with('transactions');
 
         if ($request->filled('search')) {
             $search = $request->input('search');
-            $query->where('name', 'like', "%{$search}%")
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
                   ->orWhere('description', 'like', "%{$search}%");
+            });
         }
 
         if ($request->filled('status')) {
@@ -31,53 +32,35 @@ class CampaignController extends Controller
         return view('campaigns.index', compact('campaigns'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): View
     {
         return view('campaigns.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreCampaignRequest $request)
+    public function store(StoreCampaignRequest $request): RedirectResponse
     {
         Campaign::create($request->validated());
         return redirect()->route('campaigns.index')->with('success', 'Campanha criada com sucesso.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Campaign $campaign)
+    public function show(Campaign $campaign): View
     {
         $campaign->load('transactions.subcategory.financialCategory');
         return view('campaigns.show', compact('campaign'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Campaign $campaign)
+    public function edit(Campaign $campaign): View
     {
         return view('campaigns.edit', compact('campaign'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateCampaignRequest $request, Campaign $campaign)
+    public function update(UpdateCampaignRequest $request, Campaign $campaign): RedirectResponse
     {
         $campaign->update($request->validated());
         return redirect()->route('campaigns.index')->with('success', 'Campanha atualizada com sucesso.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Campaign $campaign)
+    public function destroy(Campaign $campaign): RedirectResponse
     {
         if ($campaign->transactions()->exists()) {
             return redirect()->route('campaigns.index')

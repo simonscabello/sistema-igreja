@@ -7,13 +7,12 @@ use App\Http\Requests\UpdateFinancialSubcategoryRequest;
 use App\Models\FinancialCategory;
 use App\Models\FinancialSubcategory;
 use Illuminate\Http\Request;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class FinancialSubcategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $query = FinancialSubcategory::with('financialCategory');
 
@@ -32,19 +31,14 @@ class FinancialSubcategoryController extends Controller
         return view('financial-subcategories.index', compact('subcategories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): View
     {
         $categories = FinancialCategory::where('active', true)->get();
+
         return view('financial-subcategories.create', compact('categories'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreFinancialSubcategoryRequest $request)
+    public function store(StoreFinancialSubcategoryRequest $request): RedirectResponse
     {
         $data = $request->validated();
 
@@ -64,19 +58,14 @@ class FinancialSubcategoryController extends Controller
             ->with('success', 'Subcategorias criadas com sucesso!');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(FinancialSubcategory $financialSubcategory)
+    public function edit(FinancialSubcategory $financialSubcategory): View
     {
         $categories = FinancialCategory::where('active', true)->get();
+
         return view('financial-subcategories.edit', compact('financialSubcategory', 'categories'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateFinancialSubcategoryRequest $request, FinancialSubcategory $financialSubcategory)
+    public function update(UpdateFinancialSubcategoryRequest $request, FinancialSubcategory $financialSubcategory): RedirectResponse
     {
         $data = $request->validated();
 
@@ -86,10 +75,7 @@ class FinancialSubcategoryController extends Controller
             ->with('success', 'Subcategoria atualizada com sucesso!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(FinancialSubcategory $financialSubcategory)
+    public function destroy(FinancialSubcategory $financialSubcategory): RedirectResponse
     {
         if ($financialSubcategory->transactions()->exists()) {
             return redirect()->route('subcategories.index')

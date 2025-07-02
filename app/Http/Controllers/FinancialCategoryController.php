@@ -6,13 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\FinancialCategory;
 use App\Http\Requests\StoreFinancialCategoryRequest;
 use App\Http\Requests\UpdateFinancialCategoryRequest;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class FinancialCategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $query = FinancialCategory::query();
 
@@ -25,57 +24,41 @@ class FinancialCategoryController extends Controller
         }
 
         $categories = $query->latest()->paginate(10);
+
         return view('financial-categories.index', compact('categories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): View
     {
         return view('financial-categories.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreFinancialCategoryRequest $request)
+    public function store(StoreFinancialCategoryRequest $request): RedirectResponse
     {
         FinancialCategory::create($request->validated());
-        return redirect()->route('financial-categories.index')->with('success', 'Categoria criada com sucesso.');
+
+        return redirect()->route('financial-categories.index')
+            ->with('success', 'Categoria criada com sucesso.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(FinancialCategory $financialCategory)
+    public function edit(FinancialCategory $financialCategory): View
     {
         return view('financial-categories.edit', compact('financialCategory'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateFinancialCategoryRequest $request, FinancialCategory $financialCategory)
+    public function update(UpdateFinancialCategoryRequest $request, FinancialCategory $financialCategory): RedirectResponse
     {
         $financialCategory->update($request->validated());
-        return redirect()->route('financial-categories.index')->with('success', 'Categoria atualizada com sucesso.');
+
+        return redirect()->route('financial-categories.index')
+            ->with('success', 'Categoria atualizada com sucesso.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(FinancialCategory $financialCategory)
+    public function destroy(FinancialCategory $financialCategory): RedirectResponse
     {
         $financialCategory->delete();
-        return redirect()->route('financial-categories.index')->with('success', 'Categoria excluída com sucesso.');
+
+        return redirect()->route('financial-categories.index')
+            ->with('success', 'Categoria excluída com sucesso.');
     }
 }

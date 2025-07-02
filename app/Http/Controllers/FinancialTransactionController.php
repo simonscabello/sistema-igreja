@@ -4,15 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\FinancialTransaction;
 use App\Models\FinancialCategory;
-use App\Models\FinancialSubcategory;
 use App\Models\Campaign;
 use App\Http\Requests\StoreFinancialTransactionRequest;
 use App\Http\Requests\UpdateFinancialTransactionRequest;
 use Illuminate\Http\Request;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class FinancialTransactionController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $query = FinancialTransaction::with(['subcategory.financialCategory', 'campaign']);
 
@@ -51,41 +52,49 @@ class FinancialTransactionController extends Controller
         return view('financial-transactions.index', compact('transactions', 'categories', 'campaigns'));
     }
 
-    public function create()
+    public function create(): View
     {
         $categories = FinancialCategory::with('subcategories')->where('active', true)->get();
         $campaigns = Campaign::where('status', 'ativo')->get();
+
         return view('financial-transactions.create', compact('categories', 'campaigns'));
     }
 
-    public function show(FinancialTransaction $financialTransaction)
+    public function show(FinancialTransaction $financialTransaction): View
     {
         $financialTransaction->load(['subcategory.financialCategory', 'campaign']);
+
         return view('financial-transactions.show', compact('financialTransaction'));
     }
 
-    public function store(StoreFinancialTransactionRequest $request)
+    public function store(StoreFinancialTransactionRequest $request): RedirectResponse
     {
         FinancialTransaction::create($request->validated());
+
         return redirect()->route('financial-transactions.index')->with('success', 'Transação criada com sucesso.');
     }
 
-    public function edit(FinancialTransaction $financialTransaction)
+    public function edit(FinancialTransaction $financialTransaction): View
     {
         $categories = FinancialCategory::with('subcategories')->where('active', true)->get();
         $campaigns = Campaign::where('status', 'ativo')->get();
+
         return view('financial-transactions.edit', compact('financialTransaction', 'categories', 'campaigns'));
     }
 
-    public function update(UpdateFinancialTransactionRequest $request, FinancialTransaction $financialTransaction)
+    public function update(UpdateFinancialTransactionRequest $request, FinancialTransaction $financialTransaction): RedirectResponse
     {
         $financialTransaction->update($request->validated());
-        return redirect()->route('financial-transactions.index')->with('success', 'Transação atualizada com sucesso.');
+
+        return redirect()->route('financial-transactions.index')
+            ->with('success', 'Transação atualizada com sucesso.');
     }
 
-    public function destroy(FinancialTransaction $financialTransaction)
+    public function destroy(FinancialTransaction $financialTransaction): RedirectResponse
     {
         $financialTransaction->delete();
-        return redirect()->route('financial-transactions.index')->with('success', 'Transação excluída com sucesso.');
+
+        return redirect()->route('financial-transactions.index')
+            ->with('success', 'Transação excluída com sucesso.');
     }
 }

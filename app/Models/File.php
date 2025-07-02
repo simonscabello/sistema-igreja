@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 class File extends Model
 {
     protected $fillable = [
@@ -16,8 +16,8 @@ class File extends Model
         'url',
     ];
 
-    public function fileables()
+    public function fileables(): MorphToMany
     {
         return $this->morphToMany(Model::class, 'fileable');
     }
-} 
+}

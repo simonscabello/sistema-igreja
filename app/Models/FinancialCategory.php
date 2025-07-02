@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FinancialCategory extends Model
 {
@@ -15,7 +16,7 @@ class FinancialCategory extends Model
         'active' => 'boolean',
     ];
 
-    public function subcategories()
+    public function subcategories(): HasMany
     {
         return $this->hasMany(FinancialSubcategory::class, 'financial_category_id');
     }

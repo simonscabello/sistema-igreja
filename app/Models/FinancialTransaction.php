@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class FinancialTransaction extends Model
 {
@@ -23,12 +25,12 @@ class FinancialTransaction extends Model
         'action_date' => 'date',
     ];
 
-    public function subcategory()
+    public function subcategory(): BelongsTo
     {
         return $this->belongsTo(FinancialSubcategory::class, 'financial_subcategory_id');
     }
 
-    public function category()
+    public function category(): HasOneThrough
     {
         return $this->hasOneThrough(
             FinancialCategory::class,
@@ -40,7 +42,7 @@ class FinancialTransaction extends Model
         );
     }
 
-    public function campaign()
+    public function campaign(): BelongsTo
     {
         return $this->belongsTo(Campaign::class);
     }

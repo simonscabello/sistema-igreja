@@ -6,13 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\Visitor;
 use App\Http\Requests\StoreVisitorRequest;
 use App\Http\Requests\UpdateVisitorRequest;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class VisitorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $query = Visitor::query();
 
@@ -30,18 +29,12 @@ class VisitorController extends Controller
         return view('visitors.index', compact('visitors'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): View
     {
         return view('visitors.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreVisitorRequest $request)
+    public function store(StoreVisitorRequest $request): RedirectResponse
     {
         Visitor::create($request->validated());
 
@@ -49,26 +42,17 @@ class VisitorController extends Controller
             ->with('success', 'Visitante cadastrado com sucesso.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Visitor $visitor)
+    public function show(Visitor $visitor): View
     {
         return view('visitors.show', compact('visitor'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Visitor $visitor)
+    public function edit(Visitor $visitor): View
     {
         return view('visitors.edit', compact('visitor'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateVisitorRequest $request, Visitor $visitor)
+    public function update(UpdateVisitorRequest $request, Visitor $visitor): RedirectResponse
     {
         $visitor->update($request->validated());
 
@@ -76,10 +60,7 @@ class VisitorController extends Controller
             ->with('success', 'Visitante atualizado com sucesso.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Visitor $visitor)
+    public function destroy(Visitor $visitor): RedirectResponse
     {
         $visitor->delete();
 

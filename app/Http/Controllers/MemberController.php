@@ -7,13 +7,14 @@ use App\Models\Member;
 use App\Http\Requests\StoreMemberRequest;
 use App\Http\Requests\UpdateMemberRequest;
 use App\Services\FileService;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class MemberController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+    public function __construct(private readonly FileService $fileService) {}
+
+    public function index(Request $request): View
     {
         $query = Member::query();
 
@@ -32,64 +33,56 @@ class MemberController extends Controller
         return view('members.index', compact('members'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): View
     {
         return view('members.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreMemberRequest $request, FileService $fileService)
+    public function store(StoreMemberRequest $request): RedirectResponse
     {
         $member = Member::create($request->validated());
         if ($request->hasFile('foto_perfil')) {
-            $fileService->uploadFile($request->file('foto_perfil'), $member, 'foto_perfil');
+            $this->fileService->uploadFile(
+                file: $request->file('foto_perfil'),
+                related: $member,
+                collection: 'foto_perfil'
+            );
         }
+
         return redirect()->route('members.index')
             ->with('success', 'Membro cadastrado com sucesso.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Member $member)
+    public function show(Member $member): View
     {
         return view('members.show', compact('member'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Member $member)
+    public function edit(Member $member): View
     {
         return view('members.edit', compact('member'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateMemberRequest $request, Member $member, FileService $fileService)
+    public function update(UpdateMemberRequest $request, Member $member): RedirectResponse
     {
         $member->update($request->validated());
         if ($request->hasFile('foto_perfil')) {
             $fotoAtual = $member->foto->first();
             if ($fotoAtual) {
-                $fileService->deleteFile($fotoAtual);
+                $this->fileService->deleteFile($fotoAtual);
             }
-            $fileService->uploadFile($request->file('foto_perfil'), $member, 'foto_perfil');
+            $this->fileService->uploadFile(
+                file: $request->file('foto_perfil'),
+                related: $member,
+                collection: 'foto_perfil'
+            );
         }
+
         return redirect()->route('members.index')
             ->with('success', 'Membro atualizado com sucesso.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Member $member)
+    public function destroy(Member $member): RedirectResponse
     {
         $member->delete();
 

@@ -7,10 +7,12 @@ use App\Models\WorshipSet;
 use App\Models\Song;
 use App\Http\Requests\StoreWorshipSetRequest;
 use App\Http\Requests\UpdateWorshipSetRequest;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class WorshipSetController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $query = WorshipSet::with('songs');
 
@@ -39,14 +41,15 @@ class WorshipSetController extends Controller
         return view('worship-sets.index', compact('worshipSets'));
     }
 
-    public function create()
+    public function create(): View
     {
         $songs = Song::orderBy('name')->get();
         $clonedSet = null;
+
         return view('worship-sets.create', compact('songs', 'clonedSet'));
     }
 
-    public function store(StoreWorshipSetRequest $request)
+    public function store(StoreWorshipSetRequest $request): RedirectResponse
     {
         $worshipSet = WorshipSet::create($request->validated());
 
@@ -65,20 +68,22 @@ class WorshipSetController extends Controller
             ->with('success', 'Repertório cadastrado com sucesso.');
     }
 
-    public function show(WorshipSet $worshipSet)
+    public function show(WorshipSet $worshipSet): View
     {
         $worshipSet->load('songs');
+
         return view('worship-sets.show', compact('worshipSet'));
     }
 
-    public function edit(WorshipSet $worshipSet)
+    public function edit(WorshipSet $worshipSet): View
     {
         $worshipSet->load('songs');
         $songs = Song::orderBy('name')->get();
+
         return view('worship-sets.edit', compact('worshipSet', 'songs'));
     }
 
-    public function update(UpdateWorshipSetRequest $request, WorshipSet $worshipSet)
+    public function update(UpdateWorshipSetRequest $request, WorshipSet $worshipSet): RedirectResponse
     {
         $worshipSet->update($request->validated());
 
@@ -99,7 +104,7 @@ class WorshipSetController extends Controller
             ->with('success', 'Repertório atualizado com sucesso.');
     }
 
-    public function destroy(WorshipSet $worshipSet)
+    public function destroy(WorshipSet $worshipSet): RedirectResponse
     {
         $worshipSet->delete();
 
@@ -107,7 +112,7 @@ class WorshipSetController extends Controller
             ->with('success', 'Repertório excluído com sucesso.');
     }
 
-    public function clone(WorshipSet $worshipSet)
+    public function clone(WorshipSet $worshipSet): View
     {
         $songs = Song::orderBy('name')->get();
         $clonedSet = $worshipSet->replicate();
@@ -116,10 +121,9 @@ class WorshipSetController extends Controller
         $clonedSet->preacher = '';
         $clonedSet->order_notes = '';
         $clonedSet->observations = '';
-        
-        // Carregar as músicas do repertório original para o clone
+
         $clonedSet->songs = $worshipSet->songs;
-        
+
         return view('worship-sets.create', compact('songs', 'clonedSet'));
     }
-} 
+}

@@ -7,13 +7,12 @@ use App\Models\Song;
 use App\Models\Tag;
 use App\Http\Requests\StoreSongRequest;
 use App\Http\Requests\UpdateSongRequest;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class SongController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $query = Song::with('tags');
 
@@ -38,19 +37,14 @@ class SongController extends Controller
         return view('songs.index', compact('songs', 'tags'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): View
     {
         $tags = Tag::orderBy('name')->get();
+
         return view('songs.create', compact('tags'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreSongRequest $request)
+    public function store(StoreSongRequest $request): RedirectResponse
     {
         $song = Song::create($request->validated());
 
@@ -67,29 +61,22 @@ class SongController extends Controller
             ->with('success', 'Música cadastrada com sucesso.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Song $song)
+    public function show(Song $song): View
     {
         $song->load('tags');
+
         return view('songs.show', compact('song'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Song $song)
+    public function edit(Song $song): View
     {
         $song->load('tags');
         $tags = Tag::orderBy('name')->get();
+
         return view('songs.edit', compact('song', 'tags'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateSongRequest $request, Song $song)
+    public function update(UpdateSongRequest $request, Song $song): RedirectResponse
     {
         $song->update($request->validated());
 
@@ -108,10 +95,7 @@ class SongController extends Controller
             ->with('success', 'Música atualizada com sucesso.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Song $song)
+    public function destroy(Song $song): RedirectResponse
     {
         $song->delete();
 

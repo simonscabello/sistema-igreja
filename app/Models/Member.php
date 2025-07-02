@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Traits\HasFiles;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Member extends Model
 {
@@ -37,24 +40,24 @@ class Member extends Model
         'wedding_date' => 'date',
     ];
 
-    public function responsibleDepartments()
+    public function responsibleDepartments(): BelongsToMany
     {
         return $this->belongsToMany(Department::class, 'department_responsible_member')
                     ->withTimestamps();
     }
 
-    public function departments()
+    public function departments(): BelongsToMany
     {
         return $this->belongsToMany(Department::class, 'department_member')
                     ->withTimestamps();
     }
 
-    public function getAllDepartmentsAttribute()
+    public function getAllDepartmentsAttribute(): Collection
     {
         return $this->responsibleDepartments->merge($this->departments);
     }
 
-    public function foto()
+    public function foto(): MorphToMany
     {
         return $this->files('foto_perfil');
     }

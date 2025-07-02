@@ -7,20 +7,21 @@ use App\Models\Department;
 use App\Models\Member;
 use App\Http\Requests\StoreDepartmentRequest;
 use App\Http\Requests\UpdateDepartmentRequest;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class DepartmentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $query = Department::with(['responsibleMembers', 'members']);
 
         if ($request->filled('search')) {
             $search = $request->input('search');
-            $query->where('title', 'like', "%{$search}%")
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
                   ->orWhere('description', 'like', "%{$search}%");
+            });
         }
 
         if ($request->filled('status')) {
@@ -37,19 +38,13 @@ class DepartmentController extends Controller
         return view('departments.index', compact('departments'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): View
     {
         $members = Member::orderBy('full_name')->get();
         return view('departments.create', compact('members'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreDepartmentRequest $request)
+    public function store(StoreDepartmentRequest $request): RedirectResponse
     {
         $department = Department::create($request->validated());
 
@@ -65,29 +60,20 @@ class DepartmentController extends Controller
             ->with('success', 'Departamento cadastrado com sucesso.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Department $departamento)
+    public function show(Department $departamento): View
     {
         $departamento->load(['responsibleMembers', 'members']);
         return view('departments.show', compact('departamento'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Department $departamento)
+    public function edit(Department $departamento): View
     {
         $members = Member::orderBy('full_name')->get();
         $departamento->load(['responsibleMembers', 'members']);
         return view('departments.edit', compact('departamento', 'members'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateDepartmentRequest $request, Department $departamento)
+    public function update(UpdateDepartmentRequest $request, Department $departamento): RedirectResponse
     {
         $departamento->update($request->validated());
 
@@ -98,10 +84,7 @@ class DepartmentController extends Controller
             ->with('success', 'Departamento atualizado com sucesso.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Department $departamento)
+    public function destroy(Department $departamento): RedirectResponse
     {
         $departamento->delete();
 

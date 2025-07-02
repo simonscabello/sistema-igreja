@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Campaign extends Model
 {
@@ -24,22 +25,22 @@ class Campaign extends Model
         'end_date' => 'date',
     ];
 
-    public function transactions()
+    public function transactions(): HasMany
     {
         return $this->hasMany(FinancialTransaction::class);
     }
 
-    public function getProgressAttribute()
+    public function getProgressAttribute(): float
     {
         return $this->transactions()->where('type', 'entrada')->sum('amount');
     }
 
-    public function getProgressPercentageAttribute()
+    public function getProgressPercentageAttribute(): float
     {
         if ($this->goal_amount <= 0) {
             return 0;
         }
-        
+
         $progress = $this->progress;
         return min(100, ($progress / $this->goal_amount) * 100);
     }
