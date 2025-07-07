@@ -24,6 +24,31 @@ check_command() {
 
 check_command "php"
 check_command "composer2"
+
+# Verificar e instalar NVM se necessário
+echo "📦 Verificando NVM..."
+if [ ! -d "$HOME/.nvm" ]; then
+    echo "📦 Instalando NVM..."
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+
+    # Carregar NVM no shell atual
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+else
+    echo "✅ NVM já está instalado"
+    # Carregar NVM
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+fi
+
+# Instalar Node.js LTS
+echo "📦 Instalando Node.js LTS..."
+nvm install --lts
+nvm use --lts
+
+# Verificar npm após instalação do Node.js
 check_command "npm"
 
 echo "✅ Todas as dependências estão disponíveis"
