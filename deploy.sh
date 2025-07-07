@@ -68,6 +68,10 @@ npm ci
 echo "🔨 Compilando assets..."
 npm run build
 
+# Limpar node_modules após build
+echo "🧹 Removendo node_modules (não necessário em produção)..."
+rm -rf node_modules
+
 # Executar migrações
 echo "🗄️ Executando migrações do banco de dados..."
 php artisan migrate --force
