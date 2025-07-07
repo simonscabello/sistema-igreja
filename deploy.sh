@@ -45,8 +45,11 @@ fi
 
 # Instalar Node.js LTS
 echo "📦 Instalando Node.js LTS..."
+# Desabilitar temporariamente set -u para evitar erro com NVM
+set +u
 nvm install --lts
 nvm use --lts
+set -u
 
 # Verificar npm após instalação do Node.js
 check_command "npm"
