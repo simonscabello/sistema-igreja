@@ -16,6 +16,8 @@ class UserController extends Controller
 
     public function index(Request $request): View
     {
+        $this->authorize('gerenciar_usuarios');
+
         $query = User::query();
 
         if ($request->filled('search')) {
@@ -30,6 +32,8 @@ class UserController extends Controller
 
     public function create(): View
     {
+        $this->authorize('gerenciar_usuarios');
+
         $roles = Role::orderBy('name')->get();
 
         return view('users.create', compact('roles'));
@@ -37,6 +41,8 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request): RedirectResponse
     {
+        $this->authorize('gerenciar_usuarios');
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -52,6 +58,8 @@ class UserController extends Controller
 
     public function show(User $user): View
     {
+        $this->authorize('gerenciar_usuarios');
+
         $user->load('roles');
 
         return view('users.show', compact('user'));
@@ -59,6 +67,8 @@ class UserController extends Controller
 
     public function edit(User $user): View
     {
+        $this->authorize('gerenciar_usuarios');
+
         $roles = Role::orderBy('name')->get();
         $user->load('roles');
 
@@ -67,6 +77,8 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
+        $this->authorize('gerenciar_usuarios');
+
         $updateData = [
             'name' => $request->name,
             'email' => $request->email,
@@ -89,6 +101,8 @@ class UserController extends Controller
 
     public function destroy(User $user): RedirectResponse
     {
+        $this->authorize('gerenciar_usuarios');
+
         if ($user->id === auth()->id()) {
             return redirect()->route('users.index')->with('error', 'Não é possível excluir seu próprio usuário.');
         }

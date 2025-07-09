@@ -14,6 +14,8 @@ class WorshipSetController extends Controller
 {
     public function index(Request $request): View
     {
+        $this->authorize('visualizar_escalas_louvor');
+
         $query = WorshipSet::with('songs');
 
         if ($request->filled('search')) {
@@ -43,6 +45,8 @@ class WorshipSetController extends Controller
 
     public function create(): View
     {
+        $this->authorize('gerenciar_escalas_louvor');
+
         $songs = Song::orderBy('name')->get();
         $clonedSet = null;
 
@@ -51,6 +55,8 @@ class WorshipSetController extends Controller
 
     public function store(StoreWorshipSetRequest $request): RedirectResponse
     {
+        $this->authorize('gerenciar_escalas_louvor');
+
         $worshipSet = WorshipSet::create($request->validated());
 
         if ($request->filled('songs')) {
@@ -70,6 +76,8 @@ class WorshipSetController extends Controller
 
     public function show(WorshipSet $worshipSet): View
     {
+        $this->authorize('visualizar_escalas_louvor');
+
         $worshipSet->load('songs');
 
         return view('worship-sets.show', compact('worshipSet'));
@@ -77,6 +85,8 @@ class WorshipSetController extends Controller
 
     public function edit(WorshipSet $worshipSet): View
     {
+        $this->authorize('gerenciar_escalas_louvor');
+
         $worshipSet->load('songs');
         $songs = Song::orderBy('name')->get();
 
@@ -85,6 +95,8 @@ class WorshipSetController extends Controller
 
     public function update(UpdateWorshipSetRequest $request, WorshipSet $worshipSet): RedirectResponse
     {
+        $this->authorize('gerenciar_escalas_louvor');
+
         $worshipSet->update($request->validated());
 
         if ($request->filled('songs')) {
@@ -106,6 +118,8 @@ class WorshipSetController extends Controller
 
     public function destroy(WorshipSet $worshipSet): RedirectResponse
     {
+        $this->authorize('gerenciar_escalas_louvor');
+
         $worshipSet->delete();
 
         return redirect()->route('worship-sets.index')
@@ -114,6 +128,8 @@ class WorshipSetController extends Controller
 
     public function clone(WorshipSet $worshipSet): View
     {
+        $this->authorize('gerenciar_escalas_louvor');
+
         $songs = Song::orderBy('name')->get();
         $clonedSet = $worshipSet->replicate();
         $clonedSet->date = now()->addDay();

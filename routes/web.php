@@ -91,13 +91,13 @@ Route::middleware(['auth'])->group(function () {
     });
 
                 // Gestão de Roles (apenas para administradores)
-    Route::resource('roles', RoleController::class)->middleware(['auth', 'role:administrador']);
+    Route::resource('roles', RoleController::class)->middleware(['role:administrador']);
 
     // Gestão de Permissions (apenas para administradores)
-    Route::resource('permissions', PermissionController::class)->middleware(['auth', 'role:administrador']);
+    Route::resource('permissions', PermissionController::class)->middleware(['role:administrador']);
 
     // Gestão de Users (apenas para administradores)
-    Route::resource('users', UserController::class)->middleware(['auth', 'role:administrador']);
+    Route::resource('users', UserController::class)->middleware(['role:administrador']);
 });
 
 // Rotas de autenticação

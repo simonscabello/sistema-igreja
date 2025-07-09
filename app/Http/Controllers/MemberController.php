@@ -9,13 +9,18 @@ use App\Http\Requests\UpdateMemberRequest;
 use App\Services\FileService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class MemberController extends Controller
 {
+    use AuthorizesRequests;
+    
     public function __construct(private readonly FileService $fileService) {}
 
     public function index(Request $request): View
     {
+        $this->authorize('visualizar_membros');
+
         $query = Member::query();
 
         if ($request->filled('search')) {
@@ -35,11 +40,15 @@ class MemberController extends Controller
 
     public function create(): View
     {
+        $this->authorize('criar_membros');
+
         return view('members.create');
     }
 
     public function store(StoreMemberRequest $request): RedirectResponse
     {
+        $this->authorize('criar_membros');
+
         $member = Member::create($request->validated());
         if ($request->hasFile('foto_perfil')) {
             $this->fileService->uploadFile(
@@ -55,16 +64,22 @@ class MemberController extends Controller
 
     public function show(Member $member): View
     {
+        $this->authorize('visualizar_membros');
+
         return view('members.show', compact('member'));
     }
 
     public function edit(Member $member): View
     {
+        $this->authorize('editar_membros');
+
         return view('members.edit', compact('member'));
     }
 
     public function update(UpdateMemberRequest $request, Member $member): RedirectResponse
     {
+        $this->authorize('editar_membros');
+
         $member->update($request->validated());
         if ($request->hasFile('foto_perfil')) {
             $fotoAtual = $member->foto->first();
@@ -84,6 +99,8 @@ class MemberController extends Controller
 
     public function destroy(Member $member): RedirectResponse
     {
+        $this->authorize('excluir_membros');
+
         $member->delete();
 
         return redirect()->route('members.index')

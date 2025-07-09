@@ -12,6 +12,8 @@ class FinancialReportController extends Controller
 {
     public function __invoke(Request $request): View|JsonResponse
     {
+        $this->authorize('visualizar_financeiro');
+
         $month = $this->normalizeMonth($request->get('month', now()->month));
         $year = $request->get('year', now()->year);
 

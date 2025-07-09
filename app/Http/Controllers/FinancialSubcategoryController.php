@@ -14,6 +14,8 @@ class FinancialSubcategoryController extends Controller
 {
     public function index(Request $request): View
     {
+        $this->authorize('gerenciar_categorias_financeiras');
+
         $query = FinancialSubcategory::with('financialCategory');
 
         if ($request->filled('search')) {
@@ -33,6 +35,8 @@ class FinancialSubcategoryController extends Controller
 
     public function create(): View
     {
+        $this->authorize('gerenciar_categorias_financeiras');
+
         $categories = FinancialCategory::where('active', true)->get();
 
         return view('financial-subcategories.create', compact('categories'));
@@ -40,6 +44,8 @@ class FinancialSubcategoryController extends Controller
 
     public function store(StoreFinancialSubcategoryRequest $request): RedirectResponse
     {
+        $this->authorize('gerenciar_categorias_financeiras');
+
         $data = $request->validated();
 
         if (isset($data['subcategories']) && is_array($data['subcategories'])) {
@@ -60,6 +66,8 @@ class FinancialSubcategoryController extends Controller
 
     public function edit(FinancialSubcategory $financialSubcategory): View
     {
+        $this->authorize('gerenciar_categorias_financeiras');
+
         $categories = FinancialCategory::where('active', true)->get();
 
         return view('financial-subcategories.edit', compact('financialSubcategory', 'categories'));
@@ -67,6 +75,8 @@ class FinancialSubcategoryController extends Controller
 
     public function update(UpdateFinancialSubcategoryRequest $request, FinancialSubcategory $financialSubcategory): RedirectResponse
     {
+        $this->authorize('gerenciar_categorias_financeiras');
+
         $data = $request->validated();
 
         $financialSubcategory->update($data);
@@ -77,6 +87,8 @@ class FinancialSubcategoryController extends Controller
 
     public function destroy(FinancialSubcategory $financialSubcategory): RedirectResponse
     {
+        $this->authorize('gerenciar_categorias_financeiras');
+
         if ($financialSubcategory->transactions()->exists()) {
             return redirect()->route('subcategories.index')
                 ->with('error', 'Não é possível excluir uma subcategoria que possui transações.');

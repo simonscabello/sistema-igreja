@@ -14,6 +14,8 @@ class DepartmentController extends Controller
 {
     public function index(Request $request): View
     {
+        $this->authorize('visualizar_departamentos');
+
         $query = Department::with(['responsibleMembers', 'members']);
 
         if ($request->filled('search')) {
@@ -40,12 +42,16 @@ class DepartmentController extends Controller
 
     public function create(): View
     {
+        $this->authorize('gerenciar_departamentos');
+
         $members = Member::orderBy('full_name')->get();
         return view('departments.create', compact('members'));
     }
 
     public function store(StoreDepartmentRequest $request): RedirectResponse
     {
+        $this->authorize('gerenciar_departamentos');
+
         $department = Department::create($request->validated());
 
         if ($request->filled('responsible_members')) {
@@ -62,12 +68,16 @@ class DepartmentController extends Controller
 
     public function show(Department $departamento): View
     {
+        $this->authorize('visualizar_departamentos');
+
         $departamento->load(['responsibleMembers', 'members']);
         return view('departments.show', compact('departamento'));
     }
 
     public function edit(Department $departamento): View
     {
+        $this->authorize('gerenciar_departamentos');
+
         $members = Member::orderBy('full_name')->get();
         $departamento->load(['responsibleMembers', 'members']);
         return view('departments.edit', compact('departamento', 'members'));
@@ -75,6 +85,8 @@ class DepartmentController extends Controller
 
     public function update(UpdateDepartmentRequest $request, Department $departamento): RedirectResponse
     {
+        $this->authorize('gerenciar_departamentos');
+
         $departamento->update($request->validated());
 
         $departamento->responsibleMembers()->sync($request->responsible_members ?? []);
@@ -86,6 +98,8 @@ class DepartmentController extends Controller
 
     public function destroy(Department $departamento): RedirectResponse
     {
+        $this->authorize('gerenciar_departamentos');
+
         $departamento->delete();
 
         return redirect()->route('departments.index')

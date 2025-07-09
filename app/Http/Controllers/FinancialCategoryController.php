@@ -13,6 +13,8 @@ class FinancialCategoryController extends Controller
 {
     public function index(Request $request): View
     {
+        $this->authorize('gerenciar_categorias_financeiras');
+
         $query = FinancialCategory::query();
 
         if ($request->filled('search')) {
@@ -30,11 +32,15 @@ class FinancialCategoryController extends Controller
 
     public function create(): View
     {
+        $this->authorize('gerenciar_categorias_financeiras');
+
         return view('financial-categories.create');
     }
 
     public function store(StoreFinancialCategoryRequest $request): RedirectResponse
     {
+        $this->authorize('gerenciar_categorias_financeiras');
+
         FinancialCategory::create($request->validated());
 
         return redirect()->route('financial-categories.index')
@@ -43,11 +49,15 @@ class FinancialCategoryController extends Controller
 
     public function edit(FinancialCategory $financialCategory): View
     {
+        $this->authorize('gerenciar_categorias_financeiras');
+
         return view('financial-categories.edit', compact('financialCategory'));
     }
 
     public function update(UpdateFinancialCategoryRequest $request, FinancialCategory $financialCategory): RedirectResponse
     {
+        $this->authorize('gerenciar_categorias_financeiras');
+
         $financialCategory->update($request->validated());
 
         return redirect()->route('financial-categories.index')
@@ -56,6 +66,8 @@ class FinancialCategoryController extends Controller
 
     public function destroy(FinancialCategory $financialCategory): RedirectResponse
     {
+        $this->authorize('gerenciar_categorias_financeiras');
+
         $financialCategory->delete();
 
         return redirect()->route('financial-categories.index')

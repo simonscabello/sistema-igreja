@@ -15,6 +15,8 @@ class RoleController extends Controller
 
     public function index(Request $request): View
     {
+        $this->authorize('gerenciar_roles');
+
         $query = Role::query();
 
         if ($request->filled('search')) {
@@ -28,6 +30,8 @@ class RoleController extends Controller
 
     public function create(): View
     {
+        $this->authorize('gerenciar_roles');
+
         $permissions = Permission::orderBy('name')->get();
 
         return view('roles.create', compact('permissions'));
@@ -35,6 +39,8 @@ class RoleController extends Controller
 
     public function store(StoreRoleRequest $request): RedirectResponse
     {
+        $this->authorize('gerenciar_roles');
+
         $role = Role::create(['name' => $request->name]);
 
         if ($request->filled('permissions')) {
@@ -46,6 +52,8 @@ class RoleController extends Controller
 
     public function show(Role $role): View
     {
+        $this->authorize('gerenciar_roles');
+
         $role->load('permissions');
 
         return view('roles.show', compact('role'));
@@ -53,6 +61,8 @@ class RoleController extends Controller
 
     public function edit(Role $role): View
     {
+        $this->authorize('gerenciar_roles');
+
         $permissions = Permission::orderBy('name')->get();
         $role->load('permissions');
 
@@ -61,6 +71,8 @@ class RoleController extends Controller
 
     public function update(UpdateRoleRequest $request, Role $role): RedirectResponse
     {
+        $this->authorize('gerenciar_roles');
+
         $role->update(['name' => $request->name]);
 
         if ($request->filled('permissions')) {
@@ -74,6 +86,8 @@ class RoleController extends Controller
 
     public function destroy(Role $role): RedirectResponse
     {
+        $this->authorize('gerenciar_roles');
+
         if ($role->users()->exists()) {
             return redirect()->route('roles.index')->with('error', 'Não é possível excluir um role que possui usuários associados.');
         }

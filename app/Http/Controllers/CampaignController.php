@@ -8,11 +8,16 @@ use App\Http\Requests\UpdateCampaignRequest;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class CampaignController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index(Request $request): View
     {
+        $this->authorize('visualizar_financeiro');
+
         $query = Campaign::with('transactions');
 
         if ($request->filled('search')) {
@@ -34,34 +39,46 @@ class CampaignController extends Controller
 
     public function create(): View
     {
+        $this->authorize('gerenciar_campanhas');
+
         return view('campaigns.create');
     }
 
     public function store(StoreCampaignRequest $request): RedirectResponse
     {
+        $this->authorize('gerenciar_campanhas');
+
         Campaign::create($request->validated());
         return redirect()->route('campaigns.index')->with('success', 'Campanha criada com sucesso.');
     }
 
     public function show(Campaign $campaign): View
     {
+        $this->authorize('visualizar_financeiro');
+
         $campaign->load('transactions.subcategory.financialCategory');
         return view('campaigns.show', compact('campaign'));
     }
 
     public function edit(Campaign $campaign): View
     {
+        $this->authorize('gerenciar_campanhas');
+
         return view('campaigns.edit', compact('campaign'));
     }
 
     public function update(UpdateCampaignRequest $request, Campaign $campaign): RedirectResponse
     {
+        $this->authorize('gerenciar_campanhas');
+
         $campaign->update($request->validated());
         return redirect()->route('campaigns.index')->with('success', 'Campanha atualizada com sucesso.');
     }
 
     public function destroy(Campaign $campaign): RedirectResponse
     {
+        $this->authorize('gerenciar_campanhas');
+
         if ($campaign->transactions()->exists()) {
             return redirect()->route('campaigns.index')
                 ->with('error', 'Não é possível excluir uma campanha que possui transações.');

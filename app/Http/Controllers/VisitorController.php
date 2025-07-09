@@ -13,6 +13,8 @@ class VisitorController extends Controller
 {
     public function index(Request $request): View
     {
+        $this->authorize('visualizar_visitantes');
+
         $query = Visitor::query();
 
         if ($request->filled('search')) {
@@ -31,11 +33,15 @@ class VisitorController extends Controller
 
     public function create(): View
     {
+        $this->authorize('criar_visitantes');
+
         return view('visitors.create');
     }
 
     public function store(StoreVisitorRequest $request): RedirectResponse
     {
+        $this->authorize('criar_visitantes');
+
         Visitor::create($request->validated());
 
         return redirect()->route('visitors.index')
@@ -44,16 +50,22 @@ class VisitorController extends Controller
 
     public function show(Visitor $visitor): View
     {
+        $this->authorize('visualizar_visitantes');
+
         return view('visitors.show', compact('visitor'));
     }
 
     public function edit(Visitor $visitor): View
     {
+        $this->authorize('editar_visitantes');
+
         return view('visitors.edit', compact('visitor'));
     }
 
     public function update(UpdateVisitorRequest $request, Visitor $visitor): RedirectResponse
     {
+        $this->authorize('editar_visitantes');
+
         $visitor->update($request->validated());
 
         return redirect()->route('visitors.index')
@@ -62,6 +74,8 @@ class VisitorController extends Controller
 
     public function destroy(Visitor $visitor): RedirectResponse
     {
+        $this->authorize('excluir_visitantes');
+
         $visitor->delete();
 
         return redirect()->route('visitors.index')

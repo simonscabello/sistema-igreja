@@ -14,6 +14,8 @@ class SongController extends Controller
 {
     public function index(Request $request): View
     {
+        $this->authorize('visualizar_musicas');
+
         $query = Song::with('tags');
 
         if ($request->filled('search')) {
@@ -39,6 +41,8 @@ class SongController extends Controller
 
     public function create(): View
     {
+        $this->authorize('gerenciar_musicas');
+
         $tags = Tag::orderBy('name')->get();
 
         return view('songs.create', compact('tags'));
@@ -46,6 +50,8 @@ class SongController extends Controller
 
     public function store(StoreSongRequest $request): RedirectResponse
     {
+        $this->authorize('gerenciar_musicas');
+
         $song = Song::create($request->validated());
 
         if ($request->filled('tags')) {
@@ -63,6 +69,8 @@ class SongController extends Controller
 
     public function show(Song $song): View
     {
+        $this->authorize('visualizar_musicas');
+
         $song->load('tags');
 
         return view('songs.show', compact('song'));
@@ -70,6 +78,8 @@ class SongController extends Controller
 
     public function edit(Song $song): View
     {
+        $this->authorize('gerenciar_musicas');
+
         $song->load('tags');
         $tags = Tag::orderBy('name')->get();
 
@@ -78,6 +88,8 @@ class SongController extends Controller
 
     public function update(UpdateSongRequest $request, Song $song): RedirectResponse
     {
+        $this->authorize('gerenciar_musicas');
+
         $song->update($request->validated());
 
         if ($request->filled('tags')) {
@@ -97,6 +109,8 @@ class SongController extends Controller
 
     public function destroy(Song $song): RedirectResponse
     {
+        $this->authorize('gerenciar_musicas');
+
         $song->delete();
 
         return redirect()->route('songs.index')

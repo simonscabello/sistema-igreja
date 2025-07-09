@@ -15,6 +15,8 @@ class FinancialTransactionController extends Controller
 {
     public function index(Request $request): View
     {
+        $this->authorize('visualizar_financeiro');
+
         $query = FinancialTransaction::with(['subcategory.financialCategory', 'campaign']);
 
         if ($request->filled('search')) {
@@ -54,6 +56,8 @@ class FinancialTransactionController extends Controller
 
     public function create(): View
     {
+        $this->authorize('criar_transacoes');
+
         $categories = FinancialCategory::with('subcategories')->where('active', true)->get();
         $campaigns = Campaign::where('status', 'ativo')->get();
 
@@ -62,6 +66,8 @@ class FinancialTransactionController extends Controller
 
     public function show(FinancialTransaction $financialTransaction): View
     {
+        $this->authorize('visualizar_financeiro');
+
         $financialTransaction->load(['subcategory.financialCategory', 'campaign']);
 
         return view('financial-transactions.show', compact('financialTransaction'));
@@ -69,6 +75,8 @@ class FinancialTransactionController extends Controller
 
     public function store(StoreFinancialTransactionRequest $request): RedirectResponse
     {
+        $this->authorize('criar_transacoes');
+
         FinancialTransaction::create($request->validated());
 
         return redirect()->route('financial-transactions.index')->with('success', 'Transação criada com sucesso.');
@@ -76,6 +84,8 @@ class FinancialTransactionController extends Controller
 
     public function edit(FinancialTransaction $financialTransaction): View
     {
+        $this->authorize('editar_transacoes');
+
         $categories = FinancialCategory::with('subcategories')->where('active', true)->get();
         $campaigns = Campaign::where('status', 'ativo')->get();
 
@@ -84,6 +94,8 @@ class FinancialTransactionController extends Controller
 
     public function update(UpdateFinancialTransactionRequest $request, FinancialTransaction $financialTransaction): RedirectResponse
     {
+        $this->authorize('editar_transacoes');
+
         $financialTransaction->update($request->validated());
 
         return redirect()->route('financial-transactions.index')
@@ -92,6 +104,8 @@ class FinancialTransactionController extends Controller
 
     public function destroy(FinancialTransaction $financialTransaction): RedirectResponse
     {
+        $this->authorize('excluir_transacoes');
+
         $financialTransaction->delete();
 
         return redirect()->route('financial-transactions.index')
