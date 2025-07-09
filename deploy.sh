@@ -76,6 +76,10 @@ rm -rf node_modules
 echo "🗄️ Executando migrações do banco de dados..."
 php artisan migrate --force
 
+# Executar seeders
+echo "🌱 Executando seeders..."
+php artisan db:seed
+
 # Limpar caches
 echo "🧹 Limpando caches..."
 php artisan optimize:clear

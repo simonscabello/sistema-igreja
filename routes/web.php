@@ -13,6 +13,9 @@ use App\Http\Controllers\SongController;
 use App\Http\Controllers\WorshipSetController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Rota raiz
@@ -86,6 +89,15 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/{worshipSet}', [WorshipSetController::class, 'destroy'])->name('destroy');
         Route::get('/{worshipSet}/clone', [WorshipSetController::class, 'clone'])->name('clone');
     });
+
+                // Gestão de Roles (apenas para administradores)
+    Route::resource('roles', RoleController::class)->middleware(['auth', 'role:administrador']);
+
+    // Gestão de Permissions (apenas para administradores)
+    Route::resource('permissions', PermissionController::class)->middleware(['auth', 'role:administrador']);
+
+    // Gestão de Users (apenas para administradores)
+    Route::resource('users', UserController::class)->middleware(['auth', 'role:administrador']);
 });
 
 // Rotas de autenticação
