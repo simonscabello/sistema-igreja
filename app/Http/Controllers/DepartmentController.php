@@ -66,12 +66,12 @@ class DepartmentController extends Controller
             ->with('success', 'Departamento cadastrado com sucesso.');
     }
 
-    public function show(Department $departments): View
+    public function show(Department $department): View
     {
         $this->authorize('visualizar_departamentos');
 
-        $departments->load(['responsibleMembers', 'members']);
-        return view('departments.show', compact('departments'));
+        $department->load(['responsibleMembers', 'members']);
+        return view('departments.show', compact('department'));
     }
 
     public function edit(Department $department): View
@@ -80,28 +80,28 @@ class DepartmentController extends Controller
 
         $members = Member::orderBy('full_name')->get();
         $department->load(['responsibleMembers', 'members']);
-        
+
         return view('departments.edit', compact('department', 'members'));
     }
 
-    public function update(UpdateDepartmentRequest $request, Department $departments): RedirectResponse
+    public function update(UpdateDepartmentRequest $request, Department $department): RedirectResponse
     {
         $this->authorize('gerenciar_departamentos');
 
-        $departments->update($request->validated());
+        $department->update($request->validated());
 
-        $departments->responsibleMembers()->sync($request->responsible_members ?? []);
-        $departments->members()->sync($request->members ?? []);
+        $department->responsibleMembers()->sync($request->responsible_members ?? []);
+        $department->members()->sync($request->members ?? []);
 
         return redirect()->route('departments.index')
             ->with('success', 'Departamento atualizado com sucesso.');
     }
 
-    public function destroy(Department $departments): RedirectResponse
+    public function destroy(Department $department): RedirectResponse
     {
         $this->authorize('gerenciar_departamentos');
 
-        $departments->delete();
+        $department->delete();
 
         return redirect()->route('departments.index')
             ->with('success', 'Departamento excluído com sucesso.');
