@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\ForcePasswordChangeController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
@@ -53,6 +55,20 @@ Route::middleware('auth')->group(function () {
     Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
 
     Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+
+    // Force password change routes (public routes, but require authentication)
+    Route::get('password/change', [ForcePasswordChangeController::class, 'show'])
+        ->name('password.force-change');
+
+    Route::post('password/change', [ForcePasswordChangeController::class, 'update'])
+        ->name('password.force-change.update');
+
+    // Legacy password change routes (deprecated)
+    Route::get('change-password', [ChangePasswordController::class, 'show'])
+        ->name('password.change.show');
+
+    Route::post('change-password', [ChangePasswordController::class, 'update'])
+        ->name('password.change.update');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');

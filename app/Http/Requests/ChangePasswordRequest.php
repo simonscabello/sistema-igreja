@@ -4,14 +4,16 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules;
 
-class StoreUserRequest extends FormRequest
+class ChangePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
+        // Only authenticated users can change password
         return Auth::check();
     }
 
@@ -23,10 +25,7 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email',
-            'roles' => 'nullable|array',
-            'roles.*' => 'string|exists:roles,name',
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ];
     }
 
@@ -36,9 +35,18 @@ class StoreUserRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name' => 'nome',
-            'email' => 'email',
-            'roles' => 'roles',
+            'password' => 'nova senha',
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     */
+    public function messages(): array
+    {
+        return [
+            'password.required' => 'A nova senha é obrigatória.',
+            'password.confirmed' => 'As senhas não coincidem.',
         ];
     }
 }

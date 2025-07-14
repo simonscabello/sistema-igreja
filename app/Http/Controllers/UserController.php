@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -39,21 +40,26 @@ class UserController extends Controller
         return view('users.create', compact('roles'));
     }
 
-    public function store(StoreUserRequest $request): RedirectResponse
+    public function store(StoreUserRequest $request): View
     {
         $this->authorize('gerenciar_usuarios');
+
+        // Generate temporary password based on user name
+        $temporaryPassword = User::generateTemporaryPassword($request->name);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($temporaryPassword),
+            'must_change_password' => true,
         ]);
 
         if ($request->filled('roles')) {
             $user->syncRoles($request->roles);
         }
 
-        return redirect()->route('users.index')->with('success', 'Usuário criado com sucesso.');
+        // Return view showing the generated password
+        return view('users.created', compact('user', 'temporaryPassword'));
     }
 
     public function show(User $user): View
@@ -103,7 +109,7 @@ class UserController extends Controller
     {
         $this->authorize('gerenciar_usuarios');
 
-        if ($user->id === auth()->id()) {
+        if ($user->id === Auth::id()) {
             return redirect()->route('users.index')->with('error', 'Não é possível excluir seu próprio usuário.');
         }
 

@@ -29,7 +29,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         @foreach($user->roles as $role)
                             <div class="bg-neutral-light dark:bg-gray-700 px-3 py-2 rounded-md flex justify-between items-center">
-                                <span class="text-sm text-neutral-dark dark:text-gray-300">{{ $role->name }}</span>
+                                <span class="text-sm text-neutral-dark dark:text-gray-300">{{ $role->display_name }}</span>
                                 <a href="{{ route('roles.show', $role) }}" class="text-primary hover:underline text-sm">Ver</a>
                             </div>
                         @endforeach
@@ -48,7 +48,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         @foreach($permissions as $permission)
                             <div class="bg-neutral-light dark:bg-gray-700 px-3 py-2 rounded-md">
-                                <span class="text-sm text-neutral-dark dark:text-gray-300">{{ $permission->name }}</span>
+                                <span class="text-sm text-neutral-dark dark:text-gray-300">{{ $permission->display_name }}</span>
                             </div>
                         @endforeach
                     </div>
@@ -65,6 +65,16 @@
                     <x-link-button href="{{ route('users.edit', $user) }}">
                         Editar
                     </x-link-button>
+                    @if($user->id !== auth()->id())
+                        <form action="{{ route('users.destroy', $user) }}" method="POST" class="inline"
+                              onsubmit="return confirm('Tem certeza que deseja excluir este usuário?')">
+                            @csrf
+                            @method('DELETE')
+                            <x-danger-button type="submit">
+                                Excluir
+                            </x-danger-button>
+                        </form>
+                    @endif
                 </div>
             </div>
         </div>

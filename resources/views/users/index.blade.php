@@ -30,7 +30,6 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Nome</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Email</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Roles</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Criado em</th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Ações</th>
                     </tr>
                 </thead>
@@ -46,16 +45,13 @@
                                     <div class="flex flex-wrap gap-1">
                                         @foreach($user->roles as $role)
                                             <span class="inline-block bg-primary text-white text-xs px-2 py-1 rounded-full">
-                                                {{ $role->name }}
+                                                {{ $role->display_name }}
                                             </span>
                                         @endforeach
                                     </div>
                                 @else
-                                    <span class="text-neutral-medium dark:text-gray-500">Nenhum role</span>
+                                    <span class="text-neutral-medium dark:text-gray-500">Nenhuma role</span>
                                 @endif
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">
-                                {{ $user->created_at->format('d/m/Y H:i') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <x-link-button href="{{ route('users.show', $user) }}" class="mr-2">
@@ -64,16 +60,6 @@
                                 <x-link-button href="{{ route('users.edit', $user) }}" class="mr-2">
                                     Editar
                                 </x-link-button>
-                                @if($user->id !== auth()->id())
-                                    <form action="{{ route('users.destroy', $user) }}" method="POST" class="inline"
-                                          onsubmit="return confirm('Tem certeza que deseja excluir este usuário?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <x-danger-button type="submit">
-                                            Excluir
-                                        </x-danger-button>
-                                    </form>
-                                @endif
                             </td>
                         </tr>
                     @empty

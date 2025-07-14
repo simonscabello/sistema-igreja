@@ -29,7 +29,7 @@
                                    @checked(in_array($role->name, old('roles', $user->roles->pluck('name')->toArray())))
                                    class="rounded border-neutral-medium text-primary focus:ring-primary focus:ring-offset-0">
                             <label for="role_{{ $role->id }}" class="ml-2 text-sm text-neutral-dark dark:text-gray-300">
-                                {{ $role->name }}
+                                {{ $role->display_name }}
                             </label>
                         </div>
                     @empty

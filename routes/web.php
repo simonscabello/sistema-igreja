@@ -23,10 +23,10 @@ Route::get('/', RootRedirectController::class);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', 'password.changed'])->name('dashboard');
 
-// Rotas protegidas por autenticação
-Route::middleware(['auth'])->group(function () {
+// Rotas protegidas por autenticação e verificação de senha alterada
+Route::middleware(['auth', 'password.changed'])->group(function () {
 
     // Perfil do usuário
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -90,7 +90,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{worshipSet}/clone', [WorshipSetController::class, 'clone'])->name('clone');
     });
 
-                // Gestão de Roles (apenas para administradores)
+    // Gestão de Roles (apenas para administradores)
     Route::resource('roles', RoleController::class)->middleware(['role:administrador']);
 
     // Gestão de Permissions (apenas para administradores)

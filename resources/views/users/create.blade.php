@@ -6,14 +6,20 @@
             </x-alert>
         @endif
 
+        <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+            <h3 class="text-sm font-medium text-blue-800 dark:text-blue-300 mb-2">ℹ️ Informação</h3>
+            <p class="text-sm text-blue-700 dark:text-blue-300">
+                Uma senha temporária de 8 caracteres será gerada automaticamente baseada no nome do usuário.
+                O usuário deverá alterar esta senha no primeiro login.
+            </p>
+        </div>
+
         <form action="{{ route('users.store') }}" method="POST" class="space-y-6">
             @csrf
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <x-text-input label="Nome" name="name" :value="old('name')" placeholder="Digite o nome completo" required="true" />
                 <x-text-input label="Email" name="email" type="email" :value="old('email')" placeholder="Digite o email" required="true" />
-                <x-text-input label="Senha" name="password" type="password" placeholder="Digite a senha" required="true" />
-                <x-text-input label="Confirmar Senha" name="password_confirmation" type="password" placeholder="Confirme a senha" required="true" />
             </div>
 
             <div class="border-t border-neutral-medium pt-6">

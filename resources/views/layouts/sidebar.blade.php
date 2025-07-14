@@ -17,15 +17,6 @@
             {{ __('Painel') }}
         </x-sidebar-link>
 
-        <x-sidebar-link href="{{ route('profile.edit') }}" :active="request()->routeIs('profile.edit')">
-            <x-slot name="icon">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-            </x-slot>
-            {{ __('Perfil') }}
-        </x-sidebar-link>
-
         @can('visualizar_membros')
             <x-sidebar-link href="{{ route('members.index') }}" :active="request()->routeIs('members.*')">
                 <x-slot name="icon">
@@ -212,15 +203,6 @@
                 </svg>
             </x-slot>
             {{ __('Painel') }}
-        </x-sidebar-link>
-
-        <x-sidebar-link href="{{ route('profile.edit') }}" :active="request()->routeIs('profile.edit')">
-            <x-slot name="icon">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-            </x-slot>
-            {{ __('Perfil') }}
         </x-sidebar-link>
 
         @can('visualizar_membros')
