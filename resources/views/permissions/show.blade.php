@@ -34,9 +34,17 @@
                     <a href="{{ route('permissions.index') }}" class="inline-flex items-center px-4 py-2 bg-neutral-light border border-neutral-medium rounded-md font-semibold text-xs text-neutral-dark uppercase tracking-widest hover:bg-neutral-medium focus:outline-none focus:ring-2 focus:ring-neutral-medium focus:ring-offset-2 transition ease-in-out duration-150">
                         Voltar
                     </a>
-                    <x-link-button href="{{ route('permissions.edit', $permission) }}">
+                    <x-link-button href="{{ route('permissions.edit', $permission) }}" class="mr-2">
                         Editar
                     </x-link-button>
+                    <form action="{{ route('permissions.destroy', $permission) }}" method="POST" class="inline"
+                          onsubmit="return confirm('Tem certeza que deseja excluir esta permissão?')">
+                        @csrf
+                        @method('DELETE')
+                        <x-danger-button type="submit">
+                            Excluir
+                        </x-danger-button>
+                    </form>
                 </div>
             </div>
         </div>

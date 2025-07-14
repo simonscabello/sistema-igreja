@@ -53,14 +53,6 @@
                                 <x-link-button href="{{ route('permissions.edit', $permission) }}" class="mr-2">
                                     Editar
                                 </x-link-button>
-                                <form action="{{ route('permissions.destroy', $permission) }}" method="POST" class="inline"
-                                      onsubmit="return confirm('Tem certeza que deseja excluir esta permissão?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <x-danger-button type="submit">
-                                        Excluir
-                                    </x-danger-button>
-                                </form>
                             </td>
                         </tr>
                     @empty
