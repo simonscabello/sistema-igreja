@@ -6,33 +6,40 @@
             </x-alert>
         @endif
 
-        <form action="{{ route('financial-transactions.store') }}" method="POST" x-data="{
-            selectedCategory: '{{ old('financial_category_id') }}',
-            categories: {{ $categories->toJson() }},
-            get subcategories() {
-                if (!this.selectedCategory) return [];
-                const category = this.categories.find(c => c.id == this.selectedCategory);
-                return category ? category.subcategories : [];
-            }
-        }">
+        <form action="{{ route('financial-transactions.store') }}" method="POST"
+              x-data="financialTransactionForm(
+                  '{{ old('financial_category_id') }}',
+                  '{{ old('financial_subcategory_id') }}',
+                  {{ $categories->toJson() }}
+              )">
             @csrf
 
             <div class="max-w-2xl">
                 <div class="space-y-6">
-                    <x-select label="Categoria"
-                              name="financial_category_id"
-                              :options="$categories->pluck('name', 'id')->toArray()"
-                              :selected="old('financial_category_id')"
-                              x-model="selectedCategory"
-                              required="true" />
+                    <div>
+                        <x-input-label for="financial_category_id" value="Categoria" required="true" />
+                        <select id="financial_category_id"
+                                name="financial_category_id"
+                                x-model="selectedCategory"
+                                @change="updateSubcategoriesLocal()"
+                                required
+                                class="mt-1 block w-full border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white">
+                            <option value="">Selecione uma categoria</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                        <x-input-error :messages="$errors->get('financial_category_id')" class="mt-2" />
+                    </div>
 
                     <div>
                         <x-input-label for="financial_subcategory_id" value="Subcategoria" required="true" />
                         <select id="financial_subcategory_id"
                                 name="financial_subcategory_id"
+                                x-model="selectedSubcategory"
                                 required
                                 class="mt-1 block w-full border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white">
-                            <option value="">Selecione uma subcategoria</option>
+                            <option value="" x-text="placeholderText"></option>
                             <template x-for="subcategory in subcategories" :key="subcategory.id">
                                 <option :value="subcategory.id" x-text="subcategory.name"></option>
                             </template>
@@ -119,4 +126,6 @@
 
         </form>
     </x-page-card>
+
+    <script src="{{ asset('js/financial-transactions.js') }}"></script>
 </x-app-layout>

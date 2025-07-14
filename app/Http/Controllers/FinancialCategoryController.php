@@ -73,4 +73,25 @@ class FinancialCategoryController extends Controller
         return redirect()->route('financial-categories.index')
             ->with('success', 'Categoria excluída com sucesso.');
     }
+
+    public function getSubcategories(Request $request)
+    {
+        $this->authorize('visualizar_financeiro');
+
+        $categoryId = $request->input('category_id');
+
+        if (!$categoryId) {
+            return response()->json([]);
+        }
+
+        $category = FinancialCategory::with('subcategories')
+            ->where('active', true)
+            ->find($categoryId);
+
+        if (!$category) {
+            return response()->json([]);
+        }
+
+        return response()->json($category->subcategories->where('active', true)->values());
+    }
 }

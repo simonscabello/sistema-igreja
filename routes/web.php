@@ -49,6 +49,7 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
 
     // Gestão financeira
     Route::resource('financial-categories', FinancialCategoryController::class);
+    Route::get('/categories/subcategories', [FinancialCategoryController::class, 'getSubcategories'])->name('categories.subcategories');
     Route::resource('financial-transactions', FinancialTransactionController::class);
 
     // Subcategorias financeiras
