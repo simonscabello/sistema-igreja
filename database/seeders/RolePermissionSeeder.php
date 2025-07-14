@@ -13,27 +13,11 @@ use Illuminate\Support\Facades\DB;
 class RolePermissionSeeder extends Seeder
 {
     /**
-     * Limpar todas as tabelas relacionadas a roles e permissions
-     */
-    private function clearTables(): void
-    {
-        $this->command->info('Limpando tabelas de roles e permissions...');
-
-        DB::table('model_has_permissions')->delete();
-        DB::table('model_has_roles')->delete();
-        DB::table('role_has_permissions')->delete();
-        Permission::query()->delete();
-        Role::query()->delete();
-
-        $this->command->info('Tabelas limpas com sucesso!');
-    }
-
-    /**
      * Definir todas as permissões do sistema em português
      */
     private function createPermissions(): array
     {
-        $this->command->info('Criando permissões...');
+        $this->command->info('Verificando e criando permissões...');
 
         $permissions = [
             // Gestão de Usuários e Sistema
@@ -77,15 +61,29 @@ class RolePermissionSeeder extends Seeder
             'exportar_relatorios' => 'Exportar Relatórios do Sistema',
         ];
 
+        $createdCount = 0;
+        $updatedCount = 0;
+
         foreach ($permissions as $name => $displayName) {
-            Permission::create([
-                'name' => $name,
-                'display_name' => $displayName,
-                'guard_name' => 'web'
-            ]);
+            $permission = Permission::firstOrCreate(
+                ['name' => $name, 'guard_name' => 'web'],
+                ['display_name' => $displayName]
+            );
+
+            if ($permission->wasRecentlyCreated) {
+                $createdCount++;
+                $this->command->info("✓ Permissão criada: {$displayName}");
+            } else {
+                // Atualizar display_name se necessário
+                if ($permission->display_name !== $displayName) {
+                    $permission->update(['display_name' => $displayName]);
+                    $updatedCount++;
+                    $this->command->info("✓ Permissão atualizada: {$displayName}");
+                }
+            }
         }
 
-        $this->command->info('Permissões criadas: ' . count($permissions));
+        $this->command->info("Permissões processadas - Criadas: {$createdCount}, Atualizadas: {$updatedCount}");
         return array_keys($permissions);
     }
 
@@ -94,92 +92,100 @@ class RolePermissionSeeder extends Seeder
      */
     private function createRoles(array $allPermissions): void
     {
-        $this->command->info('Criando roles...');
+        $this->command->info('Verificando e criando roles...');
 
-        // 1. Administrador - Acesso total ao sistema
-        $adminRole = Role::create([
-            'name' => 'administrador',
-            'display_name' => 'Administrador',
-            'guard_name' => 'web'
-        ]);
-        $adminRole->syncPermissions($allPermissions);
+        $rolesConfig = [
+            'administrador' => [
+                'display_name' => 'Administrador',
+                'permissions' => $allPermissions,
+                'description' => 'Acesso total ao sistema'
+            ],
+            'pastor' => [
+                'display_name' => 'Pastor',
+                'permissions' => [
+                    'visualizar_membros', 'criar_membros', 'editar_membros', 'excluir_membros',
+                    'visualizar_visitantes', 'criar_visitantes', 'editar_visitantes', 'excluir_visitantes',
+                    'visualizar_departamentos', 'gerenciar_departamentos',
+                    'visualizar_escalas_louvor', 'gerenciar_escalas_louvor',
+                    'visualizar_relatorios', 'exportar_relatorios',
+                    'visualizar_financeiro'
+                ],
+                'description' => 'Gestão pastoral'
+            ],
+            'tesoureiro' => [
+                'display_name' => 'Tesoureiro',
+                'permissions' => [
+                    'visualizar_financeiro', 'criar_transacoes', 'editar_transacoes', 'excluir_transacoes',
+                    'gerenciar_categorias_financeiras', 'gerenciar_campanhas',
+                    'exportar_relatorios_financeiros', 'visualizar_relatorios',
+                    'visualizar_membros'
+                ],
+                'description' => 'Gestão financeira'
+            ],
+            'lider_louvor' => [
+                'display_name' => 'Líder de Louvor',
+                'permissions' => [
+                    'visualizar_musicas', 'gerenciar_musicas',
+                    'visualizar_escalas_louvor', 'gerenciar_escalas_louvor',
+                    'visualizar_membros'
+                ],
+                'description' => 'Gestão musical'
+            ],
+            'secretario' => [
+                'display_name' => 'Secretário',
+                'permissions' => [
+                    'visualizar_membros', 'criar_membros', 'editar_membros',
+                    'visualizar_visitantes', 'criar_visitantes', 'editar_visitantes',
+                    'visualizar_departamentos'
+                ],
+                'description' => 'Gestão de membros'
+            ],
+            'lider_departamento' => [
+                'display_name' => 'Líder de Departamento',
+                'permissions' => [
+                    'visualizar_membros', 'visualizar_departamentos',
+                    'visualizar_escalas_louvor'
+                ],
+                'description' => 'Gestão departamental'
+            ],
+            'visualizador' => [
+                'display_name' => 'Visualizador',
+                'permissions' => [
+                    'visualizar_membros', 'visualizar_visitantes',
+                    'visualizar_departamentos', 'visualizar_musicas',
+                    'visualizar_escalas_louvor', 'visualizar_relatorios'
+                ],
+                'description' => 'Apenas visualização'
+            ]
+        ];
 
-        // 2. Pastor - Gestão de membros, visitantes, departamentos e relatórios
-        $pastorRole = Role::create([
-            'name' => 'pastor',
-            'display_name' => 'Pastor',
-            'guard_name' => 'web'
-        ]);
-        $pastorRole->syncPermissions([
-            'visualizar_membros', 'criar_membros', 'editar_membros', 'excluir_membros',
-            'visualizar_visitantes', 'criar_visitantes', 'editar_visitantes', 'excluir_visitantes',
-            'visualizar_departamentos', 'gerenciar_departamentos',
-            'visualizar_escalas_louvor', 'gerenciar_escalas_louvor',
-            'visualizar_relatorios', 'exportar_relatorios',
-            'visualizar_financeiro'
-        ]);
+        $createdCount = 0;
+        $updatedCount = 0;
 
-        // 3. Tesoureiro - Gestão financeira completa
-        $tesoureiroRole = Role::create([
-            'name' => 'tesoureiro',
-            'display_name' => 'Tesoureiro',
-            'guard_name' => 'web'
-        ]);
-        $tesoureiroRole->syncPermissions([
-            'visualizar_financeiro', 'criar_transacoes', 'editar_transacoes', 'excluir_transacoes',
-            'gerenciar_categorias_financeiras', 'gerenciar_campanhas',
-            'exportar_relatorios_financeiros', 'visualizar_relatorios',
-            'visualizar_membros'
-        ]);
+        foreach ($rolesConfig as $roleName => $config) {
+            $role = Role::firstOrCreate(
+                ['name' => $roleName, 'guard_name' => 'web'],
+                ['display_name' => $config['display_name']]
+            );
 
-        // 4. Líder de Louvor - Gestão do ministério de música
-        $liderLouvorRole = Role::create([
-            'name' => 'lider_louvor',
-            'display_name' => 'Líder de Louvor',
-            'guard_name' => 'web'
-        ]);
-        $liderLouvorRole->syncPermissions([
-            'visualizar_musicas', 'gerenciar_musicas',
-            'visualizar_escalas_louvor', 'gerenciar_escalas_louvor',
-            'visualizar_membros'
-        ]);
+            if ($role->wasRecentlyCreated) {
+                $createdCount++;
+                $this->command->info("✓ Role criada: {$config['display_name']}");
+            } else {
+                // Atualizar display_name se necessário
+                if ($role->display_name !== $config['display_name']) {
+                    $role->update(['display_name' => $config['display_name']]);
+                    $updatedCount++;
+                    $this->command->info("✓ Role atualizada: {$config['display_name']}");
+                }
+            }
 
-        // 5. Secretário - Gestão de membros e visitantes
-        $secretarioRole = Role::create([
-            'name' => 'secretario',
-            'display_name' => 'Secretário',
-            'guard_name' => 'web'
-        ]);
-        $secretarioRole->syncPermissions([
-            'visualizar_membros', 'criar_membros', 'editar_membros',
-            'visualizar_visitantes', 'criar_visitantes', 'editar_visitantes',
-            'visualizar_departamentos'
-        ]);
+            // Sincronizar permissões sempre para garantir estado correto
+            $role->syncPermissions($config['permissions']);
+            $this->command->info("  → Permissões sincronizadas para {$config['display_name']} ({$config['description']})");
+        }
 
-        // 6. Líder de Departamento - Gestão específica de departamento
-        $liderDepartamentoRole = Role::create([
-            'name' => 'lider_departamento',
-            'display_name' => 'Líder de Departamento',
-            'guard_name' => 'web'
-        ]);
-        $liderDepartamentoRole->syncPermissions([
-            'visualizar_membros', 'visualizar_departamentos',
-            'visualizar_escalas_louvor'
-        ]);
-
-        // 7. Visualizador - Apenas visualização geral
-        $visualizadorRole = Role::create([
-            'name' => 'visualizador',
-            'display_name' => 'Visualizador',
-            'guard_name' => 'web'
-        ]);
-        $visualizadorRole->syncPermissions([
-            'visualizar_membros', 'visualizar_visitantes',
-            'visualizar_departamentos', 'visualizar_musicas',
-            'visualizar_escalas_louvor', 'visualizar_relatorios'
-        ]);
-
-        $this->command->info('Roles criadas: 7');
+        $this->command->info("Roles processadas - Criadas: {$createdCount}, Atualizadas: {$updatedCount}");
     }
 
     /**
@@ -187,7 +193,7 @@ class RolePermissionSeeder extends Seeder
      */
     private function createAdminUser(): void
     {
-        $this->command->info('Criando usuário administrador...');
+        $this->command->info('Verificando usuário administrador...');
 
         $adminUser = User::firstOrCreate(
             ['email' => 'admin@igreja.com'],
@@ -198,10 +204,15 @@ class RolePermissionSeeder extends Seeder
             ]
         );
 
-        // Remover roles existentes e atribuir role de administrador
-        $adminUser->syncRoles(['administrador']);
+        if ($adminUser->wasRecentlyCreated) {
+            $this->command->info('✓ Usuário administrador criado!');
+        } else {
+            $this->command->info('✓ Usuário administrador já existe!');
+        }
 
-        $this->command->info('Usuário administrador criado/atualizado!');
+        // Sincronizar role de administrador sempre para garantir estado correto
+        $adminUser->syncRoles(['administrador']);
+        $this->command->info('✓ Role de administrador sincronizada!');
     }
 
     /**
@@ -209,32 +220,39 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->command->info('=== INICIALIZANDO SISTEMA DE ROLES E PERMISSIONS ===');
+        $this->command->info('=== INICIALIZANDO SISTEMA DE ROLES E PERMISSIONS (MODO SEGURO) ===');
 
-        // Limpar tabelas existentes
-        $this->clearTables();
+        try {
+            DB::transaction(function () {
+                // Criar permissões
+                $allPermissions = $this->createPermissions();
 
-        // Criar permissões
-        $allPermissions = $this->createPermissions();
+                // Criar roles
+                $this->createRoles($allPermissions);
 
-        // Criar roles
-        $this->createRoles($allPermissions);
+                // Criar usuário administrador
+                $this->createAdminUser();
+            });
 
-        // Criar usuário administrador
-        $this->createAdminUser();
+            $this->command->info('=== SISTEMA DE ROLES E PERMISSIONS CONFIGURADO COM SUCESSO ===');
+            $this->command->newLine();
+            $this->command->info('📧 Email do Administrador: admin@igreja.com');
+            $this->command->info('🔑 Senha: admin123');
+            $this->command->newLine();
+            $this->command->info('Roles disponíveis:');
+            $this->command->info('• Administrador - Acesso total');
+            $this->command->info('• Pastor - Gestão pastoral');
+            $this->command->info('• Tesoureiro - Gestão financeira');
+            $this->command->info('• Líder de Louvor - Gestão musical');
+            $this->command->info('• Secretário - Gestão de membros');
+            $this->command->info('• Líder de Departamento - Gestão departamental');
+            $this->command->info('• Visualizador - Apenas visualização');
+            $this->command->newLine();
+            $this->command->info('✅ Seeder executado com segurança - nenhuma tabela foi limpa!');
 
-        $this->command->info('=== SISTEMA DE ROLES E PERMISSIONS CONFIGURADO COM SUCESSO ===');
-        $this->command->newLine();
-        $this->command->info('📧 Email do Administrador: admin@igreja.com');
-        $this->command->info('🔑 Senha: admin123');
-        $this->command->newLine();
-        $this->command->info('Roles disponíveis:');
-        $this->command->info('• Administrador - Acesso total');
-        $this->command->info('• Pastor - Gestão pastoral');
-        $this->command->info('• Tesoureiro - Gestão financeira');
-        $this->command->info('• Líder de Louvor - Gestão musical');
-        $this->command->info('• Secretário - Gestão de membros');
-        $this->command->info('• Líder de Departamento - Gestão departamental');
-        $this->command->info('• Visualizador - Apenas visualização');
+        } catch (\Exception $e) {
+            $this->command->error('❌ Erro durante a execução do seeder: ' . $e->getMessage());
+            throw $e;
+        }
     }
 }

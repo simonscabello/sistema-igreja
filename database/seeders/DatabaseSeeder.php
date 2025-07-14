@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\App;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,18 +12,36 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        if (App::environment('production')) {
+            $this->command->error('Atenção: Seeders não devem ser executados no ambiente de produção!');
+            return;
+        }
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        $this->command->info('Iniciando seeders para ambiente: ' . App::environment());
 
         $this->call([
-            FinancialSubcategorySeeder::class,
-            TransactionReportSeeder::class,
-            CampaignSeeder::class,
+            // Seeders de dados base
             RolePermissionSeeder::class,
+            MemberSeeder::class,
+            DepartmentSeeder::class,
+            TagSeeder::class,
+            FileSeeder::class,
+
+            // Seeders financeiros
+            FinancialCategorySeeder::class,
+            FinancialSubcategorySeeder::class,
+            CampaignSeeder::class,
+            FinancialTransactionSeeder::class,
+
+            // Seeders de conteúdo
+            SongSeeder::class,
+            WorshipSetSeeder::class,
+
+            // Outros seeders
+            VisitorSeeder::class,
+            TransactionReportSeeder::class,
         ]);
+
+        $this->command->info('Seeders concluídos com sucesso!');
     }
 }

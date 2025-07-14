@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Song;
 use App\Models\Tag;
+use Illuminate\Support\Facades\App;
 
 class SongSeeder extends Seeder
 {
@@ -14,26 +14,9 @@ class SongSeeder extends Seeder
      */
     public function run(): void
     {
-        $tags = [
-            'Adoração',
-            'Louvor',
-            'Comunhão',
-            'Gratidão',
-            'Arrependimento',
-            'Consagração',
-            'Evangelismo',
-            'Missões',
-            'Família',
-            'Jovens',
-            'Crianças',
-            'Natal',
-            'Páscoa',
-            'Batismo',
-            'Casamento',
-        ];
-
-        foreach ($tags as $tagName) {
-            Tag::firstOrCreate(['name' => $tagName]);
+        if (App::environment('production')) {
+            $this->command->error('Atenção: Seeders não devem ser executados no ambiente de produção!');
+            return;
         }
 
         $songs = [
@@ -78,20 +61,22 @@ class SongSeeder extends Seeder
         ];
 
         foreach ($songs as $songData) {
-            $tags = $songData['tags'];
+            $tagNames = $songData['tags'];
             unset($songData['tags']);
-            
-            $song = Song::create($songData);
-            
-            $tagIds = [];
-            foreach ($tags as $tagName) {
-                $tag = Tag::where('name', $tagName)->first();
-                if ($tag) {
-                    $tagIds[] = $tag->id;
-                }
+
+            // Verifica se a música já existe
+            $song = Song::firstOrCreate(
+                ['name' => $songData['name']],
+                $songData
+            );
+
+            // Busca as tags existentes pelo nome
+            $tagIds = Tag::whereIn('name', $tagNames)->pluck('id')->toArray();
+
+            // Relaciona as tags com a música
+            if ($tagIds) {
+                $song->tags()->sync($tagIds);
             }
-            
-            $song->tags()->attach($tagIds);
         }
     }
 }
