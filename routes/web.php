@@ -62,7 +62,10 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
     });
 
     // Relatórios financeiros
-    Route::get('/reports/financial/monthly', FinancialReportController::class)->name('reports.financial.monthly');
+    Route::get('/reports/financial', [FinancialReportController::class, 'index'])->name('reports.financial.index');
+    Route::get('/reports/financial/monthly', [FinancialReportController::class, 'monthly'])->name('reports.financial.monthly');
+    Route::get('/reports/financial/annual/detailed', [FinancialReportController::class, 'annualDetailed'])->name('reports.financial.annual.detailed');
+    Route::get('/reports/financial/annual/summary', [FinancialReportController::class, 'annualSummary'])->name('reports.financial.annual.summary');
 
     // Campanhas
     Route::resource('campaigns', CampaignController::class);
