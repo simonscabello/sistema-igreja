@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             FinancialSubcategorySeeder::class,
             TransactionReportSeeder::class,
             CampaignSeeder::class,
+            RolePermissionSeeder::class,
         ]);
     }
 }

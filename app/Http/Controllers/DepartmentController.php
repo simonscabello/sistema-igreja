@@ -66,41 +66,42 @@ class DepartmentController extends Controller
             ->with('success', 'Departamento cadastrado com sucesso.');
     }
 
-    public function show(Department $departamento): View
+    public function show(Department $departments): View
     {
         $this->authorize('visualizar_departamentos');
 
-        $departamento->load(['responsibleMembers', 'members']);
-        return view('departments.show', compact('departamento'));
+        $departments->load(['responsibleMembers', 'members']);
+        return view('departments.show', compact('departments'));
     }
 
-    public function edit(Department $departamento): View
+    public function edit(Department $department): View
     {
         $this->authorize('gerenciar_departamentos');
 
         $members = Member::orderBy('full_name')->get();
-        $departamento->load(['responsibleMembers', 'members']);
-        return view('departments.edit', compact('departamento', 'members'));
+        $department->load(['responsibleMembers', 'members']);
+        
+        return view('departments.edit', compact('department', 'members'));
     }
 
-    public function update(UpdateDepartmentRequest $request, Department $departamento): RedirectResponse
+    public function update(UpdateDepartmentRequest $request, Department $departments): RedirectResponse
     {
         $this->authorize('gerenciar_departamentos');
 
-        $departamento->update($request->validated());
+        $departments->update($request->validated());
 
-        $departamento->responsibleMembers()->sync($request->responsible_members ?? []);
-        $departamento->members()->sync($request->members ?? []);
+        $departments->responsibleMembers()->sync($request->responsible_members ?? []);
+        $departments->members()->sync($request->members ?? []);
 
         return redirect()->route('departments.index')
             ->with('success', 'Departamento atualizado com sucesso.');
     }
 
-    public function destroy(Department $departamento): RedirectResponse
+    public function destroy(Department $departments): RedirectResponse
     {
         $this->authorize('gerenciar_departamentos');
 
-        $departamento->delete();
+        $departments->delete();
 
         return redirect()->route('departments.index')
             ->with('success', 'Departamento excluído com sucesso.');

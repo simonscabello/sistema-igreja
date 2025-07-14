@@ -13,12 +13,16 @@ class FileController extends Controller
 {
     public function index(Member $member, FileService $service): View
     {
+        $this->authorize('visualizar_membros');
+
         $files = $service->listFilesFor($member);
         return view('members.files.index', compact('member', 'files'));
     }
 
     public function store(Request $request, Member $member, FileService $service): RedirectResponse
     {
+        $this->authorize('editar_membros');
+
         $request->validate([
             'files.*' => 'required|file|max:10240',
         ]);
@@ -33,6 +37,8 @@ class FileController extends Controller
 
     public function destroy(Member $member, File $file, FileService $service): RedirectResponse
     {
+        $this->authorize('editar_membros');
+
         $service->deleteFile($file);
         return redirect()->route('members.files.index', $member)
             ->with('success', 'Arquivo removido!');

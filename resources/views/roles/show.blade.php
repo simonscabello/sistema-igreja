@@ -14,15 +14,37 @@
             </div>
 
             <div class="border-t border-neutral-medium pt-6">
-                <h3 class="text-lg font-medium text-neutral-dark dark:text-gray-300 mb-4">Permissões Associadas</h3>
+                <h3 class="text-lg font-medium text-neutral-dark dark:text-gray-300 mb-6">Permissões Associadas</h3>
+                
                 @if($role->permissions->count() > 0)
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        @foreach($role->permissions as $permission)
-                            <div class="bg-neutral-light dark:bg-gray-700 px-3 py-2 rounded-md">
-                                <span class="text-sm text-neutral-dark dark:text-gray-300">{{ $permission->name }}</span>
-                            </div>
-                        @endforeach
-                    </div>
+                    @if(!empty($groupedPermissions))
+                        <div class="space-y-8">
+                            @foreach($groupedPermissions as $groupName => $group)
+                                <div>
+                                    <h4 class="mb-4 font-semibold text-gray-900 dark:text-white text-base">{{ $groupName }}</h4>
+                                    <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">{{ $group['description'] }}</p>
+                                    
+                                    <div class="bg-white border border-gray-200 rounded-lg p-4 dark:bg-gray-700 dark:border-gray-600">
+                                        <div class="flex flex-wrap gap-2">
+                                            @foreach($group['permissions'] as $permission)
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary text-white dark:bg-primary dark:text-white">
+                                                    {{ $permission->display_name ?? ucfirst(str_replace('_', ' ', $permission->name)) }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            @foreach($role->permissions as $permission)
+                                <div class="bg-neutral-light dark:bg-gray-700 px-3 py-2 rounded-md">
+                                    <span class="text-sm text-neutral-dark dark:text-gray-300">{{ $permission->name }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
                 @else
                     <p class="text-neutral-medium dark:text-gray-500">Nenhuma permissão associada a este role.</p>
                 @endif

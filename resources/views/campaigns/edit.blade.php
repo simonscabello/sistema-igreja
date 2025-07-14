@@ -19,7 +19,7 @@
                     </div>
 
                     <div>
-                        <x-textarea name="description" label="Descrição" class="mt-1 block w-full" rows="3">{{ old('description', $campaign->description) }}</x-textarea>
+                        <x-textarea name="description" label="Descrição" class="mt-1 block w-full" rows="3" :value="$campaign->description"></x-textarea>
                         <x-input-error :messages="$errors->get('description')" class="mt-2" />
                     </div>
 

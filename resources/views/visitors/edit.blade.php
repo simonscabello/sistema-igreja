@@ -30,8 +30,8 @@
             </div>
 
             <div class="space-y-4">
-                <x-textarea label="Endereço Completo" name="full_address" :value="old('full_address', $visitor->full_address)" placeholder="Digite o endereço completo" />
-                <x-textarea label="Observações" name="notes" :value="old('notes', $visitor->notes)" placeholder="Digite observações sobre o visitante" />
+                <x-textarea label="Endereço Completo" name="full_address" :value="$visitor->full_address" placeholder="Digite o endereço completo" />
+                <x-textarea label="Observações" name="notes" :value="$visitor->notes" placeholder="Digite observações sobre o visitante" />
             </div>
 
             <div class="border-t border-neutral-medium mt-6 pt-6">

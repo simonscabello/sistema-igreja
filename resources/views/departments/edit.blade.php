@@ -5,18 +5,18 @@
                 <span class="font-medium">Erro!</span> Por favor, corrija os erros abaixo.
             </x-alert>
         @endif
-
-        <form action="{{ route('departments.update', $departamento) }}" method="POST" class="space-y-6">
+        
+        <form action="{{ route('departments.update', $department) }}" method="POST" class="space-y-6">
             @csrf
             @method('PUT')
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <x-text-input label="Título" name="title" :value="old('title', $departamento->title)" placeholder="Digite o título do departamento" required="true" />
-                <x-checkbox label="Ativo" name="is_active" :checked="old('is_active', $departamento->is_active)" />
+                <x-text-input label="Título" name="title" :value="old('title', $department->title)" placeholder="Digite o título do departamento" required="true" />
+                <x-checkbox label="Ativo" name="is_active" :checked="old('is_active', $department->is_active)" />
             </div>
 
             <div>
-                <x-textarea label="Descrição" name="description" :value="old('description', $departamento->description)" placeholder="Digite a descrição do departamento" />
+                <x-textarea label="Descrição" name="description" :value="$department->description" placeholder="Digite a descrição do departamento" />
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -26,7 +26,7 @@
                             class="w-full border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white min-h-[120px]">
                         @foreach($members as $member)
                             <option value="{{ $member->id }}"
-                                {{ in_array($member->id, old('responsible_members', $departamento->responsibleMembers->pluck('id')->toArray())) ? 'selected' : '' }}>
+                                {{ in_array($member->id, old('responsible_members', $department->responsibleMembers->pluck('id')->toArray())) ? 'selected' : '' }}>
                                 {{ $member->full_name }}
                             </option>
                         @endforeach
@@ -42,7 +42,7 @@
                             class="w-full border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white min-h-[120px]">
                         @foreach($members as $member)
                             <option value="{{ $member->id }}"
-                                {{ in_array($member->id, old('members', $departamento->members->pluck('id')->toArray())) ? 'selected' : '' }}>
+                                {{ in_array($member->id, old('members', $department->members->pluck('id')->toArray())) ? 'selected' : '' }}>
                                 {{ $member->full_name }}
                             </option>
                         @endforeach

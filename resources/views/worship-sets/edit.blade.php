@@ -56,12 +56,12 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <x-textarea id="order_notes" name="order_notes" class="mt-1 block w-full" rows="4" placeholder="Observações sobre a ordem das músicas..." label="Ordem das Músicas / Observações">{{ old('order_notes', $worshipSet->order_notes) }}</x-textarea>
+                    <x-textarea id="order_notes" name="order_notes" class="mt-1 block w-full" rows="4" placeholder="Observações sobre a ordem das músicas..." label="Ordem das Músicas / Observações" :value="$worshipSet->order_notes"></x-textarea>
                     <x-input-error :messages="$errors->get('order_notes')" class="mt-2" />
                 </div>
 
                 <div>
-                    <x-textarea id="observations" name="observations" class="mt-1 block w-full" rows="4" placeholder="Observações gerais sobre o culto..." label="Observações Gerais">{{ old('observations', $worshipSet->observations) }}</x-textarea>
+                    <x-textarea id="observations" name="observations" class="mt-1 block w-full" rows="4" placeholder="Observações gerais sobre o culto..." label="Observações Gerais" :value="$worshipSet->observations"></x-textarea>
                     <x-input-error :messages="$errors->get('observations')" class="mt-2" />
                 </div>
             </div>
