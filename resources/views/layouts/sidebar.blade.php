@@ -2,7 +2,7 @@
 <div class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 border-r border-neutral-medium dark:border-gray-700 sm:flex hidden flex-col transition-colors duration-300">
     <!-- Topo alinhado com topbar -->
     <div class="flex items-center justify-center h-16 px-4 bg-neutral-light dark:bg-gray-700 border-b border-neutral-medium dark:border-gray-600 gap-2 transition-colors duration-300">
-        <x-application-logo class="w-8 h-8" />
+        <x-application-logo-icon class="w-8 h-8" />
         <h1 class="text-xl font-semibold text-gray-800 dark:text-white">{{ config('app.name') }}</h1>
     </div>
 

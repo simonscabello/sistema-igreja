@@ -39,7 +39,7 @@
                 @include('layouts.navigation')
 
                 <!-- Page Content -->
-                <main class="flex-1 border-t border-neutral-medium sm:border-t sm:border-neutral-medium">
+                <main class="flex-1 border-t border-neutral-medium sm:border-t sm:border-neutral-medium dark:border-gray-600">
                     {{ $slot }}
                 </main>
 
