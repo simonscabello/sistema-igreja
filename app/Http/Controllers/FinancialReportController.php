@@ -13,7 +13,7 @@ class FinancialReportController extends Controller
     public function index(): View
     {
         $this->authorize('visualizar_financeiro');
-        
+
         return view('reports.financial.index');
     }
 
@@ -53,7 +53,9 @@ class FinancialReportController extends Controller
             return response()->json($report);
         }
 
-        return view('reports.financial.monthly', compact('report'));
+        $availableYears = $this->getAvailableYears();
+
+        return view('reports.financial.monthly', compact('report', 'availableYears'));
     }
 
     public function annualDetailed(Request $request): View|JsonResponse
@@ -106,7 +108,9 @@ class FinancialReportController extends Controller
             return response()->json($report);
         }
 
-        return view('reports.financial.annual-detailed', compact('report'));
+        $availableYears = $this->getAvailableYears();
+
+        return view('reports.financial.annual-detailed', compact('report', 'availableYears'));
     }
 
     public function annualSummary(Request $request): View|JsonResponse
@@ -120,7 +124,6 @@ class FinancialReportController extends Controller
             ->get();
 
         $monthlyData = [];
-        $categoryTotals = [];
         $yearlyTotals = ['entradas' => 0, 'saidas' => 0];
 
         for ($month = 1; $month <= 12; $month++) {
@@ -128,34 +131,14 @@ class FinancialReportController extends Controller
                 return $transaction->action_date->month == $month;
             });
 
-            $entradas = $this->groupTransactionsByTypeForSummary($monthTransactions, 'entrada');
-            $saidas = $this->groupTransactionsByTypeForSummary($monthTransactions, 'saida');
-
             $totalEntradas = $monthTransactions->where('type', 'entrada')->sum('amount');
             $totalSaidas = $monthTransactions->where('type', 'saida')->sum('amount');
 
             $yearlyTotals['entradas'] += $totalEntradas;
             $yearlyTotals['saidas'] += $totalSaidas;
 
-            // Agregar dados por categoria para o resumo anual
-            foreach ($entradas as $categoria => $total) {
-                if (!isset($categoryTotals[$categoria])) {
-                    $categoryTotals[$categoria] = ['entradas' => 0, 'saidas' => 0];
-                }
-                $categoryTotals[$categoria]['entradas'] += $total;
-            }
-
-            foreach ($saidas as $categoria => $total) {
-                if (!isset($categoryTotals[$categoria])) {
-                    $categoryTotals[$categoria] = ['entradas' => 0, 'saidas' => 0];
-                }
-                $categoryTotals[$categoria]['saidas'] += $total;
-            }
-
             $monthlyData[$month] = [
                 'mes_nome' => Carbon::create($year, $month)->locale('pt_BR')->monthName,
-                'entradas' => $entradas,
-                'saidas' => $saidas,
                 'total_entradas' => $totalEntradas,
                 'total_saidas' => $totalSaidas,
                 'saldo_mensal' => $totalEntradas - $totalSaidas,
@@ -165,7 +148,6 @@ class FinancialReportController extends Controller
 
         $report = [
             'monthly_data' => $monthlyData,
-            'category_totals' => $categoryTotals,
             'yearly_totals' => $yearlyTotals,
             'saldo_anual' => $yearlyTotals['entradas'] - $yearlyTotals['saidas'],
             'ano' => $year
@@ -175,7 +157,9 @@ class FinancialReportController extends Controller
             return response()->json($report);
         }
 
-        return view('reports.financial.annual-summary', compact('report'));
+        $availableYears = $this->getAvailableYears();
+
+        return view('reports.financial.annual-summary', compact('report', 'availableYears'));
     }
 
     private function normalizeMonth(int|string $month): int
@@ -224,23 +208,21 @@ class FinancialReportController extends Controller
         return $grouped;
     }
 
-    private function groupTransactionsByTypeForSummary($transactions, string $type): array
+    private function getAvailableYears(): array
     {
-        $filteredTransactions = $transactions->where('type', $type);
+        $years = FinancialTransaction::selectRaw('YEAR(action_date) as year')
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year')
+            ->toArray();
 
-        $grouped = [];
-
-        foreach ($filteredTransactions as $transaction) {
-            $categoryName = $transaction->subcategory->financialCategory->name;
-            $amount = $transaction->amount;
-
-            if (!isset($grouped[$categoryName])) {
-                $grouped[$categoryName] = 0;
-            }
-
-            $grouped[$categoryName] += $amount;
+        // Se não houver transações, incluir pelo menos o ano atual
+        if (empty($years)) {
+            $years = [now()->year];
         }
 
-        return $grouped;
+        // Criar array associativo para o componente select
+        return array_combine($years, $years);
     }
+
 }

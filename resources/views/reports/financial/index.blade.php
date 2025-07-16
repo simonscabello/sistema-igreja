@@ -45,7 +45,7 @@
                 </a>
             </div>
 
-            <!-- Relatório Anual Compilado -->
+            <!-- Relatório Anual Simplificado -->
             <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow duration-200">
                 <div class="flex items-center mb-4">
                     <div class="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
@@ -54,11 +54,11 @@
                         </svg>
                     </div>
                     <div class="ml-4">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Relatório Anual Compilado</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">Resumo por categoria</p>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Relatório Anual Simplificado</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Totais mensais resumidos</p>
                     </div>
                 </div>
-                <p class="text-gray-700 dark:text-gray-300 mb-4">Relatório resumido com totais mensais de entradas e saídas, agrupados por categoria financeira.</p>
+                <p class="text-gray-700 dark:text-gray-300 mb-4">Relatório simplificado com totais mensais de entradas e saídas, sem detalhamento por categoria ou subcategoria.</p>
                 <a href="{{ route('reports.financial.annual.summary') }}" class="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md transition-colors duration-200">
                     Visualizar
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,13 +68,31 @@
             </div>
         </div>
 
-        <div class="mt-8 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-            <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Informações sobre os Relatórios</h4>
-            <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-1">
-                <li>• <strong>Mensal:</strong> Ideal para análise detalhada de um período específico</li>
-                <li>• <strong>Anual Detalhado:</strong> Visão completa de todas as transações organizadas por mês</li>
-                <li>• <strong>Anual Compilado:</strong> Resumo executivo com totais por categoria e mês</li>
-            </ul>
+        <!-- Descrição dos Relatórios -->
+        <div class="mt-8 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800 p-6">
+            <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-4">
+                Diferenças entre os Relatórios Anuais
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-medium text-green-700 dark:text-green-300 mb-2">Relatório Anual Detalhado</h4>
+                    <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                        <li>• Transações organizadas mês a mês</li>
+                        <li>• Agrupamento por categoria e subcategoria</li>
+                        <li>• Detalhamento completo de todas as movimentações</li>
+                        <li>• Ideal para análises detalhadas</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-medium text-purple-700 dark:text-purple-300 mb-2">Relatório Anual Simplificado</h4>
+                    <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                        <li>• Apenas totais mensais consolidados</li>
+                        <li>• Não agrupa por categoria ou subcategoria</li>
+                        <li>• Visão geral rápida do ano financeiro</li>
+                        <li>• Ideal para resumos executivos</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </x-page-card>
-</x-app-layout> 
+</x-app-layout>

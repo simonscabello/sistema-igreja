@@ -15,27 +15,19 @@
                 Anual Detalhado
             </span>
             <a href="{{ route('reports.financial.annual.summary') }}" class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200">
-                Anual Compilado
+                Anual Simplificado
             </a>
         </div>
 
         <!-- Filtro -->
         <div class="mb-6">
             <form action="{{ route('reports.financial.annual.detailed') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
-                <div>
-                    <x-select 
+                                <div>
+                    <x-select
                         label="Ano"
-                        name="year" 
-                        :options="[
-                            now()->year - 5 => now()->year - 5,
-                            now()->year - 4 => now()->year - 4,
-                            now()->year - 3 => now()->year - 3,
-                            now()->year - 2 => now()->year - 2,
-                            now()->year - 1 => now()->year - 1,
-                            now()->year => now()->year,
-                            now()->year + 1 => now()->year + 1
-                        ]" 
-                        :selected="request('year', now()->year)" 
+                        name="year"
+                        :options="$availableYears"
+                        :selected="request('year', now()->year)"
                     />
                 </div>
                 <div class="flex items-end">
@@ -62,7 +54,7 @@
                     </svg>
                     Resumo Anual
                 </h2>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="text-center p-4 bg-green-100 dark:bg-green-900/30 rounded-lg">
                         <div class="text-sm text-green-700 dark:text-green-300 mb-1">Total de Entradas</div>
@@ -70,14 +62,14 @@
                             R$ {{ number_format($report['yearly_totals']['entradas'], 2, ',', '.') }}
                         </div>
                     </div>
-                    
+
                     <div class="text-center p-4 bg-red-100 dark:bg-red-900/30 rounded-lg">
                         <div class="text-sm text-red-700 dark:text-red-300 mb-1">Total de Saídas</div>
                         <div class="text-2xl font-bold text-red-800 dark:text-red-200">
                             R$ {{ number_format($report['yearly_totals']['saidas'], 2, ',', '.') }}
                         </div>
                     </div>
-                    
+
                     <div class="text-center p-4 {{ $report['saldo_anual'] >= 0 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30' }} rounded-lg">
                         <div class="text-sm {{ $report['saldo_anual'] >= 0 ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300' }} mb-1">Saldo Anual</div>
                         <div class="text-2xl font-bold {{ $report['saldo_anual'] >= 0 ? 'text-green-800 dark:text-green-200' : 'text-red-800 dark:text-red-200' }}">
@@ -108,7 +100,7 @@
                                         </svg>
                                         Entradas
                                     </h4>
-                                    
+
                                     @if(count($data['entradas']) > 0)
                                         <div class="space-y-4">
                                             @foreach($data['entradas'] as $categoria => $dados)
@@ -150,7 +142,7 @@
                                         </svg>
                                         Saídas
                                     </h4>
-                                    
+
                                     @if(count($data['saidas']) > 0)
                                         <div class="space-y-4">
                                             @foreach($data['saidas'] as $categoria => $dados)
@@ -205,7 +197,7 @@
                     Relatório Anual Detalhado de {{ $report['ano'] }}
                 </h3>
             </div>
-            
+
             <!-- Mensagem de nenhum dado -->
             <div class="text-center py-12">
                 <svg class="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -225,4 +217,4 @@
             </div>
         @endif
     </x-page-card>
-</x-app-layout> 
+</x-app-layout>
