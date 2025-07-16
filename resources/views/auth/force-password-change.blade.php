@@ -27,11 +27,11 @@
         <!-- New Password -->
         <div class="mb-4">
             <x-input-label for="password" :value="__('Nova Senha')" required="true" />
-            <x-text-input id="password" 
-                          class="block mt-1 w-full" 
-                          type="password" 
-                          name="password" 
-                          required 
+            <x-text-input id="password"
+                          class="block mt-1 w-full"
+                          type="password"
+                          name="password"
+                          required
                           placeholder="Digite sua nova senha"
                           autocomplete="new-password" />
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
@@ -43,11 +43,11 @@
         <!-- Confirm Password -->
         <div class="mb-6">
             <x-input-label for="password_confirmation" :value="__('Confirmar Nova Senha')" required="true" />
-            <x-text-input id="password_confirmation" 
-                          class="block mt-1 w-full" 
-                          type="password" 
-                          name="password_confirmation" 
-                          required 
+            <x-text-input id="password_confirmation"
+                          class="block mt-1 w-full"
+                          type="password"
+                          name="password_confirmation"
+                          required
                           placeholder="Confirme sua nova senha"
                           autocomplete="new-password" />
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
@@ -64,16 +64,7 @@
             </ul>
         </div>
 
-        <div class="flex items-center justify-between">
-            <!-- Logout Link -->
-            <form method="POST" action="{{ route('logout') }}" class="inline">
-                @csrf
-                <button type="submit" 
-                        class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 underline">
-                    Sair do Sistema
-                </button>
-            </form>
-
+        <div class="flex items-center justify-end">
             <!-- Submit Button -->
             <x-primary-button type="submit">
                 {{ __('Alterar Senha') }}
@@ -81,10 +72,21 @@
         </div>
     </form>
 
+    <!-- Logout Form (separate from main form) -->
+    <div class="mt-4 text-center">
+        <form method="POST" action="{{ route('logout') }}" class="inline">
+            @csrf
+            <button type="submit"
+                    class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 underline">
+                Sair do Sistema
+            </button>
+        </form>
+    </div>
+
     <!-- Additional Info -->
     <div class="mt-6 text-center">
         <p class="text-xs text-gray-500 dark:text-gray-400">
             Após alterar sua senha, você será redirecionado automaticamente para o painel administrativo.
         </p>
     </div>
-</x-guest-layout> 
+</x-guest-layout>
