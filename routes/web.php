@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RootRedirectController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\FinancialCategoryController;
@@ -21,9 +22,9 @@ use Illuminate\Support\Facades\Route;
 // Rota raiz
 Route::get('/', RootRedirectController::class);
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified', 'password.changed'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified', 'password.changed'])
+    ->name('dashboard');
 
 // Rotas protegidas por autenticação e verificação de senha alterada
 Route::middleware(['auth', 'password.changed'])->group(function () {
