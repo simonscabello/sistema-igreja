@@ -33,6 +33,20 @@ class StoreSongRequest extends FormRequest
         ];
     }
 
+    public function attributes(): array
+    {
+        return [
+            'name' => 'nome da música',
+            'youtube_link' => 'link do YouTube',
+            'spotify_link' => 'link do Spotify',
+            'key' => 'tonalidade',
+            'lyrics_link' => 'link da letra',
+            'chords_link' => 'link da cifra',
+            'tags' => 'tags',
+            'tags.*' => 'tag',
+        ];
+    }
+
     public function messages(): array
     {
         return [

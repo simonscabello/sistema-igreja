@@ -35,4 +35,17 @@ class StorePermissionRequest extends FormRequest
             'name' => 'nome',
         ];
     }
+
+    /**
+     * Get custom messages for validator errors.
+     */
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'O nome é obrigatório.',
+            'name.string' => 'O nome deve ser um texto.',
+            'name.max' => 'O nome não pode ter mais de 255 caracteres.',
+            'name.unique' => 'Este nome já está sendo usado.',
+        ];
+    }
 }

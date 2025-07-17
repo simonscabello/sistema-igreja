@@ -40,6 +40,30 @@ class UpdateUserRequest extends FormRequest
             'email' => 'email',
             'password' => 'senha',
             'roles' => 'roles',
+            'roles.*' => 'role',
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     */
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'O nome é obrigatório.',
+            'name.string' => 'O nome deve ser um texto.',
+            'name.max' => 'O nome não pode ter mais de 255 caracteres.',
+            'email.required' => 'O email é obrigatório.',
+            'email.string' => 'O email deve ser um texto.',
+            'email.email' => 'O email deve ser um endereço válido.',
+            'email.max' => 'O email não pode ter mais de 255 caracteres.',
+            'email.unique' => 'Este email já está sendo usado.',
+            'password.string' => 'A senha deve ser um texto.',
+            'password.min' => 'A senha deve ter pelo menos 8 caracteres.',
+            'password.confirmed' => 'A confirmação da senha não coincide.',
+            'roles.array' => 'Os roles devem ser uma lista.',
+            'roles.*.string' => 'O role deve ser um texto.',
+            'roles.*.exists' => 'O role selecionado não existe.',
         ];
     }
 }

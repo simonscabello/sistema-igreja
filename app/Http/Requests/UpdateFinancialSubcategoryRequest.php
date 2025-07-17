@@ -28,6 +28,15 @@ class UpdateFinancialSubcategoryRequest extends FormRequest
         ];
     }
 
+    public function attributes(): array
+    {
+        return [
+            'financial_category_id' => 'categoria',
+            'name' => 'nome da subcategoria',
+            'active' => 'ativo',
+        ];
+    }
+
     public function messages(): array
     {
         return [

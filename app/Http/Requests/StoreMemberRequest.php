@@ -56,6 +56,7 @@ class StoreMemberRequest extends FormRequest
             'state' => 'estado',
             'number' => 'número',
             'complement' => 'complemento',
+            'foto_perfil' => 'foto de perfil',
         ];
     }
 

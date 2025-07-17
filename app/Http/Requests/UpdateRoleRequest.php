@@ -36,6 +36,23 @@ class UpdateRoleRequest extends FormRequest
         return [
             'name' => 'nome',
             'permissions' => 'permissões',
+            'permissions.*' => 'permissão',
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     */
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'O nome é obrigatório.',
+            'name.string' => 'O nome deve ser um texto.',
+            'name.max' => 'O nome não pode ter mais de 255 caracteres.',
+            'name.unique' => 'Este nome já está sendo usado.',
+            'permissions.array' => 'As permissões devem ser uma lista.',
+            'permissions.*.string' => 'A permissão deve ser um texto.',
+            'permissions.*.exists' => 'A permissão selecionada não existe.',
         ];
     }
 }

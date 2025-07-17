@@ -25,6 +25,20 @@ class UpdateWorshipSetRequest extends FormRequest
         ];
     }
 
+    public function attributes(): array
+    {
+        return [
+            'singer' => 'cantor',
+            'preacher' => 'ministro',
+            'songs' => 'músicas',
+            'songs.*' => 'música',
+            'date' => 'data',
+            'period' => 'período',
+            'order_notes' => 'notas de ordem',
+            'observations' => 'observações',
+        ];
+    }
+
     public function messages(): array
     {
         return [
@@ -39,4 +53,4 @@ class UpdateWorshipSetRequest extends FormRequest
             'period.in' => 'O período deve ser manhã ou noite.',
         ];
     }
-} 
+}

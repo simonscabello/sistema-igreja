@@ -29,6 +29,16 @@ class StoreFinancialSubcategoryRequest extends FormRequest
         ];
     }
 
+    public function attributes(): array
+    {
+        return [
+            'financial_category_id' => 'categoria',
+            'subcategories' => 'subcategorias',
+            'subcategories.*.name' => 'nome da subcategoria',
+            'subcategories.*.active' => 'ativo',
+        ];
+    }
+
     public function messages(): array
     {
         return [
