@@ -7,98 +7,81 @@
         @endif
 
         <div class="text-neutral-dark dark:text-gray-300">
-            <p class="mb-4">Bem-vindo ao sistema, {{ auth()->user()->name }}!</p>
+            <h1 class="mb-4 hidden">Olá, {{ auth()->user()->name }}!</h1>
 
             <!-- Seção de Pessoas (Membros e Visitantes) -->
             <div class="mb-8">
-                <h2 class="text-2xl font-bold mb-6 text-neutral-dark dark:text-white">Seção de Pessoas</h2>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                    <!-- Distribuição de Membros por Gênero -->
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-                        <h3 class="text-lg font-semibold mb-4 text-neutral-dark dark:text-white flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                            </svg>
-                            Distribuição por Gênero
-                        </h3>
-                        <div class="space-y-3">
-                            @forelse($distribuicaoGenero as $item)
-                                <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded">
-                                    <span class="font-medium">{{ $item->genero }}</span>
-                                    <span class="bg-primary text-white px-3 py-1 rounded-full text-sm font-semibold">{{ $item->total }}</span>
-                                </div>
-                            @empty
-                                <p class="text-gray-500 dark:text-gray-400 text-center py-4">Nenhum membro cadastrado</p>
-                            @endforelse
-                        </div>
-                    </div>
-
-                    <!-- Perfil Etário dos Membros -->
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-                        <h3 class="text-lg font-semibold mb-4 text-neutral-dark dark:text-white flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
-                            Perfil Etário
-                        </h3>
-                        <div class="space-y-3">
-                            @forelse($perfilEtario as $item)
-                                <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded">
-                                    <span class="font-medium">{{ $item->faixa_etaria }} anos</span>
-                                    <span class="bg-secondary text-white px-3 py-1 rounded-full text-sm font-semibold">{{ $item->total }}</span>
-                                </div>
-                            @empty
-                                <p class="text-gray-500 dark:text-gray-400 text-center py-4">Nenhum membro com idade informada</p>
-                            @endforelse
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+               
+                <div class="">
                     <!-- Aniversariantes do Mês -->
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
                         <h3 class="text-lg font-semibold mb-4 text-neutral-dark dark:text-white flex items-center">
                             <svg class="w-5 h-5 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0A1.5 1.5 0 013 16.5V19a3 3 0 003 3h12a3 3 0 003-3v-2.454z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path>
                             </svg>
                             Aniversariantes do Mês
                         </h3>
-                        <div class="space-y-2 max-h-64 overflow-y-auto">
+                        <div class="space-y-2">
                             @forelse($aniversariantesDoMes as $aniversariante)
-                                <div class="flex justify-between items-center p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded">
-                                    <div>
-                                        <p class="font-medium text-yellow-800 dark:text-yellow-200">{{ $aniversariante->nome }}</p>
-                                        <p class="text-sm text-yellow-600 dark:text-yellow-300">{{ $aniversariante->tipo }}</p>
+                                <div class="relative flex items-center p-3 
+                                    {{ $aniversariante->is_today ? 'bg-primary/10 dark:bg-primary/10' : 'bg-primary/5 dark:bg-primary/5' }} 
+                                    border 
+                                    {{ $aniversariante->is_today ? 'border-primary/30 dark:border-primary/30' : 'border-primary/10 dark:border-primary/20' }} 
+                                    rounded">
+                                    
+                                    @if($aniversariante->is_today)
+                                        <div class="absolute -top-1 -right-1 bg-primary text-white text-xs px-2 py-1 rounded-full font-semibold">
+                                            Hoje!
+                                        </div>
+                                    @endif
+                                    
+                                    <img src="{{ $aniversariante->foto_url }}" 
+                                         alt="Foto de {{ $aniversariante->nome }}" 
+                                         class="w-16 h-16 rounded-full object-cover mr-3 border-2 border-primary/20">
+                                    
+                                    <div class="flex-1">
+                                        <p class="font-medium text-primary dark:text-primary-light">{{ $aniversariante->nome }}</p>
+                                        <p class="text-sm text-primary/70 dark:text-primary-light/70">{{ $aniversariante->tipo }}</p>
+                                        @if($aniversariante->mobile)
+                                            <p class="text-sm text-gray-600 dark:text-gray-400">{{ $aniversariante->mobile }}</p>
+                                        @endif
                                     </div>
-                                    <span class="text-yellow-800 dark:text-yellow-200 font-semibold">{{ $aniversariante->data }}</span>
+                                    
+                                    <span class="text-primary dark:text-primary-light font-semibold ml-3">{{ $aniversariante->data }}</span>
                                 </div>
                             @empty
-                                <p class="text-gray-500 dark:text-gray-400 text-center py-4">Nenhum aniversariante este mês</p>
+                                <p class="text-gray-500 dark:text-gray-400 text-center py-4">Nenhum aniversariante encontrado este mês.</p>
                             @endforelse
                         </div>
                     </div>
 
                     <!-- Últimos Visitantes -->
-                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow mt-6">
                         <h3 class="text-lg font-semibold mb-4 text-neutral-dark dark:text-white flex items-center">
                             <svg class="w-5 h-5 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
                             </svg>
                             Últimos Visitantes
                         </h3>
-                        <div class="space-y-2 max-h-64 overflow-y-auto">
+                        <div class="space-y-2">
                             @forelse($ultimosVisitantes as $visitante)
-                                <div class="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded">
-                                    <p class="font-medium text-green-800 dark:text-green-200">{{ $visitante->nome }}</p>
-                                    <div class="text-sm text-green-600 dark:text-green-300 mt-1">
-                                        <p>Primeira visita: {{ $visitante->primeira_visita }}</p>
-                                        <p>Última visita: {{ $visitante->ultima_visita }}</p>
-                                        <p>Total de visitas: {{ $visitante->quantidade_visitas }}</p>
+                                <div class="flex items-center justify-between p-3 bg-primary/5 dark:bg-primary/5 border border-primary/10 dark:border-primary/20 rounded">
+                                    <div class="flex-1">
+                                        <p class="font-medium text-primary dark:text-primary-light">{{ $visitante->nome }}</p>
+                                        @if($visitante->mobile)
+                                            <p class="text-sm text-gray-600 dark:text-gray-400">{{ $visitante->mobile }}</p>
+                                        @endif
+                                        <p class="text-sm text-primary/70 dark:text-primary-light/70 mt-1">
+                                            Primeira visita: {{ $visitante->primeira_visita }}
+                                        </p>
                                     </div>
+                                    <a href="{{ route('visitors.show', $visitante->id) }}" 
+                                       class="text-sm bg-primary text-white px-3 py-1 rounded hover:bg-primary-dark transition-colors duration-150">
+                                        Visualizar
+                                    </a>
                                 </div>
                             @empty
-                                <p class="text-gray-500 dark:text-gray-400 text-center py-4">Nenhum visitante registrado</p>
+                                <p class="text-gray-500 dark:text-gray-400 text-center py-4">Este mês ainda não recebemos visitantes.</p>
                             @endforelse
                         </div>
                     </div>
@@ -106,7 +89,7 @@
             </div>
 
             <!-- Seção de Acesso Rápido -->
-            <div>
+            <div class="hidden">
                 <h2 class="text-2xl font-bold mb-6 text-neutral-dark dark:text-white">Acesso Rápido</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @can('gerenciar_usuarios')
@@ -150,6 +133,7 @@
                     @endcan
                 </div>
             </div>
+
         </div>
     </x-page-card>
 </x-app-layout>

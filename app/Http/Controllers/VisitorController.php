@@ -26,7 +26,7 @@ class VisitorController extends Controller
             });
         }
 
-        $visitors = $query->latest()->paginate(10);
+        $visitors = $query->orderBy('created_at', 'desc')->paginate(10);
 
         return view('visitors.index', compact('visitors'));
     }
