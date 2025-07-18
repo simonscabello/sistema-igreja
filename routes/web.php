@@ -9,6 +9,7 @@ use App\Http\Controllers\FinancialCategoryController;
 use App\Http\Controllers\FinancialTransactionController;
 use App\Http\Controllers\FinancialSubcategoryController;
 use App\Http\Controllers\FinancialReportController;
+use App\Http\Controllers\FinancialDashboardController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\SongController;
 use App\Http\Controllers\WorshipSetController;
@@ -62,6 +63,10 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
         Route::put('/{financialSubcategory}', [FinancialSubcategoryController::class, 'update'])->name('update');
         Route::delete('/{financialSubcategory}', [FinancialSubcategoryController::class, 'destroy'])->name('destroy');
     });
+
+    // Dashboard financeiro
+    Route::get('/financial/dashboard', [FinancialDashboardController::class, 'index'])->name('financial.dashboard.index');
+    Route::get('/financial/dashboard/data', [FinancialDashboardController::class, 'getData'])->name('financial.dashboard.data');
 
     // Relatórios financeiros
     Route::get('/reports/financial', [FinancialReportController::class, 'index'])->name('reports.financial.index');

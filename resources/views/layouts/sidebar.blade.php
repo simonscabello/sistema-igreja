@@ -52,7 +52,18 @@
 
         <!-- Dropdown Finanças -->
         @canany(['visualizar_financeiro', 'gerenciar_categorias_financeiras'])
-            <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial-*') || request()->routeIs('subcategories.*') || request()->routeIs('campaigns.*') || request()->routeIs('reports.financial.*')">
+            <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial.*') || request()->routeIs('subcategories.*') || request()->routeIs('campaigns.*') || request()->routeIs('reports.financial.*')">
+                @can('visualizar_financeiro')
+                    <x-sidebar-link href="{{ route('financial.dashboard.index') }}" :active="request()->routeIs('financial.dashboard.*')">
+                        <x-slot name="icon">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                        </x-slot>
+                        {{ __('Dashboard Financeiro') }}
+                    </x-sidebar-link>
+                @endcan
+
                 @can('gerenciar_categorias_financeiras')
                     <x-sidebar-link href="{{ route('financial-categories.index') }}" :active="request()->routeIs('financial-categories.*')">
                         <x-slot name="icon">
@@ -240,7 +251,18 @@
 
         <!-- Dropdown Finanças -->
         @canany(['visualizar_financeiro', 'gerenciar_categorias_financeiras'])
-            <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial-*') || request()->routeIs('subcategories.*') || request()->routeIs('campaigns.*') || request()->routeIs('reports.financial.*')">
+            <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial.*') || request()->routeIs('subcategories.*') || request()->routeIs('campaigns.*') || request()->routeIs('reports.financial.*')">
+                @can('visualizar_financeiro')
+                    <x-sidebar-link href="{{ route('financial.dashboard.index') }}" :active="request()->routeIs('financial.dashboard.*')">
+                        <x-slot name="icon">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                        </x-slot>
+                        {{ __('Dashboard Financeiro') }}
+                    </x-sidebar-link>
+                @endcan
+
                 @can('gerenciar_categorias_financeiras')
                     <x-sidebar-link href="{{ route('financial-categories.index') }}" :active="request()->routeIs('financial-categories.*')">
                         <x-slot name="icon">
@@ -286,13 +308,13 @@
                 @endcan
 
                 @can('visualizar_financeiro')
-                    <x-sidebar-link href="{{ route('reports.financial.monthly') }}" :active="request()->routeIs('reports.financial.*')">
+                    <x-sidebar-link href="{{ route('reports.financial.index') }}" :active="request()->routeIs('reports.financial.*')">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                             </svg>
                         </x-slot>
-                        {{ __('Relatório Mensal') }}
+                        {{ __('Relatórios Financeiros') }}
                     </x-sidebar-link>
                 @endcan
             </x-sidebar-dropdown>
