@@ -14,7 +14,6 @@
         <div>
             <x-input-label for="email" :value="__('E-mail')" required="true" />
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email') && !collect($errors->get('email'))->contains(trans('auth.failed')) ? $errors->get('email') : []" class="mt-2" />
         </div>
 
         <!-- Password -->
