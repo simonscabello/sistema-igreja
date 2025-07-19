@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Member;
 use App\Models\Visitor;
+use App\Models\Department;
+use App\Models\FinancialTransaction;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
@@ -16,6 +18,10 @@ class DashboardController extends Controller
         $dados = [
             'aniversariantesDoMes' => $this->getAniversariantesDoMes(),
             'ultimosVisitantes' => $this->getUltimosVisitantes(),
+            'totalMembros' => $this->getTotalMembros(),
+            'totalVisitantes' => $this->getTotalVisitantes(),
+            'totalDepartamentos' => $this->getTotalDepartamentos(),
+            'saldoAtual' => $this->getSaldoAtual(),
         ];
 
         return view('dashboard', $dados);
@@ -76,6 +82,29 @@ class DashboardController extends Controller
                     'primeira_visita' => $primeiraVisita->format('d/m/Y'),
                 ];
             });
+    }
+
+    private function getTotalMembros(): int
+    {
+        return Member::count();
+    }
+
+    private function getTotalVisitantes(): int
+    {
+        return Visitor::count();
+    }
+
+    private function getTotalDepartamentos(): int
+    {
+        return Department::count();
+    }
+
+    private function getSaldoAtual(): float
+    {
+        $receitas = FinancialTransaction::where('type', 'entrada')->sum('amount');
+        $despesas = FinancialTransaction::where('type', 'saida')->sum('amount');
+        
+        return $receitas - $despesas;
     }
 
 }
