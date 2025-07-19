@@ -1,8 +1,7 @@
 @import "./datepicker-custom.css";
 @import "./sweetalert-custom.css";
-@import "./financial-dashboard.css";
-@tailwind base;
-@tailwind components;
+@tailwind base; 
+/* @tailwind components; */ // Comentado para evitar conflito com o apexcharts
 @import 'flowbite';
 @tailwind utilities;
 

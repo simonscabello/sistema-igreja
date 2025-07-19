@@ -1,72 +1,68 @@
-/* Correções específicas para o gráfico do Dashboard Financeiro */
-#financial-chart .apexcharts-canvas {
-    cursor: default !important;
+/* Dashboard Financeiro - Estilos específicos */
+
+/* Ajustes para o gráfico ApexCharts */
+.apexcharts-canvas {
+    font-family: 'Fira Sans', sans-serif;
 }
 
-#financial-chart .apexcharts-tooltip {
-    cursor: default !important;
-    z-index: 1000 !important;
-    /* Remove estilos padrão do ApexCharts */
-    border: none !important;
-    background: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
+/* Estilos para o dropdown de período */
+.period-dropdown {
+    transition: all 0.2s ease-in-out;
 }
 
-/* Remove elementos desnecessários do tooltip */
-#financial-chart .apexcharts-tooltip-series-group {
-    display: none !important;
+.period-dropdown:hover {
+    background-color: #f5f9f8;
 }
 
-#financial-chart .apexcharts-tooltip-title {
-    display: none !important;
+.dark .period-dropdown:hover {
+    background-color: #374151;
 }
 
-#financial-chart .apexcharts-tooltip-marker {
-    display: none !important;
+/* Estilos para os cards de resumo */
+.summary-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
-#financial-chart .apexcharts-tooltip-text {
-    display: none !important;
+.summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
-#financial-chart .apexcharts-legend {
-    cursor: default !important;
+/* Responsividade para o gráfico */
+@media (max-width: 768px) {
+    #financialChart {
+        height: 300px;
+    }
 }
 
-#financial-chart .apexcharts-xaxis,
-#financial-chart .apexcharts-yaxis {
-    cursor: default !important;
+@media (max-width: 640px) {
+    #financialChart {
+        height: 250px;
+    }
 }
 
-/* Garante que os elementos do gráfico tenham o cursor correto */
-#financial-chart svg * {
-    cursor: default !important;
+/* Animações de loading */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
 }
 
-/* Melhora a visibilidade dos markers */
-#financial-chart .apexcharts-marker {
-    cursor: crosshair !important;
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #3BA99C;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
 }
 
-/* Melhora a área do gráfico */
-#financial-chart .apexcharts-svg {
-    overflow: visible !important;
-}
-
-/* Garantir que o tooltip não seja cortado */
-#financial-chart .apexcharts-tooltip {
-    transform: none !important;
-    position: absolute !important;
-}
-
-/* Evitar que o tooltip seja cortado nas bordas */
-#financial-chart {
-    overflow: visible !important;
-    position: relative !important;
-}
-
-/* Garantir que o container do gráfico tenha espaço suficiente */
-#financial-chart .apexcharts-inner {
-    overflow: visible !important;
-}
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+} 

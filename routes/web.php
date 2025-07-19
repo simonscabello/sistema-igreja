@@ -65,8 +65,8 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
     });
 
     // Dashboard financeiro
-    Route::get('/financial/dashboard', [FinancialDashboardController::class, 'index'])->name('financial.dashboard.index');
-    Route::get('/financial/dashboard/data', [FinancialDashboardController::class, 'getData'])->name('financial.dashboard.data');
+    Route::get('/financial-dashboard', [FinancialDashboardController::class, 'index'])->name('financial-dashboard.index');
+    Route::get('/financial-dashboard/data', [FinancialDashboardController::class, 'getData'])->name('financial-dashboard.data');
 
     // Relatórios financeiros
     Route::get('/reports/financial', [FinancialReportController::class, 'index'])->name('reports.financial.index');

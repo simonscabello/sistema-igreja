@@ -7,6 +7,7 @@ import './delete-action-alert';
 import './theme-toggle';
 import './departments/department-selects';
 import './departments/department-edit';
+import './financial-dashboard.js';
 
 window.Alpine = Alpine;
 Alpine.plugin(mask);

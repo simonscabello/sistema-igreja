@@ -21,140 +21,40 @@ class FinancialDashboardController extends Controller
     {
         $this->authorize('visualizar_financeiro');
 
-        $period = $request->get('period', 'last_30_days');
-        $dateRange = $this->getDateRangeByPeriod($period);
+        $period = $request->get('period', 30);
+        $endDate = Carbon::now();
+        $startDate = Carbon::now()->subDays($period);
 
-        $transactions = FinancialTransaction::whereBetween('action_date', $dateRange)->get();
+        $transactions = FinancialTransaction::whereBetween('action_date', [$startDate, $endDate])
+            ->selectRaw('DATE(action_date) as date, type, SUM(amount) as total')
+            ->groupBy('date', 'type')
+            ->orderBy('date')
+            ->get();
 
-        $monthlyData = $this->generateMonthlyData($transactions, $dateRange);
+        $entradas = [];
+        $saidas = [];
 
-        return response()->json([
-            'chart_data' => $monthlyData,
-            'summary' => $this->generateSummary($transactions),
-            'period_info' => $this->getPeriodInfo($period, $dateRange)
-        ]);
-    }
-
-    private function getDateRangeByPeriod(string $period): array
-    {
-        return match ($period) {
-            'yesterday' => [
-                Carbon::yesterday()->startOfDay(),
-                Carbon::yesterday()->endOfDay()
-            ],
-            'today' => [
-                Carbon::today()->startOfDay(),
-                Carbon::today()->endOfDay()
-            ],
-            'last_7_days' => [
-                Carbon::now()->subDays(6)->startOfDay(),
-                Carbon::now()->endOfDay()
-            ],
-            'last_30_days' => [
-                Carbon::now()->subDays(29)->startOfDay(),
-                Carbon::now()->endOfDay()
-            ],
-            'last_90_days' => [
-                Carbon::now()->subDays(89)->startOfDay(),
-                Carbon::now()->endOfDay()
-            ],
-            default => [
-                Carbon::now()->subDays(29)->startOfDay(),
-                Carbon::now()->endOfDay()
-            ]
-        };
-    }
-
-    private function generateMonthlyData($transactions, array $dateRange): array
-    {
-        $startDate = Carbon::parse($dateRange[0]);
-        $endDate = Carbon::parse($dateRange[1]);
-        
-        $data = [
-            'categories' => [],
-            'entradas' => [],
-            'saidas' => []
-        ];
-
-        // Determinar o agrupamento baseado no período
-        $diffInDays = $endDate->diffInDays($startDate);
-        
-        if ($diffInDays <= 90) {
-            // Para períodos até 90 dias, sempre agrupar por dia
-            $current = $startDate->copy();
-            $dailyData = [];
+        foreach ($transactions as $transaction) {
+            $date = Carbon::parse($transaction->date)->format('Y-m-d');
             
-            while ($current <= $endDate) {
-                $dateKey = $current->format('Y-m-d');
-                $data['categories'][] = $current->format('d/m');
-                $dailyData[$dateKey] = ['entrada' => 0, 'saida' => 0];
-                $current->addDay();
-            }
-            
-            foreach ($transactions as $transaction) {
-                $dateKey = $transaction->action_date->format('Y-m-d');
-                if (isset($dailyData[$dateKey])) {
-                    $dailyData[$dateKey][$transaction->type] += $transaction->amount;
-                }
-            }
-            
-            foreach ($dailyData as $dayData) {
-                $data['entradas'][] = $dayData['entrada'];
-                $data['saidas'][] = $dayData['saida'];
-            }
-        } else {
-            // Para períodos maiores que 90 dias, agrupar por mês
-            $monthlyData = [];
-            
-            foreach ($transactions as $transaction) {
-                $monthKey = $transaction->action_date->format('Y-m');
-                if (!isset($monthlyData[$monthKey])) {
-                    $monthlyData[$monthKey] = ['entrada' => 0, 'saida' => 0];
-                }
-                $monthlyData[$monthKey][$transaction->type] += $transaction->amount;
-            }
-            
-            ksort($monthlyData);
-            
-            foreach ($monthlyData as $monthKey => $values) {
-                $data['categories'][] = Carbon::createFromFormat('Y-m', $monthKey)->format('M/Y');
-                $data['entradas'][] = $values['entrada'];
-                $data['saidas'][] = $values['saida'];
+            if ($transaction->type === 'entrada') {
+                $entradas[$date] = $transaction->total;
+            } else {
+                $saidas[$date] = $transaction->total;
             }
         }
 
-        return $data;
-    }
-
-    private function generateSummary($transactions): array
-    {
-        $totalEntradas = $transactions->where('type', 'entrada')->sum('amount');
-        $totalSaidas = $transactions->where('type', 'saida')->sum('amount');
+        $totalEntradas = $transactions->where('type', 'entrada')->sum('total');
+        $totalSaidas = $transactions->where('type', 'saida')->sum('total');
         $saldo = $totalEntradas - $totalSaidas;
 
-        return [
+        return response()->json([
+            'entradas' => $entradas,
+            'saidas' => $saidas,
             'total_entradas' => $totalEntradas,
             'total_saidas' => $totalSaidas,
             'saldo' => $saldo,
-            'total_transacoes' => $transactions->count()
-        ];
-    }
-
-    private function getPeriodInfo(string $period, array $dateRange): array
-    {
-        $periodNames = [
-            'yesterday' => 'Ontem',
-            'today' => 'Hoje',
-            'last_7_days' => 'Últimos 7 dias',
-            'last_30_days' => 'Últimos 30 dias',
-            'last_90_days' => 'Últimos 90 dias'
-        ];
-
-        return [
-            'period' => $period,
-            'display_name' => $periodNames[$period] ?? 'Período customizado',
-            'start_date' => Carbon::parse($dateRange[0])->format('d/m/Y'),
-            'end_date' => Carbon::parse($dateRange[1])->format('d/m/Y')
-        ];
+            'periodo' => $period
+        ]);
     }
 } 
