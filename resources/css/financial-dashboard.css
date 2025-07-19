@@ -1,0 +1,72 @@
+/* Correções específicas para o gráfico do Dashboard Financeiro */
+#financial-chart .apexcharts-canvas {
+    cursor: default !important;
+}
+
+#financial-chart .apexcharts-tooltip {
+    cursor: default !important;
+    z-index: 1000 !important;
+    /* Remove estilos padrão do ApexCharts */
+    border: none !important;
+    background: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+/* Remove elementos desnecessários do tooltip */
+#financial-chart .apexcharts-tooltip-series-group {
+    display: none !important;
+}
+
+#financial-chart .apexcharts-tooltip-title {
+    display: none !important;
+}
+
+#financial-chart .apexcharts-tooltip-marker {
+    display: none !important;
+}
+
+#financial-chart .apexcharts-tooltip-text {
+    display: none !important;
+}
+
+#financial-chart .apexcharts-legend {
+    cursor: default !important;
+}
+
+#financial-chart .apexcharts-xaxis,
+#financial-chart .apexcharts-yaxis {
+    cursor: default !important;
+}
+
+/* Garante que os elementos do gráfico tenham o cursor correto */
+#financial-chart svg * {
+    cursor: default !important;
+}
+
+/* Melhora a visibilidade dos markers */
+#financial-chart .apexcharts-marker {
+    cursor: crosshair !important;
+}
+
+/* Melhora a área do gráfico */
+#financial-chart .apexcharts-svg {
+    overflow: visible !important;
+}
+
+/* Garantir que o tooltip não seja cortado */
+#financial-chart .apexcharts-tooltip {
+    transform: none !important;
+    position: absolute !important;
+}
+
+/* Evitar que o tooltip seja cortado nas bordas */
+#financial-chart {
+    overflow: visible !important;
+    position: relative !important;
+}
+
+/* Garantir que o container do gráfico tenha espaço suficiente */
+#financial-chart .apexcharts-inner {
+    overflow: visible !important;
+}

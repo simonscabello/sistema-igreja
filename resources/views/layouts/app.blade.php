@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" 
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
       x-data="{ theme: localStorage.getItem('theme') || 'dark', sidebarOpen: false }"
       :class="{ 'dark': theme === 'dark' }"
       x-init="$watch('theme', val => localStorage.setItem('theme', val))">

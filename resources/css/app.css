@@ -1,5 +1,6 @@
 @import "./datepicker-custom.css";
 @import "./sweetalert-custom.css";
+@import "./financial-dashboard.css";
 @tailwind base;
 @tailwind components;
 @import 'flowbite';
