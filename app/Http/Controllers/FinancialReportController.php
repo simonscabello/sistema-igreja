@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\FinancialTransaction;
+use App\Models\FinancialCategory;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\View\View;
@@ -63,11 +64,25 @@ class FinancialReportController extends Controller
         $this->authorize('visualizar_financeiro');
 
         $year = $request->get('year', now()->year);
+        $filterType = $request->get('type');
+        $filterCategory = $request->get('category');
 
-        $transactions = FinancialTransaction::with('subcategory.financialCategory')
-            ->whereYear('action_date', $year)
-            ->orderBy('action_date', 'asc')
-            ->get();
+        // Build query with filters
+        $query = FinancialTransaction::with(['subcategory.financialCategory', 'campaign'])
+            ->whereYear('action_date', $year);
+
+        // Apply optional filters
+        if ($filterType && in_array($filterType, ['entrada', 'saida'])) {
+            $query->where('type', $filterType);
+        }
+
+        if ($filterCategory) {
+            $query->whereHas('subcategory.financialCategory', function($q) use ($filterCategory) {
+                $q->where('id', $filterCategory);
+            });
+        }
+
+        $transactions = $query->orderBy('action_date', 'asc')->get();
 
         $monthlyData = [];
         $yearlyTotals = ['entradas' => 0, 'saidas' => 0];
@@ -86,6 +101,9 @@ class FinancialReportController extends Controller
             $yearlyTotals['entradas'] += $totalEntradas;
             $yearlyTotals['saidas'] += $totalSaidas;
 
+            // Add individual transactions for the month
+            $individualTransactions = $monthTransactions->sortBy('action_date')->values();
+
             $monthlyData[$month] = [
                 'mes_nome' => Carbon::create($year, $month)->locale('pt_BR')->monthName,
                 'entradas' => $entradas,
@@ -93,7 +111,8 @@ class FinancialReportController extends Controller
                 'total_entradas' => $totalEntradas,
                 'total_saidas' => $totalSaidas,
                 'saldo_mensal' => $totalEntradas - $totalSaidas,
-                'has_transactions' => count($entradas) > 0 || count($saidas) > 0
+                'has_transactions' => count($entradas) > 0 || count($saidas) > 0,
+                'transactions' => $individualTransactions
             ];
         }
 
@@ -101,7 +120,11 @@ class FinancialReportController extends Controller
             'monthly_data' => $monthlyData,
             'yearly_totals' => $yearlyTotals,
             'saldo_anual' => $yearlyTotals['entradas'] - $yearlyTotals['saidas'],
-            'ano' => $year
+            'ano' => $year,
+            'filters' => [
+                'type' => $filterType,
+                'category' => $filterCategory
+            ]
         ];
 
         if ($request->ajax() || $request->wantsJson()) {
@@ -109,8 +132,9 @@ class FinancialReportController extends Controller
         }
 
         $availableYears = $this->getAvailableYears();
+        $categories = FinancialCategory::where('active', true)->orderBy('name')->get();
 
-        return view('reports.financial.annual-detailed', compact('report', 'availableYears'));
+        return view('reports.financial.annual-detailed', compact('report', 'availableYears', 'categories'));
     }
 
     public function annualSummary(Request $request): View|JsonResponse

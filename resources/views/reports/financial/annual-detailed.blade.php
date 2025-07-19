@@ -19,15 +19,35 @@
             </a>
         </div>
 
-        <!-- Filtro -->
+        <!-- Filtros -->
         <div class="mb-6">
-            <form action="{{ route('reports.financial.annual.detailed') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
-                                <div>
+            <form action="{{ route('reports.financial.annual.detailed') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                <div>
                     <x-select
                         label="Ano"
                         name="year"
                         :options="$availableYears"
                         :selected="request('year', now()->year)"
+                    />
+                </div>
+                <div>
+                    <x-select
+                        label="Tipo (Opcional)"
+                        name="type"
+                        :options="[
+                            '' => 'Todos',
+                            'entrada' => 'Entrada',
+                            'saida' => 'Saída'
+                        ]"
+                        :selected="request('type')"
+                    />
+                </div>
+                <div>
+                    <x-select
+                        label="Categoria (Opcional)"
+                        name="category"
+                        :options="['' => 'Todas'] + $categories->pluck('name', 'id')->toArray()"
+                        :selected="request('category')"
                     />
                 </div>
                 <div class="flex items-end">
@@ -88,94 +108,54 @@
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
-                                {{ $data['mes_nome'] }}
+                                {{ ucfirst($data['mes_nome']) }}
                             </h3>
 
-                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                <!-- Entradas -->
-                                <div>
-                                    <h4 class="text-lg font-semibold text-green-600 dark:text-green-400 mb-4 flex items-center">
-                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                        </svg>
-                                        Entradas
+                            <!-- Transações Individuais do Mês -->
+                            @if($data['transactions']->count() > 0)
+                                <div class="mt-4">
+                                    <h4 class="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                                        Todas as Transações do Mês
                                     </h4>
-
-                                    @if(count($data['entradas']) > 0)
-                                        <div class="space-y-4">
-                                            @foreach($data['entradas'] as $categoria => $dados)
-                                                <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
-                                                    <h5 class="font-semibold text-green-800 dark:text-green-300 mb-2">{{ $categoria }}</h5>
-                                                    <div class="space-y-1">
-                                                        @foreach($dados['subcategorias'] as $subcategoria => $valor)
-                                                            <div class="flex justify-between items-center text-sm">
-                                                                <span class="text-gray-700 dark:text-gray-300">{{ $subcategoria }}</span>
-                                                                <span class="font-medium text-green-600 dark:text-green-400">
-                                                                    R$ {{ number_format($valor, 2, ',', '.') }}
-                                                                </span>
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                    <div class="mt-2 pt-2 border-t border-green-200 dark:border-green-800">
-                                                        <div class="flex justify-between items-center">
-                                                            <span class="text-sm font-semibold text-green-800 dark:text-green-300">Total:</span>
-                                                            <span class="font-bold text-green-700 dark:text-green-400">
-                                                                R$ {{ number_format($dados['total_categoria'], 2, ',', '.') }}
+                                    
+                                    <div class="overflow-x-auto">
+                                        <table class="min-w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+                                            <thead class="bg-gray-50 dark:bg-gray-700">
+                                                <tr>
+                                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Data</th>
+                                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Categoria</th>
+                                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Subcategoria</th>
+                                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Tipo</th>
+                                                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Valor</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                                @foreach($data['transactions'] as $transaction)
+                                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                                        <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">
+                                                            {{ $transaction->action_date->format('d/m/Y') }}
+                                                        </td>
+                                                        <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">
+                                                            {{ $transaction->subcategory->financialCategory->name }}
+                                                        </td>
+                                                        <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">
+                                                            {{ $transaction->subcategory->name }}
+                                                        </td>
+                                                        <td class="px-4 py-3 text-sm">
+                                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $transaction->type === 'entrada' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' }}">
+                                                                {{ ucfirst($transaction->type) }}
                                                             </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    @else
-                                        <div class="text-center py-4 text-gray-500 dark:text-gray-400">
-                                            <p class="text-sm">Nenhuma entrada registrada</p>
-                                        </div>
-                                    @endif
+                                                        </td>
+                                                        <td class="px-4 py-3 text-sm text-right font-medium {{ $transaction->type === 'entrada' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
+                                                            R$ {{ number_format($transaction->amount, 2, ',', '.') }}
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-
-                                <!-- Saídas -->
-                                <div>
-                                    <h4 class="text-lg font-semibold text-red-600 dark:text-red-400 mb-4 flex items-center">
-                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
-                                        </svg>
-                                        Saídas
-                                    </h4>
-
-                                    @if(count($data['saidas']) > 0)
-                                        <div class="space-y-4">
-                                            @foreach($data['saidas'] as $categoria => $dados)
-                                                <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4">
-                                                    <h5 class="font-semibold text-red-800 dark:text-red-300 mb-2">{{ $categoria }}</h5>
-                                                    <div class="space-y-1">
-                                                        @foreach($dados['subcategorias'] as $subcategoria => $valor)
-                                                            <div class="flex justify-between items-center text-sm">
-                                                                <span class="text-gray-700 dark:text-gray-300">{{ $subcategoria }}</span>
-                                                                <span class="font-medium text-red-600 dark:text-red-400">
-                                                                    R$ {{ number_format($valor, 2, ',', '.') }}
-                                                                </span>
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                    <div class="mt-2 pt-2 border-t border-red-200 dark:border-red-800">
-                                                        <div class="flex justify-between items-center">
-                                                            <span class="text-sm font-semibold text-red-800 dark:text-red-300">Total:</span>
-                                                            <span class="font-bold text-red-700 dark:text-red-400">
-                                                                R$ {{ number_format($dados['total_categoria'], 2, ',', '.') }}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    @else
-                                        <div class="text-center py-4 text-gray-500 dark:text-gray-400">
-                                            <p class="text-sm">Nenhuma saída registrada</p>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
+                            @endif
 
                             <!-- Saldo Mensal -->
                             <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
