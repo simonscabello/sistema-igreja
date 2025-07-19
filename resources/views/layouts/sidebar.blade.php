@@ -1,5 +1,5 @@
 <!-- Sidebar Desktop -->
-<div class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 border-r border-neutral-medium dark:border-gray-700 sm:flex hidden flex-col transition-colors duration-300">
+<div class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 border-r border-neutral-medium dark:border-gray-700 lg:flex hidden flex-col transition-colors duration-300">
     <!-- Topo alinhado com topbar -->
     <div class="flex items-center justify-center h-16 px-4 bg-neutral-light dark:bg-gray-700 border-b border-neutral-medium dark:border-gray-600 gap-2 transition-colors duration-300">
         <x-application-logo-icon class="w-8 h-8" />
@@ -196,18 +196,25 @@
      x-transition:leave="transition ease-in duration-300"
      x-transition:leave-start="translate-x-0"
      x-transition:leave-end="-translate-x-full"
-     class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 border-r border-neutral-medium dark:border-gray-700 sm:hidden transform transition-all duration-300 ease-in-out"
+     class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 border-r border-neutral-medium dark:border-gray-700 lg:hidden transform transition-all duration-300 ease-in-out"
      @click.away="sidebarOpen = false">
 
-    <!-- Topo alinhado com topbar -->
-    <div class="flex items-center justify-center h-16 px-4 bg-neutral-light dark:bg-gray-700 border-b border-neutral-medium dark:border-gray-600 gap-2 transition-colors duration-300">
-        <x-application-logo class="w-8 h-8" />
-        <h1 class="text-xl font-semibold text-neutral-dark dark:text-white">{{ config('app.name') }}</h1>
+    <!-- Cabeçalho da sidebar mobile -->
+    <div class="flex items-center justify-between h-16 px-4 bg-neutral-light dark:bg-gray-700 border-b border-neutral-medium dark:border-gray-600 transition-colors duration-300">
+        <div class="flex items-center gap-2">
+            <x-application-logo-icon class="w-8 h-8" />
+            <h1 class="text-xl font-semibold text-gray-800 dark:text-white">{{ config('app.name') }}</h1>
+        </div>
+        <button @click="sidebarOpen = false" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
     </div>
 
-    <!-- Menu Items -->
+    <!-- Menu Items Mobile -->
     <nav class="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
-        <x-sidebar-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+        <x-sidebar-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" @click="sidebarOpen = false">
             <x-slot name="icon">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -217,7 +224,7 @@
         </x-sidebar-link>
 
         @can('visualizar_membros')
-            <x-sidebar-link href="{{ route('members.index') }}" :active="request()->routeIs('members.*')">
+            <x-sidebar-link href="{{ route('members.index') }}" :active="request()->routeIs('members.*')" @click="sidebarOpen = false">
                 <x-slot name="icon">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -228,7 +235,7 @@
         @endcan
 
         @can('visualizar_visitantes')
-            <x-sidebar-link href="{{ route('visitors.index') }}" :active="request()->routeIs('visitors.*')">
+            <x-sidebar-link href="{{ route('visitors.index') }}" :active="request()->routeIs('visitors.*')" @click="sidebarOpen = false">
                 <x-slot name="icon">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -239,7 +246,7 @@
         @endcan
 
         @can('visualizar_departamentos')
-            <x-sidebar-link href="{{ route('departments.index') }}" :active="request()->routeIs('departments.*')">
+            <x-sidebar-link href="{{ route('departments.index') }}" :active="request()->routeIs('departments.*')" @click="sidebarOpen = false">
                 <x-slot name="icon">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -253,7 +260,7 @@
         @canany(['visualizar_financeiro', 'gerenciar_categorias_financeiras'])
             <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial.*') || request()->routeIs('subcategories.*') || request()->routeIs('campaigns.*') || request()->routeIs('reports.financial.*')">
                 @can('visualizar_financeiro')
-                    <x-sidebar-link href="{{ route('financial.dashboard.index') }}" :active="request()->routeIs('financial.dashboard.*')">
+                    <x-sidebar-link href="{{ route('financial.dashboard.index') }}" :active="request()->routeIs('financial.dashboard.*')" @click="sidebarOpen = false">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -264,7 +271,7 @@
                 @endcan
 
                 @can('gerenciar_categorias_financeiras')
-                    <x-sidebar-link href="{{ route('financial-categories.index') }}" :active="request()->routeIs('financial-categories.*')">
+                    <x-sidebar-link href="{{ route('financial-categories.index') }}" :active="request()->routeIs('financial-categories.*')" @click="sidebarOpen = false">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -275,7 +282,7 @@
                 @endcan
 
                 @can('gerenciar_categorias_financeiras')
-                    <x-sidebar-link href="{{ route('subcategories.index') }}" :active="request()->routeIs('subcategories.*')">
+                    <x-sidebar-link href="{{ route('subcategories.index') }}" :active="request()->routeIs('subcategories.*')" @click="sidebarOpen = false">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -286,7 +293,7 @@
                 @endcan
 
                 @can('visualizar_financeiro')
-                    <x-sidebar-link href="{{ route('financial-transactions.index') }}" :active="request()->routeIs('financial-transactions.*')">
+                    <x-sidebar-link href="{{ route('financial-transactions.index') }}" :active="request()->routeIs('financial-transactions.*')" @click="sidebarOpen = false">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -297,7 +304,7 @@
                 @endcan
 
                 @can('visualizar_financeiro')
-                    <x-sidebar-link href="{{ route('campaigns.index') }}" :active="request()->routeIs('campaigns.*')">
+                    <x-sidebar-link href="{{ route('campaigns.index') }}" :active="request()->routeIs('campaigns.*')" @click="sidebarOpen = false">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -308,7 +315,7 @@
                 @endcan
 
                 @can('visualizar_financeiro')
-                    <x-sidebar-link href="{{ route('reports.financial.index') }}" :active="request()->routeIs('reports.financial.*')">
+                    <x-sidebar-link href="{{ route('reports.financial.index') }}" :active="request()->routeIs('reports.financial.*')" @click="sidebarOpen = false">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -324,7 +331,7 @@
         @canany(['visualizar_musicas', 'visualizar_escalas_louvor'])
             <x-sidebar-dropdown title="Músicas" icon="music" :active="request()->routeIs('songs.*') || request()->routeIs('worship-sets.*')">
                 @can('visualizar_musicas')
-                    <x-sidebar-link href="{{ route('songs.index') }}" :active="request()->routeIs('songs.*')">
+                    <x-sidebar-link href="{{ route('songs.index') }}" :active="request()->routeIs('songs.*')" @click="sidebarOpen = false">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
@@ -335,7 +342,7 @@
                 @endcan
 
                 @can('visualizar_escalas_louvor')
-                    <x-sidebar-link href="{{ route('worship-sets.index') }}" :active="request()->routeIs('worship-sets.*')">
+                    <x-sidebar-link href="{{ route('worship-sets.index') }}" :active="request()->routeIs('worship-sets.*')" @click="sidebarOpen = false">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -351,7 +358,7 @@
         @canany(['gerenciar_roles', 'gerenciar_permissoes', 'gerenciar_usuarios'])
             <x-sidebar-dropdown title="Administração" icon="cog" :active="request()->routeIs('roles.*') || request()->routeIs('permissions.*') || request()->routeIs('users.*')">
                 @can('gerenciar_roles')
-                    <x-sidebar-link href="{{ route('roles.index') }}" :active="request()->routeIs('roles.*')">
+                    <x-sidebar-link href="{{ route('roles.index') }}" :active="request()->routeIs('roles.*')" @click="sidebarOpen = false">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -362,7 +369,7 @@
                 @endcan
 
                 @can('gerenciar_permissoes')
-                    <x-sidebar-link href="{{ route('permissions.index') }}" :active="request()->routeIs('permissions.*')">
+                    <x-sidebar-link href="{{ route('permissions.index') }}" :active="request()->routeIs('permissions.*')" @click="sidebarOpen = false">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -373,7 +380,7 @@
                 @endcan
 
                 @can('gerenciar_usuarios')
-                    <x-sidebar-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')">
+                    <x-sidebar-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')" @click="sidebarOpen = false">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />

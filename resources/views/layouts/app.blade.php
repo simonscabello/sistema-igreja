@@ -35,7 +35,7 @@
             @auth
                 @include('layouts.sidebar')
             @endauth
-            <div class="flex-1 flex flex-col min-h-screen transition-all duration-300 {{ auth()->check() ? 'ml-0 sm:ml-64' : '' }}">
+            <div class="flex-1 flex flex-col min-h-screen transition-all duration-300 {{ auth()->check() ? 'ml-0 lg:ml-64' : '' }}">
                 @include('layouts.navigation')
 
                 <!-- Page Content -->
@@ -45,14 +45,25 @@
 
                 <!-- Footer -->
                 <footer class="bg-white dark:bg-gray-800 border-t border-neutral-medium dark:border-gray-700 mt-auto transition-colors duration-300">
-                    <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
-                        <p class="text-center text-sm text-neutral-dark dark:text-gray-300">
+                    <div class="max-w-full mx-auto py-3 px-3 sm:py-4 sm:px-6 lg:px-8">
+                        <p class="text-center text-xs sm:text-sm text-neutral-dark dark:text-gray-300">
                             &copy; {{ date('Y') }} {{ config('app.name') }}. Todos os direitos reservados.
                         </p>
                     </div>
                 </footer>
             </div>
         </div>
+
+        <!-- Overlay para sidebar mobile -->
+        <div x-show="sidebarOpen"
+             x-transition:enter="transition-opacity ease-linear duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity ease-linear duration-300"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 bg-gray-600 bg-opacity-75 z-40 lg:hidden"
+             @click="sidebarOpen = false"></div>
 
         <!-- Choices.js -->
         <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
