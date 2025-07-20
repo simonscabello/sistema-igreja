@@ -52,10 +52,10 @@
 
         <!-- Dropdown Finanças -->
         @canany(['visualizar_financeiro', 'gerenciar_categorias_financeiras'])
-            <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial.*') || request()->routeIs('subcategories.*') || request()->routeIs('campaigns.*') || request()->routeIs('reports.financial.*') || request()->routeIs('financial-dashboard.*')">
+            <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial.*')">
 
                 @can('visualizar_financeiro')
-                    <x-sidebar-link href="{{ route('financial-dashboard.index') }}" :active="request()->routeIs('financial-dashboard.*')">
+                    <x-sidebar-link href="{{ route('financial.dashboard.index') }}" :active="request()->routeIs('financial.dashboard.*')">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -66,7 +66,7 @@
                 @endcan
 
                 @can('gerenciar_categorias_financeiras')
-                    <x-sidebar-link href="{{ route('financial-categories.index') }}" :active="request()->routeIs('financial-categories.*')">
+                    <x-sidebar-link href="{{ route('financial.categories.index') }}" :active="request()->routeIs('financial.categories.*')">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -77,7 +77,7 @@
                 @endcan
 
                 @can('gerenciar_categorias_financeiras')
-                    <x-sidebar-link href="{{ route('subcategories.index') }}" :active="request()->routeIs('subcategories.*')">
+                    <x-sidebar-link href="{{ route('financial.subcategories.index') }}" :active="request()->routeIs('financial.subcategories.*')">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -88,7 +88,7 @@
                 @endcan
 
                 @can('visualizar_financeiro')
-                    <x-sidebar-link href="{{ route('financial-transactions.index') }}" :active="request()->routeIs('financial-transactions.*')">
+                    <x-sidebar-link href="{{ route('financial.transactions.index') }}" :active="request()->routeIs('financial.transactions.*')">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -99,7 +99,7 @@
                 @endcan
 
                 @can('visualizar_financeiro')
-                    <x-sidebar-link href="{{ route('campaigns.index') }}" :active="request()->routeIs('campaigns.*')">
+                    <x-sidebar-link href="{{ route('financial.campaigns.index') }}" :active="request()->routeIs('financial.campaigns.*')">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -110,7 +110,7 @@
                 @endcan
 
                 @can('visualizar_financeiro')
-                    <x-sidebar-link href="{{ route('reports.financial.index') }}" :active="request()->routeIs('reports.financial.*')">
+                    <x-sidebar-link href="{{ route('financial.reports.index') }}" :active="request()->routeIs('financial.reports.*')">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -259,10 +259,10 @@
 
         <!-- Dropdown Finanças -->
         @canany(['visualizar_financeiro', 'gerenciar_categorias_financeiras'])
-            <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial.*') || request()->routeIs('subcategories.*') || request()->routeIs('campaigns.*') || request()->routeIs('reports.financial.*') || request()->routeIs('financial-dashboard.*')">
+            <x-sidebar-dropdown title="Finanças" icon="dollar-sign" :active="request()->routeIs('financial.*')">
 
             @can('visualizar_financeiro')
-                    <x-sidebar-link href="{{ route('financial-dashboard.index') }}" :active="request()->routeIs('financial-dashboard.*')" @click="sidebarOpen = false">
+                    <x-sidebar-link href="{{ route('financial.dashboard.index') }}" :active="request()->routeIs('financial.dashboard.*')" @click="sidebarOpen = false">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -273,7 +273,7 @@
                 @endcan
 
                 @can('gerenciar_categorias_financeiras')
-                    <x-sidebar-link href="{{ route('financial-categories.index') }}" :active="request()->routeIs('financial-categories.*')" @click="sidebarOpen = false">
+                    <x-sidebar-link href="{{ route('financial.categories.index') }}" :active="request()->routeIs('financial.categories.*')" @click="sidebarOpen = false">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -284,7 +284,7 @@
                 @endcan
 
                 @can('gerenciar_categorias_financeiras')
-                    <x-sidebar-link href="{{ route('subcategories.index') }}" :active="request()->routeIs('subcategories.*')" @click="sidebarOpen = false">
+                    <x-sidebar-link href="{{ route('financial.subcategories.index') }}" :active="request()->routeIs('financial.subcategories.*')" @click="sidebarOpen = false">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -295,7 +295,7 @@
                 @endcan
 
                 @can('visualizar_financeiro')
-                    <x-sidebar-link href="{{ route('financial-transactions.index') }}" :active="request()->routeIs('financial-transactions.*')" @click="sidebarOpen = false">
+                    <x-sidebar-link href="{{ route('financial.transactions.index') }}" :active="request()->routeIs('financial.transactions.*')" @click="sidebarOpen = false">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -306,7 +306,7 @@
                 @endcan
 
                 @can('visualizar_financeiro')
-                    <x-sidebar-link href="{{ route('campaigns.index') }}" :active="request()->routeIs('campaigns.*')" @click="sidebarOpen = false">
+                    <x-sidebar-link href="{{ route('financial.campaigns.index') }}" :active="request()->routeIs('financial.campaigns.*')" @click="sidebarOpen = false">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -317,7 +317,7 @@
                 @endcan
 
                 @can('visualizar_financeiro')
-                    <x-sidebar-link href="{{ route('reports.financial.index') }}" :active="request()->routeIs('reports.financial.*')" @click="sidebarOpen = false">
+                    <x-sidebar-link href="{{ route('financial.reports.index') }}" :active="request()->routeIs('financial.reports.*')" @click="sidebarOpen = false">
                         <x-slot name="icon">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />

@@ -2,16 +2,16 @@
     <x-page-card title="Relatório Anual Simplificado">
         <!-- Navegação dos Relatórios -->
         <div class="mb-6 flex flex-wrap gap-2">
-            <a href="{{ route('reports.financial.index') }}" class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200">
+            <a href="{{ route('financial.reports.index') }}" class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
                 Voltar aos Relatórios
             </a>
-            <a href="{{ route('reports.financial.monthly') }}" class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200">
+            <a href="{{ route('financial.reports.monthly') }}" class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200">
                 Relatório Mensal
             </a>
-            <a href="{{ route('reports.financial.annual.detailed') }}" class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200">
+            <a href="{{ route('financial.reports.annual.detailed') }}" class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200">
                 Anual Detalhado
             </a>
             <span class="inline-flex items-center px-3 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-md">
@@ -21,7 +21,7 @@
 
         <!-- Filtro -->
         <div class="mb-6">
-            <form action="{{ route('reports.financial.annual.summary') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+            <form action="{{ route('financial.reports.annual.summary') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
                                 <div>
                     <x-select
                         label="Ano"

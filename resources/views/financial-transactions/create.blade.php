@@ -6,7 +6,7 @@
             </x-alert>
         @endif
 
-        <form action="{{ route('financial-transactions.store') }}" method="POST" enctype="multipart/form-data"
+        <form action="{{ route('financial.transactions.store') }}" method="POST" enctype="multipart/form-data"
               x-data="financialTransactionForm(
                   '{{ old('financial_category_id') }}',
                   '{{ old('financial_subcategory_id') }}',
@@ -122,7 +122,7 @@
             </div>
             <div class="border-t border-neutral-medium mt-6 pt-6">
                 <div class="flex space-x-3">
-                    <a href="{{ route('financial-transactions.index') }}" class="inline-flex items-center px-4 py-2 bg-neutral-light border border-neutral-medium rounded-md font-semibold text-xs text-neutral-dark uppercase tracking-widest hover:bg-neutral-medium focus:outline-none focus:ring-2 focus:ring-neutral-medium focus:ring-offset-2 transition ease-in-out duration-150">
+                    <a href="{{ route('financial.transactions.index') }}" class="inline-flex items-center px-4 py-2 bg-neutral-light border border-neutral-medium rounded-md font-semibold text-xs text-neutral-dark uppercase tracking-widest hover:bg-neutral-medium focus:outline-none focus:ring-2 focus:ring-neutral-medium focus:ring-offset-2 transition ease-in-out duration-150">
                         Cancelar
                     </a>
                     <x-primary-button type="submit">

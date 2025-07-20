@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-page-card title="Subcategorias Financeiras" actions="{{ route('subcategories.create') }}">
+    <x-page-card title="Subcategorias Financeiras" actions="{{ route('financial.subcategories.create') }}">
         @if(session('success'))
             <x-alert type="success" dismissible>
                 <span class="font-medium">Sucesso!</span> {{ session('success') }}
@@ -8,7 +8,7 @@
 
         <div class="flex justify-between items-center mb-4">
             <div class="flex-1">
-                <form action="{{ route('subcategories.index') }}" method="GET" class="flex gap-2">
+                <form action="{{ route('financial.subcategories.index') }}" method="GET" class="flex gap-2">
                     <x-text-input name="search" placeholder="Buscar subcategorias..." value="{{ request('search') }}" />
                     <div class="flex items-end">
                         <x-primary-button type="submit" class="px-4 py-3 text-sm">Buscar</x-primary-button>
@@ -38,10 +38,10 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <x-link-button href="{{ route('subcategories.edit', $subcategory) }}">
+                                <x-link-button href="{{ route('financial.subcategories.edit', $subcategory) }}">
                                     Editar
                                 </x-link-button>
-                                <form action="{{ route('subcategories.destroy', $subcategory) }}" method="POST" class="inline-block">
+                                <form action="{{ route('financial.subcategories.destroy', $subcategory) }}" method="POST" class="inline-block">
                                     @csrf
                                     @method('DELETE')
                                     <x-danger-button type="submit">

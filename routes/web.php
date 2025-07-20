@@ -49,33 +49,33 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
     // Gestão de departamentos
     Route::resource('departments', DepartmentController::class);
 
-    // Gestão financeira
-    Route::resource('financial-categories', FinancialCategoryController::class);
-    Route::get('/categories/subcategories', [FinancialCategoryController::class, 'getSubcategories'])->name('categories.subcategories');
-    Route::resource('financial-transactions', FinancialTransactionController::class);
+    // Módulo Financeiro - Todas as rotas com prefixo /financial/
+    Route::prefix('financial')->name('financial.')->group(function () {
+        // Dashboard financeiro
+        Route::get('/dashboard', [FinancialDashboardController::class, 'index'])->name('dashboard.index');
+        Route::get('/dashboard/data', [FinancialDashboardController::class, 'getData'])->name('dashboard.data');
 
-    // Subcategorias financeiras
-    Route::prefix('subcategories')->name('subcategories.')->group(function () {
-        Route::get('/', [FinancialSubcategoryController::class, 'index'])->name('index');
-        Route::get('/create', [FinancialSubcategoryController::class, 'create'])->name('create');
-        Route::post('/', [FinancialSubcategoryController::class, 'store'])->name('store');
-        Route::get('/{financialSubcategory}/edit', [FinancialSubcategoryController::class, 'edit'])->name('edit');
-        Route::put('/{financialSubcategory}', [FinancialSubcategoryController::class, 'update'])->name('update');
-        Route::delete('/{financialSubcategory}', [FinancialSubcategoryController::class, 'destroy'])->name('destroy');
+        // Categorias financeiras
+        Route::resource('categories', FinancialCategoryController::class)->parameters(['categories' => 'financialCategory']);
+        Route::get('/categories/subcategories', [FinancialCategoryController::class, 'getSubcategories'])->name('categories.subcategories');
+
+        // Subcategorias financeiras
+        Route::resource('subcategories', FinancialSubcategoryController::class)->parameters(['subcategories' => 'financialSubcategory']);
+
+        // Transações financeiras
+        Route::resource('transactions', FinancialTransactionController::class)->parameters(['transactions' => 'financialTransaction']);
+
+        // Campanhas
+        Route::resource('campaigns', CampaignController::class);
+
+        // Relatórios financeiros
+        Route::prefix('reports')->name('reports.')->group(function () {
+            Route::get('/', [FinancialReportController::class, 'index'])->name('index');
+            Route::get('/monthly', [FinancialReportController::class, 'monthly'])->name('monthly');
+            Route::get('/annual/detailed', [FinancialReportController::class, 'annualDetailed'])->name('annual.detailed');
+            Route::get('/annual/summary', [FinancialReportController::class, 'annualSummary'])->name('annual.summary');
+        });
     });
-
-    // Dashboard financeiro
-    Route::get('/financial-dashboard', [FinancialDashboardController::class, 'index'])->name('financial-dashboard.index');
-    Route::get('/financial-dashboard/data', [FinancialDashboardController::class, 'getData'])->name('financial-dashboard.data');
-
-    // Relatórios financeiros
-    Route::get('/reports/financial', [FinancialReportController::class, 'index'])->name('reports.financial.index');
-    Route::get('/reports/financial/monthly', [FinancialReportController::class, 'monthly'])->name('reports.financial.monthly');
-    Route::get('/reports/financial/annual/detailed', [FinancialReportController::class, 'annualDetailed'])->name('reports.financial.annual.detailed');
-    Route::get('/reports/financial/annual/summary', [FinancialReportController::class, 'annualSummary'])->name('reports.financial.annual.summary');
-
-    // Campanhas
-    Route::resource('campaigns', CampaignController::class);
 
     // Gestão de louvor - Músicas
     Route::prefix('worship/songs')->name('songs.')->group(function () {

@@ -302,7 +302,7 @@ class FinancialDashboard {
             // Adicionar loading
             this.setLoading(true);
 
-            const response = await fetch(`/financial-dashboard/data?period=${this.currentPeriod}`, {
+            const response = await fetch(`/financial/dashboard/data?period=${this.currentPeriod}`, {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
                     'Accept': 'application/json'

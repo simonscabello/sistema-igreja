@@ -90,7 +90,7 @@ class FinancialTransactionController extends Controller
             );
         }
 
-        return redirect()->route('financial-transactions.index')->with('success', 'Transação criada com sucesso.');
+        return redirect()->route('financial.transactions.index')->with('success', 'Transação criada com sucesso.');
     }
 
     public function edit(FinancialTransaction $financialTransaction): View
@@ -124,7 +124,7 @@ class FinancialTransactionController extends Controller
             );
         }
 
-        return redirect()->route('financial-transactions.index')
+        return redirect()->route('financial.transactions.index')
             ->with('success', 'Transação atualizada com sucesso.');
     }
 
@@ -140,7 +140,7 @@ class FinancialTransactionController extends Controller
 
         $financialTransaction->delete();
 
-        return redirect()->route('financial-transactions.index')
+        return redirect()->route('financial.transactions.index')
             ->with('success', 'Transação excluída com sucesso.');
     }
 }

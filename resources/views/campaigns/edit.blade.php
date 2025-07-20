@@ -6,7 +6,7 @@
             </x-alert>
         @endif
 
-        <form action="{{ route('campaigns.update', $campaign) }}" method="POST">
+        <form action="{{ route('financial.campaigns.update', $campaign) }}" method="POST">
             @csrf
             @method('PUT')
 

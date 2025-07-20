@@ -43,7 +43,7 @@ class FinancialCategoryController extends Controller
 
         FinancialCategory::create($request->validated());
 
-        return redirect()->route('financial-categories.index')
+        return redirect()->route('financial.categories.index')
             ->with('success', 'Categoria criada com sucesso.');
     }
 
@@ -60,7 +60,7 @@ class FinancialCategoryController extends Controller
 
         $financialCategory->update($request->validated());
 
-        return redirect()->route('financial-categories.index')
+        return redirect()->route('financial.categories.index')
             ->with('success', 'Categoria atualizada com sucesso.');
     }
 
@@ -70,7 +70,7 @@ class FinancialCategoryController extends Controller
 
         $financialCategory->delete();
 
-        return redirect()->route('financial-categories.index')
+        return redirect()->route('financial.categories.index')
             ->with('success', 'Categoria excluída com sucesso.');
     }
 

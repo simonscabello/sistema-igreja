@@ -6,7 +6,7 @@
             </x-alert>
         @endif
 
-        <form action="{{ route('campaigns.store') }}" method="POST">
+        <form action="{{ route('financial.campaigns.store') }}" method="POST">
             @csrf
 
             <div class="max-w-2xl">

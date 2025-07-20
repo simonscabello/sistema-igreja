@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-page-card title="Transações Financeiras" actions="{{ route('financial-transactions.create') }}">
+    <x-page-card title="Transações Financeiras" actions="{{ route('financial.transactions.create') }}">
         @if(session('success'))
             <x-alert type="success" dismissible>
                 <span class="font-medium">Sucesso!</span> {{ session('success') }}
@@ -8,7 +8,7 @@
 
         <div class="flex flex-col gap-4 mb-4">
             <div class="flex-1">
-                <form action="{{ route('financial-transactions.index') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                <form action="{{ route('financial.transactions.index') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                     <x-text-input name="search" placeholder="Buscar transações..." value="{{ request('search') }}" class="sm:col-span-2" />
                     <x-select label="" name="type" :options="['' => 'Todos os tipos', 'entrada' => 'Entradas', 'saida' => 'Saídas']" :selected="request('type')" class="text-sm" />
                     <x-select label="" name="subcategory" :options="$categories->flatMap(function($category) { return $category->subcategories->pluck('name', 'id'); })->prepend('Todas as subcategorias', '')" :selected="request('subcategory')" class="text-sm" />
@@ -48,7 +48,7 @@
                             <td class="px-4 xl:px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{{ $transaction->subcategory->name }}</td>
                             <td class="px-4 xl:px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">
                                 @if($transaction->campaign)
-                                    <a href="{{ route('campaigns.show', $transaction->campaign) }}" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
+                                    <a href="{{ route('financial.campaigns.show', $transaction->campaign) }}" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
                                         {{ $transaction->campaign->name }}
                                     </a>
                                 @else
@@ -63,10 +63,10 @@
                             <td class="px-4 xl:px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">R$ {{ number_format($transaction->amount, 2, ',', '.') }}</td>
                             <td class="px-4 xl:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex justify-end gap-2">
-                                    <x-link-button href="{{ route('financial-transactions.show', $transaction) }}" class="text-xs px-3 py-1">
+                                    <x-link-button href="{{ route('financial.transactions.show', $transaction) }}" class="text-xs px-3 py-1">
                                         Ver
                                     </x-link-button>
-                                    <x-link-button href="{{ route('financial-transactions.edit', $transaction) }}" class="text-xs px-3 py-1">
+                                    <x-link-button href="{{ route('financial.transactions.edit', $transaction) }}" class="text-xs px-3 py-1">
                                         Editar
                                     </x-link-button>
                                 </div>
@@ -115,7 +115,7 @@
                         @if($transaction->campaign)
                             <div class="flex justify-between">
                                 <span class="text-gray-500 dark:text-gray-400">Campanha:</span>
-                                <a href="{{ route('campaigns.show', $transaction->campaign) }}" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 text-right">
+                                <a href="{{ route('financial.campaigns.show', $transaction->campaign) }}" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 text-right">
                                     {{ $transaction->campaign->name }}
                                 </a>
                             </div>
@@ -123,10 +123,10 @@
                     </div>
 
                     <div class="flex justify-end gap-2 pt-2 border-t border-neutral-medium dark:border-gray-600">
-                        <x-link-button href="{{ route('financial-transactions.show', $transaction) }}" class="text-xs px-3 py-2 flex-1 text-center">
+                        <x-link-button href="{{ route('financial.transactions.show', $transaction) }}" class="text-xs px-3 py-2 flex-1 text-center">
                             Ver
                         </x-link-button>
-                        <x-link-button href="{{ route('financial-transactions.edit', $transaction) }}" class="text-xs px-3 py-2 flex-1 text-center">
+                        <x-link-button href="{{ route('financial.transactions.edit', $transaction) }}" class="text-xs px-3 py-2 flex-1 text-center">
                             Editar
                         </x-link-button>
                     </div>

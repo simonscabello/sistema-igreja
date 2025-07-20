@@ -15,7 +15,7 @@
                     </div>
                 </div>
                 <p class="text-gray-700 dark:text-gray-300 mb-4">Relatório detalhado das transações financeiras agrupadas por categoria e subcategoria em um mês específico.</p>
-                <a href="{{ route('reports.financial.monthly') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors duration-200">
+                <a href="{{ route('financial.reports.monthly') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors duration-200">
                     Visualizar
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -37,7 +37,7 @@
                     </div>
                 </div>
                 <p class="text-gray-700 dark:text-gray-300 mb-4">Relatório completo com todas as transações do ano, organizadas mês a mês, por categoria e subcategoria.</p>
-                <a href="{{ route('reports.financial.annual.detailed') }}" class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition-colors duration-200">
+                <a href="{{ route('financial.reports.annual.detailed') }}" class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition-colors duration-200">
                     Visualizar
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -59,7 +59,7 @@
                     </div>
                 </div>
                 <p class="text-gray-700 dark:text-gray-300 mb-4">Relatório simplificado com totais mensais de entradas e saídas, sem detalhamento por categoria ou subcategoria.</p>
-                <a href="{{ route('reports.financial.annual.summary') }}" class="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md transition-colors duration-200">
+                <a href="{{ route('financial.reports.annual.summary') }}" class="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md transition-colors duration-200">
                     Visualizar
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />

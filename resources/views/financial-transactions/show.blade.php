@@ -62,7 +62,7 @@
                                 <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Campanha</dt>
                                 <dd class="mt-1 text-sm text-gray-900 dark:text-gray-300">
                                     @if($financialTransaction->campaign)
-                                        <a href="{{ route('campaigns.show', $financialTransaction->campaign) }}"
+                                        <a href="{{ route('financial.campaigns.show', $financialTransaction->campaign) }}"
                                             class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 underline">
                                             {{ $financialTransaction->campaign->name }}
                                         </a>
@@ -156,7 +156,7 @@
             <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
                 <div class="flex flex-wrap gap-3">
                     <!-- Botão Voltar -->
-                    <a href="{{ route('financial-transactions.index') }}"
+                    <a href="{{ route('financial.transactions.index') }}"
                        class="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -166,7 +166,7 @@
 
                     <!-- Botão Editar -->
                     @can('editar_transacoes')
-                        <x-link-button href="{{ route('financial-transactions.edit', $financialTransaction) }}">
+                        <x-link-button href="{{ route('financial.transactions.edit', $financialTransaction) }}">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                             </svg>
@@ -176,7 +176,7 @@
 
                     <!-- Botão Excluir -->
                     @can('excluir_transacoes')
-                        <form action="{{ route('financial-transactions.destroy', $financialTransaction) }}"
+                        <form action="{{ route('financial.transactions.destroy', $financialTransaction) }}"
                               method="POST"
                               class="inline-block"
                               onsubmit="return confirm('Tem certeza que deseja excluir esta transação? Esta ação não pode ser desfeita.')">

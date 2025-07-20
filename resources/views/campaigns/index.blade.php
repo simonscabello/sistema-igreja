@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-page-card title="Campanhas Financeiras" actions="{{ route('campaigns.create') }}">
+    <x-page-card title="Campanhas Financeiras" actions="{{ route('financial.campaigns.create') }}">
         @if(session('success'))
             <x-alert type="success" dismissible>
                 <span class="font-medium">Sucesso!</span> {{ session('success') }}
@@ -8,7 +8,7 @@
 
         <div class="flex justify-between items-center mb-4">
             <div class="flex-1">
-                <form action="{{ route('campaigns.index') }}" method="GET" class="flex gap-2">
+                <form action="{{ route('financial.campaigns.index') }}" method="GET" class="flex gap-2">
                     <x-text-input name="search" placeholder="Buscar campanhas..." value="{{ request('search') }}" class="flex-1 min-w-0 px-4 py-3 text-sm" />
                     <x-select label="" name="status" :options="['' => 'Todos os status', 'ativo' => 'Ativo', 'encerrado' => 'Encerrado', 'cancelada' => 'Cancelada']" :selected="request('status')" class="w-44 px-4 py-3 text-sm" />
                     <div class="flex items-end">
@@ -57,10 +57,10 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <x-link-button href="{{ route('campaigns.show', $campaign) }}">
+                                <x-link-button href="{{ route('financial.campaigns.show', $campaign) }}">
                                     Ver
                                 </x-link-button>
-                                <x-link-button href="{{ route('campaigns.edit', $campaign) }}">
+                                <x-link-button href="{{ route('financial.campaigns.edit', $campaign) }}">
                                     Editar
                                 </x-link-button>
                             </td>

@@ -194,7 +194,7 @@
                         <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
                             <h3 class="text-lg font-semibold mb-2">Financeiro</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">Gerenciar transações financeiras</p>
-                            <a href="{{ route('financial-transactions.index') }}" class="inline-flex items-center px-4 py-2 bg-primary border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition ease-in-out duration-150">
+                            <a href="{{ route('financial.transactions.index') }}" class="inline-flex items-center px-4 py-2 bg-primary border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition ease-in-out duration-150">
                                 Acessar
                             </a>
                         </div>

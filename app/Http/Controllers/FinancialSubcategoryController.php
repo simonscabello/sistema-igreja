@@ -60,7 +60,7 @@ class FinancialSubcategoryController extends Controller
             }
         }
 
-        return redirect()->route('subcategories.index')
+        return redirect()->route('financial.subcategories.index')
             ->with('success', 'Subcategorias criadas com sucesso!');
     }
 
@@ -81,7 +81,7 @@ class FinancialSubcategoryController extends Controller
 
         $financialSubcategory->update($data);
 
-        return redirect()->route('subcategories.index')
+        return redirect()->route('financial.subcategories.index')
             ->with('success', 'Subcategoria atualizada com sucesso!');
     }
 
@@ -90,13 +90,13 @@ class FinancialSubcategoryController extends Controller
         $this->authorize('gerenciar_categorias_financeiras');
 
         if ($financialSubcategory->transactions()->exists()) {
-            return redirect()->route('subcategories.index')
+            return redirect()->route('financial.subcategories.index')
                 ->with('error', 'Não é possível excluir uma subcategoria que possui transações.');
         }
 
         $financialSubcategory->delete();
 
-        return redirect()->route('subcategories.index')
+        return redirect()->route('financial.subcategories.index')
             ->with('success', 'Subcategoria excluída com sucesso!');
     }
 }

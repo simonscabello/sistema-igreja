@@ -49,7 +49,7 @@ class CampaignController extends Controller
         $this->authorize('gerenciar_campanhas');
 
         Campaign::create($request->validated());
-        return redirect()->route('campaigns.index')->with('success', 'Campanha criada com sucesso.');
+        return redirect()->route('financial.campaigns.index')->with('success', 'Campanha criada com sucesso.');
     }
 
     public function show(Campaign $campaign): View
@@ -72,7 +72,7 @@ class CampaignController extends Controller
         $this->authorize('gerenciar_campanhas');
 
         $campaign->update($request->validated());
-        return redirect()->route('campaigns.index')->with('success', 'Campanha atualizada com sucesso.');
+        return redirect()->route('financial.campaigns.index')->with('success', 'Campanha atualizada com sucesso.');
     }
 
     public function destroy(Campaign $campaign): RedirectResponse
@@ -80,11 +80,11 @@ class CampaignController extends Controller
         $this->authorize('gerenciar_campanhas');
 
         if ($campaign->transactions()->exists()) {
-            return redirect()->route('campaigns.index')
+            return redirect()->route('financial.campaigns.index')
                 ->with('error', 'Não é possível excluir uma campanha que possui transações.');
         }
 
         $campaign->delete();
-        return redirect()->route('campaigns.index')->with('success', 'Campanha excluída com sucesso.');
+        return redirect()->route('financial.campaigns.index')->with('success', 'Campanha excluída com sucesso.');
     }
 }
