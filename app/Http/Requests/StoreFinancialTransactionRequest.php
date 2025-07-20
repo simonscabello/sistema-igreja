@@ -21,6 +21,7 @@ class StoreFinancialTransactionRequest extends FormRequest
             'amount' => ['required', 'numeric', 'min:0'],
             'action_date' => ['required', 'date'],
             'description' => ['nullable', 'string'],
+            'attachment' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:10240'], // 10MB max
         ];
     }
 
@@ -33,6 +34,7 @@ class StoreFinancialTransactionRequest extends FormRequest
             'amount' => 'valor',
             'action_date' => 'data da ação',
             'description' => 'descrição',
+            'attachment' => 'anexo',
         ];
     }
 
@@ -50,6 +52,9 @@ class StoreFinancialTransactionRequest extends FormRequest
             'action_date.required' => 'A data da ação é obrigatória.',
             'action_date.date' => 'A data da ação deve ser uma data válida.',
             'description.string' => 'A descrição deve ser um texto.',
+            'attachment.file' => 'O anexo deve ser um arquivo válido.',
+            'attachment.mimes' => 'O anexo deve ser um arquivo PDF, JPG, JPEG ou PNG.',
+            'attachment.max' => 'O anexo não pode ter mais de 10MB.',
         ];
     }
 

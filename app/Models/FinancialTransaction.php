@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use App\Models\Traits\HasFiles;
 
 class FinancialTransaction extends Model
 {
-    use HasFactory;
+    use HasFactory, HasFiles;
 
     protected $fillable = [
         'financial_subcategory_id',

@@ -7,17 +7,20 @@ use App\Models\FinancialCategory;
 use App\Models\Campaign;
 use App\Http\Requests\StoreFinancialTransactionRequest;
 use App\Http\Requests\UpdateFinancialTransactionRequest;
+use App\Services\FileService;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
 class FinancialTransactionController extends Controller
 {
+    public function __construct(private readonly FileService $fileService) {}
+
     public function index(Request $request): View
     {
         $this->authorize('visualizar_financeiro');
 
-        $query = FinancialTransaction::with(['subcategory.financialCategory', 'campaign']);
+        $query = FinancialTransaction::with(['subcategory.financialCategory', 'campaign', 'files']);
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -77,7 +80,15 @@ class FinancialTransactionController extends Controller
     {
         $this->authorize('criar_transacoes');
 
-        FinancialTransaction::create($request->validated());
+        $transaction = FinancialTransaction::create($request->validated());
+
+        if ($request->hasFile('attachment')) {
+            $this->fileService->uploadFile(
+                file: $request->file('attachment'),
+                related: $transaction,
+                collection: 'comprovantes'
+            );
+        }
 
         return redirect()->route('financial-transactions.index')->with('success', 'Transação criada com sucesso.');
     }
@@ -98,6 +109,21 @@ class FinancialTransactionController extends Controller
 
         $financialTransaction->update($request->validated());
 
+        if ($request->hasFile('attachment')) {
+            // Remove arquivo anterior se existir
+            $existingFiles = $this->fileService->listFilesFor($financialTransaction, 'comprovantes');
+            foreach ($existingFiles as $file) {
+                $this->fileService->deleteFile($file);
+            }
+            
+            // Upload do novo arquivo
+            $this->fileService->uploadFile(
+                file: $request->file('attachment'),
+                related: $financialTransaction,
+                collection: 'comprovantes'
+            );
+        }
+
         return redirect()->route('financial-transactions.index')
             ->with('success', 'Transação atualizada com sucesso.');
     }
@@ -105,6 +131,12 @@ class FinancialTransactionController extends Controller
     public function destroy(FinancialTransaction $financialTransaction): RedirectResponse
     {
         $this->authorize('excluir_transacoes');
+
+        // Remove arquivos associados
+        $files = $this->fileService->listFilesFor($financialTransaction, 'comprovantes');
+        foreach ($files as $file) {
+            $this->fileService->deleteFile($file);
+        }
 
         $financialTransaction->delete();
 

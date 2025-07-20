@@ -6,7 +6,7 @@
             </x-alert>
         @endif
 
-        <form action="{{ route('financial-transactions.store') }}" method="POST"
+        <form action="{{ route('financial-transactions.store') }}" method="POST" enctype="multipart/form-data"
               x-data="financialTransactionForm(
                   '{{ old('financial_category_id') }}',
                   '{{ old('financial_subcategory_id') }}',
@@ -110,6 +110,13 @@
                     <x-input-date label="Data da Ação" name="action_date" required="true" />
 
                     <x-textarea label="Descrição" name="description" />
+
+                    <x-input-file 
+                        label="Anexo (Opcional)" 
+                        name="attachment" 
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        helpText="Anexe comprovantes, notas fiscais ou outros documentos relacionados à transação. Formatos aceitos: PDF, JPG, PNG. Tamanho máximo: 10MB."
+                    />
 
                 </div>
             </div>

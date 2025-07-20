@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             FinancialSubcategorySeeder::class,
             CampaignSeeder::class,
             FinancialTransactionSeeder::class,
+            FinancialTransactionAttachmentSeeder::class,
 
             // Seeders de conteúdo
             SongSeeder::class,
