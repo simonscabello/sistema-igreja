@@ -18,7 +18,7 @@ class StoreFinancialTransactionRequest extends FormRequest
             'financial_subcategory_id' => ['required', 'exists:financial_subcategories,id'],
             'campaign_id' => ['nullable', 'exists:campaigns,id'],
             'type' => ['required', 'in:entrada,saida'],
-            'amount' => ['required', 'numeric', 'min:0'],
+            'amount' => ['required', 'numeric', 'min:0.01'],
             'action_date' => ['required', 'date'],
             'description' => ['nullable', 'string'],
             'attachment' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:10240'], // 10MB max
@@ -47,8 +47,8 @@ class StoreFinancialTransactionRequest extends FormRequest
             'type.required' => 'O tipo é obrigatório.',
             'type.in' => 'O tipo deve ser entrada ou saida.',
             'amount.required' => 'O valor é obrigatório.',
-            'amount.numeric' => 'O valor deve ser um número.',
-            'amount.min' => 'O valor deve ser maior ou igual a zero.',
+            'amount.numeric' => 'O valor deve ser um número válido.',
+            'amount.min' => 'O valor deve ser maior que zero.',
             'action_date.required' => 'A data da ação é obrigatória.',
             'action_date.date' => 'A data da ação deve ser uma data válida.',
             'description.string' => 'A descrição deve ser um texto.',
@@ -61,9 +61,20 @@ class StoreFinancialTransactionRequest extends FormRequest
     protected function prepareForValidation()
     {
         if ($this->has('amount')) {
-            $valor = str_replace(['.', ','], ['', '.'], $this->amount);
+            $valor = $this->amount;
+            
+            // Remove caracteres não numéricos exceto vírgula e ponto
+            $valor = preg_replace('/[^0-9,.]/', '', $valor);
+            
+            // Se há múltiplas vírgulas ou pontos, mantém apenas o último
+            $valor = preg_replace('/[,.]/', '.', $valor);
+            $valor = preg_replace('/\.(?=.*\.)/', '', $valor);
+            
+            // Converte para float
+            $valor = floatval($valor);
+            
             $this->merge([
-                'amount' => floatval($valor)
+                'amount' => $valor
             ]);
         }
 

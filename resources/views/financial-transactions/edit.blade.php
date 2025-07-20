@@ -159,4 +159,5 @@
     </x-page-card>
 
     <script src="{{ asset('js/financial-transactions.js') }}"></script>
+    <script src="{{ asset('js/currency-mask.js') }}"></script>
 </x-app-layout>

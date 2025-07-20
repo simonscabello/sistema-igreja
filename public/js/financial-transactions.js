@@ -75,6 +75,50 @@ function financialTransactionForm(initialCategory = '', initialSubcategory = '',
                 return 'Carregando subcategorias...';
             }
             return 'Selecione uma subcategoria';
+        },
+
+        // Validação do formulário
+        validateForm() {
+            const amountInput = document.querySelector('input[name="amount"]');
+            if (amountInput) {
+                const amountValue = amountInput.value;
+                const numericValue = getNumericValue(amountValue);
+                
+                if (numericValue <= 0) {
+                    alert('Por favor, insira um valor válido maior que zero.');
+                    amountInput.focus();
+                    return false;
+                }
+            }
+            return true;
         }
     };
 }
+
+// Função para validar formulário antes do envio
+function validateTransactionForm(form) {
+    const amountInput = form.querySelector('input[name="amount"]');
+    if (amountInput) {
+        const amountValue = amountInput.value;
+        const numericValue = getNumericValue(amountValue);
+        
+        if (numericValue <= 0) {
+            alert('Por favor, insira um valor válido maior que zero.');
+            amountInput.focus();
+            return false;
+        }
+    }
+    return true;
+}
+
+// Adiciona validação ao formulário quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', function() {
+    const forms = document.querySelectorAll('form[action*="financial/transactions"]');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            if (!validateTransactionForm(this)) {
+                e.preventDefault();
+            }
+        });
+    });
+});

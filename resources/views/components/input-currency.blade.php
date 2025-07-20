@@ -30,6 +30,9 @@
             id="{{ $name }}"
             value="{{ old($name, $displayValue) }}"
             @if($required) required @endif
+            data-currency-mask="true"
+            inputmode="decimal"
+            pattern="[0-9]*"
             {{ $attributes->merge(['class' => 'block w-full rounded-md border-neutral-medium dark:border-gray-600 pl-8 pr-12 focus:border-primary focus:ring-primary sm:text-sm bg-white dark:bg-gray-700 text-neutral-dark dark:text-white placeholder-gray-500 dark:placeholder-gray-400']) }}
         >
     </div>

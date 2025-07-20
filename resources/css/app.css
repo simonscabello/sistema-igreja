@@ -5,6 +5,18 @@
 @import 'flowbite';
 @tailwind utilities;
 
+/* Estilos para campos de moeda */
+input[data-currency-mask="true"] {
+    font-family: 'Courier New', monospace;
+    font-weight: 500;
+}
+
+input[data-currency-mask="true"]:focus {
+    outline: none;
+    border-color: #3BA99C;
+    box-shadow: 0 0 0 1px #3BA99C;
+}
+
 /* Estilos personalizados para Choices.js */
 .choices {
     margin-bottom: 0;
