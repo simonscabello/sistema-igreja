@@ -118,7 +118,7 @@
                                         Todas as Transações do Mês
                                     </h4>
                                     
-                                    <div class="overflow-x-auto">
+                                    <div>
                                         <table class="min-w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
                                             <thead class="bg-gray-50 dark:bg-gray-700">
                                                 <tr>
@@ -131,6 +131,13 @@
                                             </thead>
                                             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                                                 @foreach($data['transactions'] as $transaction)
+                                                    @php
+                                                        $tooltipContent = $transaction->description;
+                                                        if ($transaction->campaign) {
+                                                            $tooltipContent .= '<br><br><strong>Campanha:</strong> ' . $transaction->campaign->name;
+                                                        }
+                                                    @endphp
+                                                    
                                                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
                                                         <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">
                                                             {{ $transaction->action_date->format('d/m/Y') }}
@@ -146,8 +153,38 @@
                                                                 {{ ucfirst($transaction->type) }}
                                                             </span>
                                                         </td>
-                                                        <td class="px-4 py-3 text-sm text-right font-medium {{ $transaction->type === 'entrada' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
-                                                            R$ {{ number_format($transaction->amount, 2, ',', '.') }}
+                                                        <td class="px-4 py-3 text-sm text-right font-medium {{ $transaction->type === 'entrada' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }} relative {{ $transaction->description || $transaction->campaign ? 'cursor-help' : '' }}">
+                                                            <div class="flex items-center justify-end gap-1 relative" 
+                                                                 @if($transaction->description || $transaction->campaign)
+                                                                 x-data="{ show: false }" 
+                                                                 @mouseenter="show = true" 
+                                                                 @mouseleave="show = false"
+                                                                 @endif>
+                                                                <span>R$ {{ number_format($transaction->amount, 2, ',', '.') }}</span>
+                                                                @if($transaction->campaign)
+                                                                    <svg class="w-4 h-4 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                                                    </svg>
+                                                                @endif
+                                                                
+                                                                @if($transaction->description || $transaction->campaign)
+                                                                <!-- Tooltip -->
+                                                                <div x-show="show"
+                                                                     x-transition:enter="transition ease-out duration-200"
+                                                                     x-transition:enter-start="opacity-0 scale-95"
+                                                                     x-transition:enter-end="opacity-100 scale-100"
+                                                                     x-transition:leave="transition ease-in duration-150"
+                                                                     x-transition:leave-start="opacity-100 scale-100"
+                                                                     x-transition:leave-end="opacity-0 scale-95"
+                                                                     class="absolute z-50 bottom-full right-0 mb-2 px-3 py-2 text-sm text-white bg-gray-900 dark:bg-gray-500 rounded-lg shadow-lg max-w-xs whitespace-normal"
+                                                                     style="display: none;">
+                                                                    {!! $tooltipContent !!}
+                                                                    
+                                                                    <!-- Seta do tooltip -->
+                                                                    <div class="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
+                                                                </div>
+                                                                @endif
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 @endforeach
