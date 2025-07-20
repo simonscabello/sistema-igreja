@@ -9,8 +9,10 @@
         <form action="{{ route('financial.transactions.update', $financialTransaction) }}" method="POST" enctype="multipart/form-data"
               x-data="financialTransactionForm(
                   '{{ old('financial_category_id', $financialTransaction->subcategory->financial_category_id) }}',
-                  '{{ old('financial_subcategory_id', $financialTransaction->financial_subcategory_id) }}'
+                  '{{ old('financial_subcategory_id', $financialTransaction->financial_subcategory_id) }}',
+                  @json($categories)
               )">
+            <!-- Debug: {{ $categories->count() }} categories loaded -->
             @csrf
             @method('PUT')
 
@@ -21,7 +23,7 @@
                         <select id="financial_category_id"
                                 name="financial_category_id"
                                 x-model="selectedCategory"
-                                @change="onCategoryChange()"
+                                @change="updateSubcategoriesLocal()"
                                 required
                                 class="mt-1 block w-full border-neutral-medium dark:border-gray-600 rounded-md shadow-sm focus:border-primary focus:ring-primary bg-white dark:bg-gray-700 text-neutral-dark dark:text-white">
                             <option value="">Selecione uma categoria</option>

@@ -2,8 +2,7 @@
 function financialTransactionForm(initialCategory = '', initialSubcategory = '', categories = []) {
     return {
         selectedCategory: initialCategory,
-        selectedSubcategory: '',
-        targetSubcategory: initialSubcategory, // Subcategoria que deve ser selecionada após carregamento
+        selectedSubcategory: initialSubcategory,
         subcategories: [],
         isLoadingSubcategories: false,
         categories: categories,
@@ -12,9 +11,6 @@ function financialTransactionForm(initialCategory = '', initialSubcategory = '',
             // Se já temos as categorias carregadas localmente (view create), use-as
             if (this.categories.length > 0) {
                 this.updateSubcategoriesLocal();
-                if (this.targetSubcategory) {
-                    this.selectedSubcategory = this.targetSubcategory;
-                }
             } else if (this.selectedCategory) {
                 // Caso contrário, busque via AJAX se há categoria selecionada (view edit)
                 this.fetchSubcategories();
@@ -29,7 +25,12 @@ function financialTransactionForm(initialCategory = '', initialSubcategory = '',
             }
 
             const category = this.categories.find(c => String(c.id) === String(this.selectedCategory));
-            this.subcategories = category ? category.subcategories : [];
+            this.subcategories = category ? category.subcategories.filter(s => s.active) : [];
+            
+            // Verifica se a subcategoria selecionada ainda existe nas opções disponíveis
+            if (this.selectedSubcategory && !this.subcategories.find(s => String(s.id) === String(this.selectedSubcategory))) {
+                this.selectedSubcategory = '';
+            }
         },
 
         async fetchSubcategories() {
@@ -47,11 +48,8 @@ function financialTransactionForm(initialCategory = '', initialSubcategory = '',
 
                 this.subcategories = data;
 
-                // Após carregar as subcategorias, tente selecionar a subcategoria alvo
-                if (this.targetSubcategory && this.subcategories.find(s => String(s.id) === String(this.targetSubcategory))) {
-                    this.selectedSubcategory = this.targetSubcategory;
-                } else if (this.selectedSubcategory && !this.subcategories.find(s => String(s.id) === String(this.selectedSubcategory))) {
-                    // Se a subcategoria atual não estiver nas opções disponíveis, limpe a seleção
+                // Verifica se a subcategoria selecionada ainda existe nas opções disponíveis
+                if (this.selectedSubcategory && !this.subcategories.find(s => String(s.id) === String(this.selectedSubcategory))) {
                     this.selectedSubcategory = '';
                 }
             } catch (error) {
@@ -64,9 +62,10 @@ function financialTransactionForm(initialCategory = '', initialSubcategory = '',
         },
 
         onCategoryChange() {
-            // Use fetch via AJAX em vez de dados locais
+            // Limpa a subcategoria selecionada ao mudar categoria
             this.selectedSubcategory = '';
-            this.targetSubcategory = ''; // Limpa a subcategoria alvo ao mudar categoria
+            
+            // Use fetch via AJAX em vez de dados locais
             this.fetchSubcategories();
         },
 

@@ -11,7 +11,7 @@
                 <form action="{{ route('financial.transactions.index') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                     <x-text-input name="search" placeholder="Buscar transações..." value="{{ request('search') }}" class="sm:col-span-2" />
                     <x-select label="" name="type" :options="['' => 'Todos os tipos', 'entrada' => 'Entradas', 'saida' => 'Saídas']" :selected="request('type')" class="text-sm" />
-                    <x-select label="" name="subcategory" :options="$categories->flatMap(function($category) { return $category->subcategories->pluck('name', 'id'); })->prepend('Todas as subcategorias', '')" :selected="request('subcategory')" class="text-sm" />
+                    <x-select label="" name="subcategory" :options="$categories->flatMap(function($category) { return $category->subcategories->pluck('name', 'id'); })->prepend('Todas as subcategorias', '')" :selected="request('subcategory', '')" class="text-sm" />
                     <div class="flex items-end sm:col-span-1">
                         <x-primary-button type="submit" class="w-full px-4 py-3 text-sm">Buscar</x-primary-button>
                     </div>

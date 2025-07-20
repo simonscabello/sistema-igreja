@@ -10,7 +10,7 @@
               x-data="financialTransactionForm(
                   '{{ old('financial_category_id') }}',
                   '{{ old('financial_subcategory_id') }}',
-                  {{ $categories->toJson() }}
+                  @json($categories)
               )">
             @csrf
 
