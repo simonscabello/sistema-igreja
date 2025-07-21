@@ -29,6 +29,17 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <!-- Microsoft Clarity Analytics -->
+        @if(config('services.clarity.id'))
+            <script type="text/javascript">
+                (function(c,l,a,r,i,t,y){
+                    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+                })(window, document, "clarity", "script", "{{ config('services.clarity.id') }}");
+            </script>
+        @endif
     </head>
     <body class="font-sans antialiased bg-neutral-light dark:bg-gray-900 min-h-screen flex flex-col transition-colors duration-300" @keydown.escape.window="sidebarOpen = false">
         <div class="flex flex-1 min-h-0">
