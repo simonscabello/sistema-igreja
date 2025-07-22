@@ -108,6 +108,19 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
 
     // Gestão de Users (apenas para administradores)
     Route::resource('users', UserController::class)->middleware(['role:administrador']);
+    
+    // Páginas de demonstração do select avançado
+    Route::get('/examples/select-demo', function () {
+        return view('examples.select-demo');
+    })->name('examples.select-demo');
+    
+    Route::get('/examples/select-usage', function () {
+        return view('examples.select-usage-example');
+    })->name('examples.select-usage');
+    
+    Route::get('/examples/select-test', function () {
+        return view('examples.select-test');
+    })->name('examples.select-test');
 });
 
 // Rotas de autenticação

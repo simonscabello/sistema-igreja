@@ -8,6 +8,7 @@ import './theme-toggle';
 import './departments/department-selects';
 import './departments/department-edit';
 import './financial-dashboard.js';
+import './components/select.js';
 
 window.Alpine = Alpine;
 Alpine.plugin(mask);
