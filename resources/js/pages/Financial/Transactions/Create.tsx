@@ -1,10 +1,11 @@
 import { FormEvent, useState } from 'react';
-import { Link, useForm } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import AppLayout, { AppPage } from '@/layouts/AppLayout';
 import { Alert } from '@/components/ui/Alert';
-import { PrimaryButton, SecondaryButton } from '@/components/ui/Button';
+import { CancelButton, SaveButton } from '@/components/ui/Button';
 import { CurrencyInput, formatCurrencyForSubmit } from '@/components/ui/CurrencyInput';
 import { DateInput, FileInput, Select, Textarea } from '@/components/ui/Input';
+import { FormActions, FormPanel } from '@/components/ui/FormSection';
 import { PageCard } from '@/components/ui/PageCard';
 import { formatCurrency, route } from '@/utils';
 import { CategorySubcategoryFields, TransactionTypeRadio } from '../components/TransactionFields';
@@ -48,7 +49,11 @@ function Create({ categories, campaigns }: CreateProps) {
 
     return (
         <AppPage>
-            <PageCard title="Nova transação" description="Toda transação fica em uma subcategoria. Campanha e anexo são opcionais." breadcrumbs={[{ label: 'Transações', href: route('financial.transactions.index') }, { label: 'Nova' }]}>
+            <PageCard
+                title="Nova transação"
+                description="Toda transação fica em uma subcategoria. Campanha e anexo são opcionais."
+                breadcrumbs={[{ label: 'Transações', href: route('financial.transactions.index') }, { label: 'Nova' }]}
+            >
                 {hasErrors && (
                     <Alert type="error" dismissible>
                         Corrija os campos destacados antes de salvar.
@@ -56,78 +61,70 @@ function Create({ categories, campaigns }: CreateProps) {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="max-w-2xl space-y-6">
-                        <CategorySubcategoryFields
-                            categories={categories}
-                            categoryId={categoryId}
-                            subcategoryId={data.financial_subcategory_id}
-                            onCategoryChange={setCategoryId}
-                            onSubcategoryChange={(value) => setData('financial_subcategory_id', value)}
-                            subcategoryError={errors.financial_subcategory_id}
-                        />
+                    <FormPanel>
+                        <div className="max-w-2xl space-y-6">
+                            <CategorySubcategoryFields
+                                categories={categories}
+                                categoryId={categoryId}
+                                subcategoryId={data.financial_subcategory_id}
+                                onCategoryChange={setCategoryId}
+                                onSubcategoryChange={(value) => setData('financial_subcategory_id', value)}
+                                subcategoryError={errors.financial_subcategory_id}
+                            />
 
-                        <Select
-                            id="campaign_id"
-                            label="Campanha (Opcional)"
-                            value={data.campaign_id}
-                            onChange={(event) => setData('campaign_id', event.target.value)}
-                            options={campaignOptions}
-                            placeholder="Nenhuma campanha"
-                            error={errors.campaign_id}
-                        />
+                            <Select
+                                id="campaign_id"
+                                label="Campanha (Opcional)"
+                                value={data.campaign_id}
+                                onChange={(event) => setData('campaign_id', event.target.value)}
+                                options={campaignOptions}
+                                placeholder="Nenhuma campanha"
+                                error={errors.campaign_id}
+                            />
 
-                        <TransactionTypeRadio
-                            value={data.type}
-                            onChange={(type) => setData('type', type)}
-                            error={errors.type}
-                        />
+                            <TransactionTypeRadio value={data.type} onChange={(type) => setData('type', type)} error={errors.type} />
 
-                        <CurrencyInput
-                            id="amount"
-                            label="Valor"
-                            value={data.amount}
-                            onChange={(value) => setData('amount', value)}
-                            required
-                            error={errors.amount}
-                        />
+                            <CurrencyInput
+                                id="amount"
+                                label="Valor"
+                                value={data.amount}
+                                onChange={(value) => setData('amount', value)}
+                                required
+                                error={errors.amount}
+                            />
 
-                        <DateInput
-                            id="action_date"
-                            label="Data da Ação"
-                            value={data.action_date}
-                            onChange={(event) => setData('action_date', event.target.value)}
-                            required
-                            error={errors.action_date}
-                        />
+                            <DateInput
+                                id="action_date"
+                                label="Data da Ação"
+                                value={data.action_date}
+                                onChange={(event) => setData('action_date', event.target.value)}
+                                required
+                                error={errors.action_date}
+                            />
 
-                        <Textarea
-                            id="description"
-                            label="Descrição"
-                            value={data.description}
-                            onChange={(event) => setData('description', event.target.value)}
-                            error={errors.description}
-                        />
+                            <Textarea
+                                id="description"
+                                label="Descrição"
+                                value={data.description}
+                                onChange={(event) => setData('description', event.target.value)}
+                                error={errors.description}
+                            />
 
-                        <FileInput
-                            id="attachment"
-                            label="Anexo (Opcional)"
-                            accept=".pdf,.jpg,.jpeg,.png"
-                            helpText="Anexe comprovantes, notas fiscais ou outros documentos. Formatos: PDF, JPG, PNG. Máximo: 10MB."
-                            onChange={(event) => setData('attachment', event.target.files?.[0] ?? null)}
-                            error={errors.attachment}
-                        />
-                    </div>
-
-                    <div className="border-t border-neutral-medium mt-6 pt-6">
-                        <div className="flex gap-4">
-                            <Link href={route('financial.transactions.index')}>
-                                <SecondaryButton type="button">Cancelar</SecondaryButton>
-                            </Link>
-                            <PrimaryButton type="submit" disabled={processing}>
-                                Salvar
-                            </PrimaryButton>
+                            <FileInput
+                                id="attachment"
+                                label="Anexo (Opcional)"
+                                accept=".pdf,.jpg,.jpeg,.png"
+                                helpText="Anexe comprovantes, notas fiscais ou outros documentos. Formatos: PDF, JPG, PNG. Máximo: 10MB."
+                                onChange={(event) => setData('attachment', event.target.files?.[0] ?? null)}
+                                error={errors.attachment}
+                            />
                         </div>
-                    </div>
+                    </FormPanel>
+
+                    <FormActions>
+                        <CancelButton href={route('financial.transactions.index')} />
+                        <SaveButton processing={processing} />
+                    </FormActions>
                 </form>
             </PageCard>
         </AppPage>

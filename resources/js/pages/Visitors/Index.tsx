@@ -2,19 +2,8 @@ import { useState } from 'react';
 import { router } from '@inertiajs/react';
 import AppLayout, { AppPage } from '@/layouts/AppLayout';
 import { Badge } from '@/components/ui/Badge';
-import { LinkButton } from '@/components/ui/Button';
-import {
-    DesktopOnly,
-    MobileCard,
-    MobileList,
-    Table,
-    TableShell,
-    TBody,
-    Td,
-    Th,
-    THead,
-    Tr,
-} from '@/components/ui/DataTable';
+import { EditButton, RowActions, ViewButton } from '@/components/ui/Button';
+import { ActionsTh, DesktopOnly, MobileCard, MobileCardHeader, MobileList, Table, TableShell, TBody, Td, Th, THead, Tr } from '@/components/ui/DataTable';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { PageCard, Pagination, SearchForm } from '@/components/ui/PageCard';
 import { formatDateBr, route } from '@/utils';
@@ -88,20 +77,14 @@ function Index({ visitors, filters = {} }: IndexProps) {
                                         <Th>Faixa etária</Th>
                                         <Th>Visita</Th>
                                         <Th>Contato</Th>
-                                        <Th align="right"> </Th>
+                                        <ActionsTh />
                                     </THead>
                                     <TBody>
                                         {visitors.data.map((visitor) => (
                                             <Tr key={visitor.id}>
                                                 <Td className="font-medium">{visitor.name}</Td>
                                                 <Td className="tabular">{visitor.mobile}</Td>
-                                                <Td>
-                                                    {visitor.age_group ? (
-                                                        <Badge>{formatAgeGroup(visitor.age_group)}</Badge>
-                                                    ) : (
-                                                        '—'
-                                                    )}
-                                                </Td>
+                                                <Td>{visitor.age_group ? <Badge>{formatAgeGroup(visitor.age_group)}</Badge> : '—'}</Td>
                                                 <Td className="tabular">{formatDateBr(visitor.visit_date)}</Td>
                                                 <Td>
                                                     <Badge tone={visitor.wants_contact ? 'success' : 'neutral'}>
@@ -109,10 +92,10 @@ function Index({ visitors, filters = {} }: IndexProps) {
                                                     </Badge>
                                                 </Td>
                                                 <Td align="right">
-                                                    <div className="flex justify-end gap-3">
-                                                        <LinkButton href={route('visitors.show', visitor.id)}>Ver</LinkButton>
-                                                        <LinkButton href={route('visitors.edit', visitor.id)}>Editar</LinkButton>
-                                                    </div>
+                                                    <RowActions>
+                                                        <ViewButton href={route('visitors.show', visitor.id)} />
+                                                        <EditButton href={route('visitors.edit', visitor.id)} />
+                                                    </RowActions>
                                                 </Td>
                                             </Tr>
                                         ))}
@@ -124,18 +107,23 @@ function Index({ visitors, filters = {} }: IndexProps) {
                         <MobileList>
                             {visitors.data.map((visitor) => (
                                 <MobileCard key={visitor.id}>
-                                    <div className="flex items-start justify-between gap-2">
-                                        <div>
-                                            <p className="font-semibold">{visitor.name}</p>
-                                            <p className="text-sm text-ink-muted">{visitor.mobile}</p>
-                                        </div>
-                                        {visitor.wants_contact && <Badge tone="success">Contato</Badge>}
-                                    </div>
-                                    <p className="mt-2 text-sm text-ink-muted">{formatDateBr(visitor.visit_date)}</p>
-                                    <div className="mt-3 flex justify-end gap-4 text-sm">
-                                        <LinkButton href={route('visitors.show', visitor.id)}>Ver</LinkButton>
-                                        <LinkButton href={route('visitors.edit', visitor.id)}>Editar</LinkButton>
-                                    </div>
+                                    <MobileCardHeader
+                                        actions={
+                                            <RowActions>
+                                                <ViewButton href={route('visitors.show', visitor.id)} />
+                                                <EditButton href={route('visitors.edit', visitor.id)} />
+                                            </RowActions>
+                                        }
+                                    >
+                                        <p className="font-semibold">{visitor.name}</p>
+                                        <p className="text-sm text-muted-foreground">{visitor.mobile}</p>
+                                        <p className="mt-1 text-sm text-muted-foreground">{formatDateBr(visitor.visit_date)}</p>
+                                        {visitor.wants_contact && (
+                                            <Badge tone="success" className="mt-2">
+                                                Contato
+                                            </Badge>
+                                        )}
+                                    </MobileCardHeader>
                                 </MobileCard>
                             ))}
                         </MobileList>

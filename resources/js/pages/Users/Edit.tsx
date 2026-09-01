@@ -1,9 +1,10 @@
 import { FormEvent } from 'react';
-import { Link, router, useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import AppLayout, { AppPage } from '@/layouts/AppLayout';
 import { Alert } from '@/components/ui/Alert';
-import { PrimaryButton, SecondaryButton } from '@/components/ui/Button';
+import { CancelButton, SaveButton } from '@/components/ui/Button';
 import { Select, TextInput } from '@/components/ui/Input';
+import { FormActions, FormPanel } from '@/components/ui/FormSection';
 import { PageCard } from '@/components/ui/PageCard';
 import { route } from '@/utils';
 
@@ -63,55 +64,51 @@ function Edit({ user, roles }: EditProps) {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <TextInput
-                            id="name"
-                            label="Nome"
-                            value={data.name}
-                            onChange={(event) => setData('name', event.target.value)}
-                            placeholder="Digite o nome completo"
-                            required
-                            error={errors.name}
-                        />
-                        <TextInput
-                            id="email"
-                            label="Email"
-                            type="email"
-                            value={data.email}
-                            onChange={(event) => setData('email', event.target.value)}
-                            placeholder="Digite o email"
-                            required
-                            error={errors.email}
-                        />
-                    </div>
-
-                    <div className="border-t border-neutral-medium pt-6">
-                        <h3 className="text-lg font-medium text-neutral-dark dark:text-gray-300 mb-4">Role</h3>
-                        {roles.length === 0 ? (
-                            <p className="text-neutral-medium dark:text-gray-500">Nenhum role encontrado.</p>
-                        ) : (
-                            <Select
-                                id="role_id"
-                                label="Role"
-                                value={data.role_id}
-                                onChange={(event) => setData('role_id', event.target.value)}
-                                options={roleOptions}
-                                placeholder="Selecione um role..."
-                                error={errors.roles}
+                    <FormPanel>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <TextInput
+                                id="name"
+                                label="Nome"
+                                value={data.name}
+                                onChange={(event) => setData('name', event.target.value)}
+                                placeholder="Digite o nome completo"
+                                required
+                                error={errors.name}
                             />
-                        )}
-                    </div>
-
-                    <div className="border-t border-neutral-medium mt-6 pt-6">
-                        <div className="flex gap-4">
-                            <Link href={route('users.index')}>
-                                <SecondaryButton type="button">Cancelar</SecondaryButton>
-                            </Link>
-                            <PrimaryButton type="submit" disabled={processing}>
-                                Atualizar
-                            </PrimaryButton>
+                            <TextInput
+                                id="email"
+                                label="Email"
+                                type="email"
+                                value={data.email}
+                                onChange={(event) => setData('email', event.target.value)}
+                                placeholder="Digite o email"
+                                required
+                                error={errors.email}
+                            />
                         </div>
-                    </div>
+
+                        <div className="border-t pt-6">
+                            <h3 className="text-lg font-medium text-foreground mb-4">Role</h3>
+                            {roles.length === 0 ? (
+                                <p className="text-muted-foreground">Nenhum role encontrado.</p>
+                            ) : (
+                                <Select
+                                    id="role_id"
+                                    label="Role"
+                                    value={data.role_id}
+                                    onChange={(event) => setData('role_id', event.target.value)}
+                                    options={roleOptions}
+                                    placeholder="Selecione um role..."
+                                    error={errors.roles}
+                                />
+                            )}
+                        </div>
+                    </FormPanel>
+
+                    <FormActions>
+                        <CancelButton href={route('users.index')} />
+                        <SaveButton processing={processing}>Atualizar</SaveButton>
+                    </FormActions>
                 </form>
             </PageCard>
         </AppPage>

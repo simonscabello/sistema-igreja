@@ -30,10 +30,8 @@ function Login() {
                 <img src="/sib-logo-white.png" alt="SIB Barcelona" className="mt-1 hidden w-36 dark:block" />
             </div>
 
-            <h1 className="mb-1 text-center text-xl font-semibold text-ink dark:text-ink-inverse">Entrar</h1>
-            <p className="mb-6 text-center text-sm text-ink-muted dark:text-ink-inverse/70">
-                Use o e-mail da sua conta no sistema.
-            </p>
+            <h1 className="mb-1 text-center text-xl font-semibold">Entrar</h1>
+            <p className="mb-6 text-center text-sm text-muted-foreground">Use o e-mail da sua conta no sistema.</p>
 
             {flash.status && (
                 <Alert type="success" className="mb-4">
@@ -75,10 +73,7 @@ function Login() {
                 />
 
                 <div className="flex items-center justify-between gap-3 pt-2">
-                    <Link
-                        href={route('password.request')}
-                        className="text-sm text-ink-muted hover:text-primary dark:text-ink-inverse/70"
-                    >
+                    <Link href={route('password.request')} className="text-sm text-muted-foreground hover:text-foreground">
                         Esqueceu a senha?
                     </Link>
 

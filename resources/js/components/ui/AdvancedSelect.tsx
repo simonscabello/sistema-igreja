@@ -1,5 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { Check, ChevronsUpDown, Plus } from 'lucide-react';
 import { cn, getInitials } from '@/utils';
+import { InputError, InputLabel } from '@/components/ui/Input';
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Badge } from '@/components/ui/Badge';
 
 export interface AdvancedSelectOption {
     value: string | number;
@@ -19,6 +25,7 @@ interface AdvancedSelectProps {
     creatable?: boolean;
     placeholder?: string;
     label?: string;
+    labelIcon?: React.ReactNode;
     error?: string;
     imageField?: boolean;
 }
@@ -35,26 +42,21 @@ export function AdvancedSelect({
     creatable = false,
     placeholder = 'Selecione...',
     label,
+    labelIcon,
     error,
     imageField = false,
 }: AdvancedSelectProps) {
-    const [search, setSearch] = useState('');
     const [open, setOpen] = useState(false);
+    const [search, setSearch] = useState('');
     const [localOptions, setLocalOptions] = useState<AdvancedSelectOption[]>(options);
+
+    useEffect(() => {
+        setLocalOptions(options);
+    }, [options]);
 
     const availableOptions = useMemo(() => {
         return localOptions.filter((option) => !excludedIds.includes(option.value));
     }, [localOptions, excludedIds]);
-
-    const filteredOptions = useMemo(() => {
-        if (!searchable || !search.trim()) {
-            return availableOptions;
-        }
-
-        const term = search.toLowerCase();
-
-        return availableOptions.filter((option) => option.label.toLowerCase().includes(term));
-    }, [availableOptions, search, searchable]);
 
     const selectedOptions = localOptions.filter((option) => value.includes(option.value));
 
@@ -71,6 +73,7 @@ export function AdvancedSelect({
 
         onChange([optionValue]);
         setOpen(false);
+        setSearch('');
     };
 
     const handleCreate = () => {
@@ -89,77 +92,94 @@ export function AdvancedSelect({
         setLocalOptions((current) => [...current, option]);
         onChange(multiple ? [...value, newValue] : [newValue]);
         setSearch('');
+
+        if (!multiple) {
+            setOpen(false);
+        }
     };
 
     return (
-        <div className="relative">
-            {label && <label className="block font-medium text-sm text-neutral-dark dark:text-gray-300 mb-1">{label}</label>}
-
-            <button
-                type="button"
-                id={id}
-                onClick={() => setOpen((current) => !current)}
-                className="mt-1 w-full text-left border border-neutral-medium dark:border-gray-600 rounded-md shadow-sm px-3 py-2 bg-white dark:bg-gray-700 text-neutral-dark dark:text-white"
-            >
-                {selectedOptions.length > 0 ? selectedOptions.map((option) => option.label).join(', ') : placeholder}
-            </button>
-
-            {open && (
-                <div className="absolute z-20 mt-1 w-full rounded-md border border-neutral-medium dark:border-gray-600 bg-white dark:bg-gray-800 shadow-lg max-h-60 overflow-auto">
-                    {searchable && (
-                        <div className="p-2 border-b border-neutral-medium dark:border-gray-700">
-                            <input
-                                type="text"
-                                value={search}
-                                onChange={(event) => setSearch(event.target.value)}
-                                onKeyDown={(event) => {
-                                    if (event.key === 'Enter' && creatable) {
-                                        event.preventDefault();
-                                        handleCreate();
-                                    }
-                                }}
-                                placeholder="Buscar..."
-                                className="w-full rounded-md border-neutral-medium dark:border-gray-600 bg-white dark:bg-gray-700 px-2 py-1 text-sm"
-                            />
-                        </div>
-                    )}
-                    {filteredOptions.map((option) => (
-                        <button
-                            key={option.value}
-                            type="button"
-                            onClick={() => toggleValue(option.value)}
-                            className={cn(
-                                'w-full flex items-center gap-2 px-3 py-2 text-left text-sm hover:bg-neutral-light dark:hover:bg-gray-700',
-                                value.includes(option.value) && 'bg-primary/10',
-                            )}
-                        >
-                            {imageField && (
-                                option.image ? (
-                                    <img src={option.image} alt="" className="w-6 h-6 rounded-full object-cover" />
-                                ) : (
-                                    <span className="w-6 h-6 rounded-full bg-primary/20 text-xs flex items-center justify-center">
-                                        {getInitials(option.label)}
-                                    </span>
-                                )
-                            )}
-                            <span>{option.label}</span>
-                        </button>
-                    ))}
-                    {creatable && search.trim() && !filteredOptions.some((option) => option.label.toLowerCase() === search.toLowerCase()) && (
-                        <button type="button" onClick={handleCreate} className="w-full px-3 py-2 text-left text-sm text-primary hover:bg-primary/10">
-                            Adicionar "{search.trim()}"
-                        </button>
-                    )}
+        <div>
+            {label && (
+                <div className={cn('mb-1.5 flex items-center gap-2')}>
+                    {labelIcon}
+                    <InputLabel htmlFor={id}>{label}</InputLabel>
                 </div>
             )}
 
-            {multiple &&
-                value.map((item) => (
-                    <input key={item} type="hidden" name={`${name}[]`} value={item} />
-                ))}
+            <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                    <Button
+                        id={id}
+                        type="button"
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open}
+                        className="h-auto min-h-touch w-full justify-between font-normal"
+                    >
+                        <span className={cn('min-w-0 flex-1 truncate text-left', selectedOptions.length === 0 && 'text-muted-foreground')}>
+                            {selectedOptions.length > 0
+                                ? multiple
+                                    ? `${selectedOptions.length} selecionado(s)`
+                                    : selectedOptions.map((option) => option.label).join(', ')
+                                : placeholder}
+                        </span>
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                    <Command shouldFilter={searchable}>
+                        {searchable && <CommandInput placeholder="Buscar..." value={search} onValueChange={setSearch} />}
+                        <CommandList>
+                            <CommandEmpty>
+                                {creatable && search.trim() ? (
+                                    <button
+                                        type="button"
+                                        onClick={handleCreate}
+                                        className="flex w-full items-center gap-2 px-2 py-1.5 text-left text-sm"
+                                    >
+                                        <Plus className="h-4 w-4" />
+                                        Adicionar “{search.trim()}”
+                                    </button>
+                                ) : (
+                                    'Nenhuma opção encontrada.'
+                                )}
+                            </CommandEmpty>
+                            <CommandGroup>
+                                {availableOptions.map((option) => (
+                                    <CommandItem key={String(option.value)} value={option.label} onSelect={() => toggleValue(option.value)}>
+                                        {imageField &&
+                                            (option.image ? (
+                                                <img src={option.image} alt="" className="h-6 w-6 rounded-full object-cover" />
+                                            ) : (
+                                                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs">
+                                                    {getInitials(option.label)}
+                                                </span>
+                                            ))}
+                                        <span className="min-w-0 flex-1 truncate">{option.label}</span>
+                                        <Check className={cn('h-4 w-4', value.includes(option.value) ? 'opacity-100' : 'opacity-0')} />
+                                    </CommandItem>
+                                ))}
+                            </CommandGroup>
+                        </CommandList>
+                    </Command>
+                </PopoverContent>
+            </Popover>
+
+            {multiple && selectedOptions.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-1">
+                    {selectedOptions.map((option) => (
+                        <Badge key={String(option.value)} tone="neutral">
+                            {option.label}
+                        </Badge>
+                    ))}
+                </div>
+            )}
+
+            {multiple && value.map((item) => <input key={item} type="hidden" name={`${name}[]`} value={item} />)}
             {!multiple && value[0] !== undefined && <input type="hidden" name={name} value={value[0]} />}
 
-            {error && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>}
+            <InputError message={error} />
         </div>
     );
 }
@@ -176,22 +196,40 @@ export function OrderedSongList({ items, keys = {}, onKeyChange }: OrderedListPr
     }
 
     return (
-        <div className="space-y-2 mt-4">
-            <h4 className="text-sm font-medium text-neutral-dark dark:text-gray-300">Ordem das músicas</h4>
-            {items.map((item, index) => (
-                <div key={item.value} className="flex items-center gap-3 p-3 border border-neutral-medium dark:border-gray-600 rounded-md">
-                    <span className="text-sm font-semibold text-primary w-6">{index + 1}</span>
-                    <span className="flex-1 text-sm text-neutral-dark dark:text-gray-300">{item.label}</span>
-                    <input
-                        type="text"
-                        name={`song_keys[${item.value}]`}
-                        value={keys[item.value] ?? ''}
-                        onChange={(event) => onKeyChange?.(item.value, event.target.value)}
-                        placeholder="Tom"
-                        className="w-24 rounded-md border-neutral-medium dark:border-gray-600 bg-white dark:bg-gray-700 px-2 py-1 text-sm"
-                    />
+        <div className="mt-4 space-y-2">
+            <h4 className="text-sm font-medium">Ordem das músicas</h4>
+            <div className="overflow-hidden rounded-lg border">
+                <div className="hidden border-b bg-muted/40 px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground sm:grid sm:grid-cols-[2.5rem_1fr_5.5rem] sm:gap-3">
+                    <span>#</span>
+                    <span>Música</span>
+                    <span className="text-right">Tom</span>
                 </div>
-            ))}
+                {items.map((item, index) => (
+                    <div
+                        key={item.value}
+                        className="grid grid-cols-1 gap-2 border-t px-3 py-3 first:border-t-0 sm:grid-cols-[2.5rem_1fr_5.5rem] sm:items-center sm:gap-3"
+                    >
+                        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-muted text-sm font-semibold">
+                            {index + 1}
+                        </span>
+                        <span className="min-w-0 text-sm font-medium">{item.label}</span>
+                        <div className="sm:justify-self-end">
+                            <label htmlFor={`song-key-${item.value}`} className="sr-only">
+                                Tom de {item.label}
+                            </label>
+                            <input
+                                id={`song-key-${item.value}`}
+                                type="text"
+                                name={`song_keys[${item.value}]`}
+                                value={keys[item.value] ?? ''}
+                                onChange={(event) => onKeyChange?.(item.value, event.target.value)}
+                                placeholder="Tom"
+                                className="flex h-9 w-full rounded-md border border-input bg-background px-3 text-center text-sm shadow-sm sm:w-20"
+                            />
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }

@@ -1,12 +1,13 @@
-import { FormEvent, useEffect, useState } from 'react';
-import { useForm, usePage } from '@inertiajs/react';
 import AppLayout, { AppPage } from '@/layouts/AppLayout';
 import { Alert, Modal } from '@/components/ui/Alert';
-import { DangerButton, PrimaryButton, SecondaryButton } from '@/components/ui/Button';
-import { TextInput } from '@/components/ui/Input';
+import { CancelButton, DangerButton, SaveButton } from '@/components/ui/Button';
+import { PasswordInput, TextInput } from '@/components/ui/Input';
+import { FormCard } from '@/components/ui/FormSection';
 import { PageCard } from '@/components/ui/PageCard';
 import { PageProps } from '@/types';
 import { route } from '@/utils';
+import { FormEvent, useEffect, useState } from 'react';
+import { useForm, usePage } from '@inertiajs/react';
 
 interface ProfileUser {
     id: number;
@@ -73,158 +74,104 @@ function Edit({ user }: EditProps) {
 
     return (
         <AppPage>
-            <PageCard title="Perfil">
+            <PageCard title="Perfil" description="Dados da sua conta de acesso ao sistema.">
                 {flash.status === 'profile-updated' && (
                     <Alert type="success" dismissible>
-                        <span className="font-medium">Sucesso!</span> Perfil atualizado com sucesso.
+                        Perfil atualizado.
                     </Alert>
                 )}
 
                 {flash.status === 'password-updated' && (
                     <Alert type="success" dismissible>
-                        <span className="font-medium">Sucesso!</span> Senha atualizada com sucesso.
+                        Senha atualizada.
                     </Alert>
                 )}
 
                 <div className="space-y-6">
-                    <section className="p-4 sm:p-8 shadow dark:shadow-gray-700 sm:rounded-lg">
-                        <div className="max-w-xl">
-                            <header>
-                                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                                    Informações do Perfil
-                                </h2>
-                                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                    Atualize as informações do perfil da sua conta e endereço de e-mail.
+                    <FormCard title="Informações do perfil" description="Nome e e-mail usados no login.">
+                        <form onSubmit={handleProfileSubmit} className="max-w-xl space-y-4">
+                            <TextInput
+                                id="name"
+                                label="Nome"
+                                value={profileForm.data.name}
+                                onChange={(event) => profileForm.setData('name', event.target.value)}
+                                required
+                                autoComplete="name"
+                                error={profileForm.errors.name}
+                            />
+                            <TextInput
+                                id="email"
+                                label="E-mail"
+                                type="email"
+                                value={profileForm.data.email}
+                                onChange={(event) => profileForm.setData('email', event.target.value)}
+                                required
+                                autoComplete="username"
+                                error={profileForm.errors.email}
+                            />
+                            <SaveButton processing={profileForm.processing} />
+                        </form>
+                    </FormCard>
+
+                    <FormCard title="Senha" description="Use uma senha longa e difícil de adivinhar.">
+                        <form onSubmit={handlePasswordSubmit} className="max-w-xl space-y-4">
+                            <PasswordInput
+                                id="update_password_current_password"
+                                label="Senha atual"
+                                value={passwordForm.data.current_password}
+                                onChange={(event) => passwordForm.setData('current_password', event.target.value)}
+                                autoComplete="current-password"
+                                error={passwordForm.errors.current_password}
+                            />
+                            <PasswordInput
+                                id="update_password_password"
+                                label="Nova senha"
+                                value={passwordForm.data.password}
+                                onChange={(event) => passwordForm.setData('password', event.target.value)}
+                                autoComplete="new-password"
+                                error={passwordForm.errors.password}
+                            />
+                            <PasswordInput
+                                id="update_password_password_confirmation"
+                                label="Confirmar senha"
+                                value={passwordForm.data.password_confirmation}
+                                onChange={(event) => passwordForm.setData('password_confirmation', event.target.value)}
+                                autoComplete="new-password"
+                                error={passwordForm.errors.password_confirmation}
+                            />
+                            <SaveButton processing={passwordForm.processing} />
+                        </form>
+                    </FormCard>
+
+                    <FormCard
+                        title="Excluir conta"
+                        description="Todos os dados desta conta serão apagados. Esta ação não pode ser desfeita."
+                    >
+                        <DangerButton type="button" onClick={() => setShowDeleteModal(true)}>
+                            Excluir conta
+                        </DangerButton>
+
+                        <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)} title="Excluir sua conta?">
+                            <form onSubmit={handleDeleteSubmit} className="space-y-4">
+                                <p className="text-sm text-muted-foreground">
+                                    Digite sua senha para confirmar. Depois disso, a conta e os dados associados serão apagados.
                                 </p>
-                            </header>
-
-                            <form onSubmit={handleProfileSubmit} className="mt-6 space-y-6">
-                                <TextInput
-                                    id="name"
-                                    label="Nome"
-                                    value={profileForm.data.name}
-                                    onChange={(event) => profileForm.setData('name', event.target.value)}
-                                    required
-                                    autoComplete="name"
-                                    error={profileForm.errors.name}
+                                <PasswordInput
+                                    id="password"
+                                    label="Senha"
+                                    value={deleteForm.data.password}
+                                    onChange={(event) => deleteForm.setData('password', event.target.value)}
+                                    error={deleteForm.errors.password}
                                 />
-
-                                <TextInput
-                                    id="email"
-                                    label="E-mail"
-                                    type="email"
-                                    value={profileForm.data.email}
-                                    onChange={(event) => profileForm.setData('email', event.target.value)}
-                                    required
-                                    autoComplete="username"
-                                    error={profileForm.errors.email}
-                                />
-
-                                <PrimaryButton type="submit" disabled={profileForm.processing}>
-                                    Salvar
-                                </PrimaryButton>
+                                <div className="flex justify-end gap-2">
+                                    <CancelButton type="button" onClick={() => setShowDeleteModal(false)} />
+                                    <DangerButton type="submit" processing={deleteForm.processing}>
+                                        Excluir conta
+                                    </DangerButton>
+                                </div>
                             </form>
-                        </div>
-                    </section>
-
-                    <section className="p-4 sm:p-8 shadow dark:shadow-gray-700 sm:rounded-lg">
-                        <div className="max-w-xl">
-                            <header>
-                                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                                    Atualizar Senha
-                                </h2>
-                                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                    Certifique-se de que sua conta está usando uma senha longa e aleatória para manter a segurança.
-                                </p>
-                            </header>
-
-                            <form onSubmit={handlePasswordSubmit} className="mt-6 space-y-6">
-                                <TextInput
-                                    id="update_password_current_password"
-                                    label="Senha Atual"
-                                    type="password"
-                                    value={passwordForm.data.current_password}
-                                    onChange={(event) => passwordForm.setData('current_password', event.target.value)}
-                                    autoComplete="current-password"
-                                    error={passwordForm.errors.current_password}
-                                />
-
-                                <TextInput
-                                    id="update_password_password"
-                                    label="Nova Senha"
-                                    type="password"
-                                    value={passwordForm.data.password}
-                                    onChange={(event) => passwordForm.setData('password', event.target.value)}
-                                    autoComplete="new-password"
-                                    error={passwordForm.errors.password}
-                                />
-
-                                <TextInput
-                                    id="update_password_password_confirmation"
-                                    label="Confirmar Senha"
-                                    type="password"
-                                    value={passwordForm.data.password_confirmation}
-                                    onChange={(event) => passwordForm.setData('password_confirmation', event.target.value)}
-                                    autoComplete="new-password"
-                                    error={passwordForm.errors.password_confirmation}
-                                />
-
-                                <PrimaryButton type="submit" disabled={passwordForm.processing}>
-                                    Salvar
-                                </PrimaryButton>
-                            </form>
-                        </div>
-                    </section>
-
-                    <section className="p-4 sm:p-8 shadow dark:shadow-gray-700 sm:rounded-lg">
-                        <div className="max-w-xl space-y-6">
-                            <header>
-                                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                                    Excluir Conta
-                                </h2>
-                                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                    Depois que sua conta for excluída, todos os seus recursos e dados serão permanentemente excluídos. Antes de excluir sua conta, faça o download de quaisquer dados ou informações que você deseja manter.
-                                </p>
-                            </header>
-
-                            <DangerButton type="button" onClick={() => setShowDeleteModal(true)}>
-                                Excluir Conta
-                            </DangerButton>
-
-                            <Modal
-                                show={showDeleteModal}
-                                onClose={() => setShowDeleteModal(false)}
-                                title="Tem certeza que deseja excluir sua conta?"
-                            >
-                                <form onSubmit={handleDeleteSubmit}>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                                        Depois que sua conta for excluída, todos os seus recursos e dados serão permanentemente excluídos. Por favor, digite sua senha para confirmar que deseja excluir permanentemente sua conta.
-                                    </p>
-
-                                    <div className="mt-6">
-                                        <TextInput
-                                            id="password"
-                                            label="Senha"
-                                            type="password"
-                                            value={deleteForm.data.password}
-                                            onChange={(event) => deleteForm.setData('password', event.target.value)}
-                                            placeholder="Senha"
-                                            error={deleteForm.errors.password}
-                                        />
-                                    </div>
-
-                                    <div className="mt-6 flex justify-end gap-3">
-                                        <SecondaryButton type="button" onClick={() => setShowDeleteModal(false)}>
-                                            Cancelar
-                                        </SecondaryButton>
-                                        <DangerButton type="submit" disabled={deleteForm.processing}>
-                                            Excluir Conta
-                                        </DangerButton>
-                                    </div>
-                                </form>
-                            </Modal>
-                        </div>
-                    </section>
+                        </Modal>
+                    </FormCard>
                 </div>
             </PageCard>
         </AppPage>

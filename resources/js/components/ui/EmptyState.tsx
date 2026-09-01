@@ -1,5 +1,5 @@
-import { Link } from '@inertiajs/react';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils';
+import { CreateButton } from './Button';
 
 export function EmptyState({
     title,
@@ -17,19 +17,19 @@ export function EmptyState({
     className?: string;
 }) {
     return (
-        <div className={cn('flex flex-col items-center justify-center px-4 py-12 text-center', className)}>
-            {icon && <div className="mb-3 text-ink-muted">{icon}</div>}
-            <h3 className="text-base font-semibold text-ink dark:text-ink-inverse">{title}</h3>
-            {description && (
-                <p className="mt-1 max-w-sm text-sm text-ink-muted dark:text-ink-inverse/70">{description}</p>
+        <div
+            className={cn(
+                'flex flex-col items-center justify-center rounded-xl border border-dashed bg-card/40 px-4 py-16 text-center',
+                className,
             )}
+        >
+            {icon && <div className="mb-3 text-muted-foreground">{icon}</div>}
+            <h3 className="text-base font-semibold">{title}</h3>
+            {description && <p className="mt-1 max-w-sm text-sm text-muted-foreground">{description}</p>}
             {actionHref && actionLabel && (
-                <Link
-                    href={actionHref}
-                    className="mt-4 inline-flex min-h-touch items-center rounded-lg bg-primary px-4 text-sm font-medium text-white hover:bg-primary-dark"
-                >
+                <CreateButton href={actionHref} className="mt-4">
                     {actionLabel}
-                </Link>
+                </CreateButton>
             )}
         </div>
     );

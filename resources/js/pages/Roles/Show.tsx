@@ -1,8 +1,11 @@
-import { Link } from '@inertiajs/react';
 import AppLayout, { AppPage } from '@/layouts/AppLayout';
-import { LinkButton, SecondaryButton } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
+import { BackButton, EditButton, ViewButton } from '@/components/ui/Button';
+import { DetailActions, DetailField, DetailGrid, DetailSection } from '@/components/ui/Detail';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { PageCard } from '@/components/ui/PageCard';
 import { route } from '@/utils';
+import { Shield } from 'lucide-react';
 
 interface Permission {
     id: number;
@@ -43,97 +46,74 @@ function Show({ role, groupedPermissions }: ShowProps) {
 
     return (
         <AppPage>
-            <PageCard title="Papel">
+            <PageCard
+                title={role.display_name ?? role.name}
+                breadcrumbs={[{ label: 'Papéis', href: route('roles.index') }, { label: role.display_name ?? role.name }]}
+                action={<EditButton href={route('roles.edit', role.id)} size="md" />}
+            >
                 <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium text-neutral-dark dark:text-gray-300">Nome</label>
-                            <p className="mt-1 text-sm text-neutral-medium dark:text-gray-400 bg-neutral-light dark:bg-gray-700 px-3 py-2 rounded-md">
-                                {role.name}
-                            </p>
-                        </div>
-                        {role.display_name && (
-                            <div>
-                                <label className="block text-sm font-medium text-neutral-dark dark:text-gray-300">Nome de Exibição</label>
-                                <p className="mt-1 text-sm text-neutral-medium dark:text-gray-400 bg-neutral-light dark:bg-gray-700 px-3 py-2 rounded-md">
-                                    {role.display_name}
-                                </p>
-                            </div>
-                        )}
-                        <div>
-                            <label className="block text-sm font-medium text-neutral-dark dark:text-gray-300">Número de Usuários</label>
-                            <p className="mt-1 text-sm text-neutral-medium dark:text-gray-400 bg-neutral-light dark:bg-gray-700 px-3 py-2 rounded-md">
-                                {role.users.length}
-                            </p>
-                        </div>
-                    </div>
+                    <DetailSection title="Papel">
+                        <DetailGrid>
+                            <DetailField label="Nome" value={role.name} />
+                            <DetailField label="Nome de exibição" value={role.display_name} />
+                            <DetailField label="Usuários" value={String(role.users.length)} />
+                        </DetailGrid>
+                    </DetailSection>
 
-                    <div className="border-t border-neutral-medium pt-6">
-                        <h3 className="text-lg font-medium text-neutral-dark dark:text-gray-300 mb-6">Permissões Associadas</h3>
-
+                    <DetailSection title="Permissões">
                         {role.permissions.length === 0 ? (
-                            <p className="text-neutral-medium dark:text-gray-500">Nenhuma permissão associada a este role.</p>
+                            <EmptyState
+                                title="Nenhuma permissão associada"
+                                description="Edite o papel para atribuir permissões."
+                                icon={<Shield className="h-8 w-8" />}
+                            />
                         ) : groups.length > 0 ? (
-                            <div className="space-y-8">
+                            <div className="space-y-6">
                                 {groups.map(([groupName, group]) => (
-                                    <div key={groupName}>
-                                        <h4 className="mb-4 font-semibold text-gray-900 dark:text-white text-base">{groupName}</h4>
-                                        <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">{group.description}</p>
-                                        <div className="bg-white border border-gray-200 rounded-lg p-4 dark:bg-gray-700 dark:border-gray-600">
-                                            <div className="flex flex-wrap gap-2">
-                                                {group.permissions.map((permission) => (
-                                                    <span
-                                                        key={permission.id}
-                                                        className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary text-white"
-                                                    >
-                                                        {formatPermissionLabel(permission)}
-                                                    </span>
-                                                ))}
-                                            </div>
+                                    <div key={groupName} className="rounded-lg border p-4">
+                                        <h3 className="text-sm font-semibold">{groupName}</h3>
+                                        <p className="mb-3 text-sm text-muted-foreground">{group.description}</p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {group.permissions.map((permission) => (
+                                                <Badge key={permission.id}>{formatPermissionLabel(permission)}</Badge>
+                                            ))}
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div className="flex flex-wrap gap-2">
                                 {role.permissions.map((permission) => (
-                                    <div key={permission.id} className="bg-neutral-light dark:bg-gray-700 px-3 py-2 rounded-md">
-                                        <span className="text-sm text-neutral-dark dark:text-gray-300">{formatPermissionLabel(permission)}</span>
-                                    </div>
+                                    <Badge key={permission.id}>{formatPermissionLabel(permission)}</Badge>
                                 ))}
                             </div>
                         )}
-                    </div>
+                    </DetailSection>
 
-                    <div className="border-t border-neutral-medium pt-6">
-                        <h3 className="text-lg font-medium text-neutral-dark dark:text-gray-300 mb-4">Usuários com este Role</h3>
+                    <DetailSection title="Usuários com este papel">
                         {role.users.length === 0 ? (
-                            <p className="text-neutral-medium dark:text-gray-500">Nenhum usuário possui este role.</p>
+                            <p className="text-sm text-muted-foreground">Nenhum usuário possui este papel.</p>
                         ) : (
-                            <div className="space-y-2">
+                            <ul className="space-y-2">
                                 {role.users.map((user) => (
-                                    <div key={user.id} className="bg-neutral-light dark:bg-gray-700 px-3 py-2 rounded-md flex justify-between items-center">
-                                        <div>
-                                            <span className="text-sm font-medium text-neutral-dark dark:text-gray-300">{user.name}</span>
-                                            <span className="text-xs text-neutral-medium dark:text-gray-400 ml-2">{user.email}</span>
+                                    <li
+                                        key={user.id}
+                                        className="flex items-center justify-between gap-3 rounded-lg border bg-muted/40 px-3 py-2"
+                                    >
+                                        <div className="min-w-0">
+                                            <p className="truncate text-sm font-medium">{user.name}</p>
+                                            <p className="truncate text-xs text-muted-foreground">{user.email}</p>
                                         </div>
-                                        <Link href={route('users.show', user.id)} className="text-primary hover:underline text-sm">
-                                            Ver
-                                        </Link>
-                                    </div>
+                                        <ViewButton href={route('users.show', user.id)} />
+                                    </li>
                                 ))}
-                            </div>
+                            </ul>
                         )}
-                    </div>
+                    </DetailSection>
 
-                    <div className="border-t border-neutral-medium pt-6">
-                        <div className="flex gap-4">
-                            <Link href={route('roles.index')}>
-                                <SecondaryButton type="button">Voltar</SecondaryButton>
-                            </Link>
-                            <LinkButton href={route('roles.edit', role.id)}>Editar</LinkButton>
-                        </div>
-                    </div>
+                    <DetailActions>
+                        <BackButton href={route('roles.index')} />
+                    </DetailActions>
                 </div>
             </PageCard>
         </AppPage>

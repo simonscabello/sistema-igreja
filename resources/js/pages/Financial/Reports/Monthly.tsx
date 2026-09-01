@@ -1,12 +1,14 @@
 import { FormEvent, useState } from 'react';
 import { router } from '@inertiajs/react';
 import AppLayout, { AppPage } from '@/layouts/AppLayout';
-import { PrimaryButton } from '@/components/ui/Button';
+import { FilterButton } from '@/components/ui/Button';
 import { Select } from '@/components/ui/Input';
 import { PageCard } from '@/components/ui/PageCard';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { cn, formatCurrency, route } from '@/utils';
-import { ReportNav } from '../components/ReportNav';
+import { ReportNav, ReportTotals } from '../components/ReportNav';
 import { MonthlyReport } from '../types';
+import { FileBarChart } from 'lucide-react';
 
 const MONTH_OPTIONS = [
     { value: 1, label: 'Janeiro' },
@@ -28,60 +30,44 @@ interface MonthlyProps {
     availableYears: Record<number, number>;
 }
 
-function CategorySection({
-    title,
-    data,
-    tone,
-}: {
-    title: string;
-    data: MonthlyReport['entradas'];
-    tone: 'green' | 'red';
-}) {
+function CategorySection({ title, data, tone }: { title: string; data: MonthlyReport['entradas']; tone: 'entrada' | 'saida' }) {
     const entries = Object.entries(data);
 
     if (entries.length === 0) {
-        return (
-            <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                <p>Nenhuma {title.toLowerCase()} registrada neste período.</p>
-            </div>
-        );
+        return <p className="py-6 text-sm text-muted-foreground">Nenhuma {tone === 'entrada' ? 'entrada' : 'saída'} neste período.</p>;
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {entries.map(([categoryName, categoryData]) => (
-                <div key={categoryName} className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div key={categoryName} className="overflow-hidden rounded-xl border bg-card">
                     <div
                         className={cn(
-                            'px-4 py-3 border-b',
-                            tone === 'green'
-                                ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
-                                : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800',
+                            'border-b px-4 py-3',
+                            tone === 'entrada'
+                                ? 'border-entrada/20 bg-entrada/10 dark:bg-entrada/15'
+                                : 'border-saida/20 bg-saida/10 dark:bg-saida/15',
                         )}
                     >
-                        <h3
-                            className={cn(
-                                'font-semibold',
-                                tone === 'green' ? 'text-green-800 dark:text-green-300' : 'text-red-800 dark:text-red-300',
-                            )}
-                        >
-                            {categoryName}
-                        </h3>
+                        <h3 className={cn('font-semibold', tone === 'entrada' ? 'text-entrada' : 'text-saida')}>{categoryName}</h3>
                     </div>
                     <div className="p-4">
                         <div className="space-y-2">
                             {Object.entries(categoryData.subcategorias).map(([subcategoryName, value]) => (
-                                <div key={subcategoryName} className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-700 last:border-b-0">
-                                    <span className="text-gray-700 dark:text-gray-300">{subcategoryName}</span>
-                                    <span className={cn('font-medium', tone === 'green' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400')}>
+                                <div
+                                    key={subcategoryName}
+                                    className="flex items-center justify-between border-b py-2 last:border-b-0"
+                                >
+                                    <span className="text-sm text-foreground">{subcategoryName}</span>
+                                    <span className={cn('tabular font-medium', tone === 'entrada' ? 'text-entrada' : 'text-saida')}>
                                         {formatCurrency(value)}
                                     </span>
                                 </div>
                             ))}
                         </div>
-                        <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700 flex justify-between">
-                            <span className="font-semibold text-gray-900 dark:text-white">Total da Categoria:</span>
-                            <span className={cn('font-bold text-lg', tone === 'green' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400')}>
+                        <div className="mt-4 flex justify-between border-t pt-3">
+                            <span className="font-semibold text-foreground">Total da categoria</span>
+                            <span className={cn('tabular text-lg font-semibold', tone === 'entrada' ? 'text-entrada' : 'text-saida')}>
                                 {formatCurrency(categoryData.total_categoria)}
                             </span>
                         </div>
@@ -110,68 +96,56 @@ function Monthly({ report, availableYears }: MonthlyProps) {
 
     return (
         <AppPage>
-            <PageCard title="Balancete mensal">
+            <PageCard
+                title="Balancete mensal"
+                description={`${report.periodo.mes_nome.charAt(0).toUpperCase()}${report.periodo.mes_nome.slice(1)} de ${report.periodo.ano}`}
+            >
                 <ReportNav current="monthly" />
 
-                <form onSubmit={handleFilter} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end mb-6">
-                    <Select id="month" label="Mês" value={month} onChange={(event) => setMonth(event.target.value)} options={MONTH_OPTIONS} />
-                    <Select id="year" label="Ano" value={year} onChange={(event) => setYear(event.target.value)} options={yearOptions} placeholder="" />
-                    <div className="flex items-end">
-                        <PrimaryButton type="submit" className="px-6 py-3">
-                            Filtrar
-                        </PrimaryButton>
-                    </div>
+                <form onSubmit={handleFilter} className="mb-6 grid grid-cols-1 items-end gap-4 md:grid-cols-3">
+                    <Select
+                        id="month"
+                        label="Mês"
+                        value={month}
+                        onChange={(event) => setMonth(event.target.value)}
+                        options={MONTH_OPTIONS}
+                    />
+                    <Select
+                        id="year"
+                        label="Ano"
+                        value={year}
+                        onChange={(event) => setYear(event.target.value)}
+                        options={yearOptions}
+                        placeholder=""
+                    />
+                    <FilterButton />
                 </form>
 
                 {hasData ? (
                     <>
-                        <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                            <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-300">
-                                Relatório de {report.periodo.mes_nome} de {report.periodo.ano}
-                            </h3>
-                        </div>
+                        <ReportTotals
+                            entradas={report.total_entradas}
+                            saidas={report.total_saidas}
+                            saldo={report.saldo_mensal}
+                            saldoLabel="Saldo do mês"
+                        />
 
-                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-800 p-6 mb-8">
-                            <h2 className="text-2xl font-bold text-blue-800 dark:text-blue-300 mb-6">Balancete</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div className="text-center p-4 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                                    <div className="text-sm text-green-700 dark:text-green-300 mb-1">Total de Entradas</div>
-                                    <div className="text-2xl font-bold text-green-800 dark:text-green-200">{formatCurrency(report.total_entradas)}</div>
-                                </div>
-                                <div className="text-center p-4 bg-red-100 dark:bg-red-900/30 rounded-lg">
-                                    <div className="text-sm text-red-700 dark:text-red-300 mb-1">Total de Saídas</div>
-                                    <div className="text-2xl font-bold text-red-800 dark:text-red-200">{formatCurrency(report.total_saidas)}</div>
-                                </div>
-                                <div
-                                    className={cn(
-                                        'text-center p-4 rounded-lg',
-                                        report.saldo_mensal >= 0 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30',
-                                    )}
-                                >
-                                    <div className={cn('text-sm mb-1', report.saldo_mensal >= 0 ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300')}>
-                                        Saldo Mensal
-                                    </div>
-                                    <div className={cn('text-2xl font-bold', report.saldo_mensal >= 0 ? 'text-green-800 dark:text-green-200' : 'text-red-800 dark:text-red-200')}>
-                                        {formatCurrency(report.saldo_mensal)}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <section className="mb-8">
+                            <h2 className="mb-4 text-base font-semibold text-entrada">Entradas</h2>
+                            <CategorySection title="Entradas" data={report.entradas} tone="entrada" />
+                        </section>
 
-                        <div className="mb-8">
-                            <h2 className="text-2xl font-bold text-green-600 dark:text-green-400 mb-4">Entradas</h2>
-                            <CategorySection title="Entradas" data={report.entradas} tone="green" />
-                        </div>
-
-                        <div>
-                            <h2 className="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Saídas</h2>
-                            <CategorySection title="Saídas" data={report.saidas} tone="red" />
-                        </div>
+                        <section>
+                            <h2 className="mb-4 text-base font-semibold text-saida">Saídas</h2>
+                            <CategorySection title="Saídas" data={report.saidas} tone="saida" />
+                        </section>
                     </>
                 ) : (
-                    <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-                        <p>Nenhuma transação encontrada para {report.periodo.mes_nome} de {report.periodo.ano}.</p>
-                    </div>
+                    <EmptyState
+                        title="Nenhuma transação neste período"
+                        description={`Não há lançamentos em ${report.periodo.mes_nome} de ${report.periodo.ano}.`}
+                        icon={<FileBarChart className="h-8 w-8" />}
+                    />
                 )}
             </PageCard>
         </AppPage>

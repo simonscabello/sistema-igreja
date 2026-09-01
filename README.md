@@ -6,7 +6,7 @@ A linha de desenvolvimento ativa é a branch **`develop`**. Contexto para agente
 
 ## Requisitos
 
-- PHP 8.2+ (recomendado **8.4**; o projeto usa Laravel 12.19)
+- PHP 8.5 (`composer.json`: `^8.5`; o projeto usa Laravel 13)
 - Extensões PHP: `pdo_mysql`, `mbstring`, `openssl`, `gd`, `xml`, `curl`, `zip`, `bcmath`, `intl`
 - Composer 2
 - Node.js 18+ e npm
@@ -49,13 +49,6 @@ npm install
 npm run build
 ```
 
-Se o PHP padrão da máquina for 8.5, use 8.4 no Composer e no Artisan:
-
-```bash
-php8.4 /usr/local/bin/composer install
-php8.4 artisan key:generate
-```
-
 ### 4. Banco, storage e permissões
 
 ```bash
@@ -74,7 +67,7 @@ Opção simples (servidor + assets já compilados):
 php artisan serve
 ```
 
-Ou o script do projeto (servidor, fila, logs e Vite):
+Ou o script do projeto (`php artisan dev`: servidor, fila, logs e Vite):
 
 ```bash
 composer dev

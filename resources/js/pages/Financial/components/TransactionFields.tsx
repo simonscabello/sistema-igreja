@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
 import { Link } from '@inertiajs/react';
-import { Select } from '@/components/ui/Input';
+import { InputError, InputLabel, Select } from '@/components/ui/Input';
 import { AdvancedSelect } from '@/components/ui/AdvancedSelect';
+import { FilterButton } from '@/components/ui/Button';
+import { Paperclip } from 'lucide-react';
 import { route } from '@/utils';
 import { CategoryWithSubcategories } from '../types';
 
@@ -13,34 +15,40 @@ interface TransactionTypeRadioProps {
 
 export function TransactionTypeRadio({ value, onChange, error }: TransactionTypeRadioProps) {
     return (
-        <div className="space-y-2">
-            <label className="block text-md font-bold text-gray-700 dark:text-gray-300">
-                Tipo <span className="text-red-500 ml-1">*</span>
-            </label>
-            <div className="flex gap-4">
-                {(['entrada', 'saida'] as const).map((type) => (
-                    <label key={type} className="relative cursor-pointer">
-                        <input
-                            type="radio"
-                            name="type"
-                            value={type}
-                            className="sr-only peer"
-                            checked={value === type}
-                            onChange={() => onChange(type)}
-                        />
-                        <div
-                            className={`px-6 py-2 rounded-lg border transition-all duration-200 text-md font-medium flex flex-row items-center justify-center gap-2 min-w-[120px] ${
-                                type === 'entrada'
-                                    ? 'peer-checked:bg-green-500 peer-checked:text-white peer-checked:border-green-500 text-green-600 border-green-400 hover:bg-green-50'
-                                    : 'peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 text-red-600 border-red-400 hover:bg-red-50'
-                            }`}
-                        >
-                            <span>{type === 'entrada' ? 'Entrada' : 'Saída'}</span>
-                        </div>
-                    </label>
-                ))}
+        <div>
+            <InputLabel required>Tipo</InputLabel>
+            <div className="mt-2 flex flex-wrap gap-2">
+                {(['entrada', 'saida'] as const).map((type) => {
+                    const selected = value === type;
+
+                    return (
+                        <label key={type} className="relative cursor-pointer">
+                            <input
+                                type="radio"
+                                name="type"
+                                value={type}
+                                className="sr-only"
+                                checked={selected}
+                                onChange={() => onChange(type)}
+                            />
+                            <span
+                                className={`inline-flex min-h-touch min-w-[7.5rem] items-center justify-center rounded-lg border px-4 text-sm font-medium transition-colors ${
+                                    type === 'entrada'
+                                        ? selected
+                                            ? 'border-entrada bg-entrada text-white'
+                                            : 'border-entrada/40 text-entrada hover:bg-entrada/10'
+                                        : selected
+                                          ? 'border-saida bg-saida text-white'
+                                          : 'border-saida/40 text-saida hover:bg-saida/10'
+                                }`}
+                            >
+                                {type === 'entrada' ? 'Entrada' : 'Saída'}
+                            </span>
+                        </label>
+                    );
+                })}
             </div>
-            {error && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>}
+            <InputError message={error} />
         </div>
     );
 }
@@ -166,7 +174,7 @@ export function TransactionFilters({
                 value={search}
                 onChange={(event) => onSearchChange(event.target.value)}
                 placeholder="Descrição ou valor"
-                className="min-h-touch rounded-lg border-line bg-surface text-ink placeholder:text-ink-muted/70 focus:border-primary focus:ring-primary dark:border-line-dark dark:bg-surface-dark dark:text-ink-inverse sm:col-span-2"
+                className="min-h-touch rounded-lg border-input bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring sm:col-span-2"
             />
             <Select
                 id="type"
@@ -196,12 +204,7 @@ export function TransactionFilters({
                 options={campaignOptions}
                 placeholder="Todas as campanhas"
             />
-            <button
-                type="submit"
-                className="inline-flex min-h-touch items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-white hover:bg-primary-dark"
-            >
-                Filtrar
-            </button>
+            <FilterButton />
         </form>
     );
 }
@@ -211,21 +214,12 @@ export function AttachmentIcon({ hasAttachment }: { hasAttachment: boolean }) {
         return null;
     }
 
-    return (
-        <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" title="Possui anexo">
-            <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-        </svg>
-    );
+    return <Paperclip className="h-4 w-4 text-primary" aria-label="Possui anexo" />;
 }
 
 export function CampaignLink({ id, name }: { id: number; name: string }) {
     return (
-        <Link href={route('financial.campaigns.show', id)} className="text-primary hover:text-primary-dark">
+        <Link href={route('financial.campaigns.show', id)} className="font-medium hover:underline">
             {name}
         </Link>
     );

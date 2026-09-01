@@ -1,5 +1,6 @@
 import { NumericFormat } from 'react-number-format';
-import { InputError, InputLabel } from './Input';
+import { InputError, InputLabel, controlClass } from './Input';
+import { cn } from '@/lib/utils';
 
 interface CurrencyInputProps {
     id?: string;
@@ -14,16 +15,14 @@ interface CurrencyInputProps {
 
 export function CurrencyInput({ id, name, label, value, onChange, error, required, disabled }: CurrencyInputProps) {
     return (
-        <div>
+        <div className="space-y-1.5">
             {label && (
                 <InputLabel htmlFor={id} required={required}>
                     {label}
                 </InputLabel>
             )}
-            <div className="relative mt-1.5">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-ink-muted dark:text-ink-inverse/70">
-                    R$
-                </span>
+            <div className="relative">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">R$</span>
                 <NumericFormat
                     id={id}
                     name={name}
@@ -35,7 +34,7 @@ export function CurrencyInput({ id, name, label, value, onChange, error, require
                     allowNegative={false}
                     disabled={disabled}
                     onValueChange={(values) => onChange?.(values.value)}
-                    className="block w-full min-h-touch rounded-lg border-line bg-surface pl-10 text-ink tabular-nums shadow-none focus:border-primary focus:ring-primary dark:border-line-dark dark:bg-white/5 dark:text-ink-inverse"
+                    className={cn(controlClass, 'pl-10 tabular-nums')}
                 />
             </div>
             <InputError message={error} />

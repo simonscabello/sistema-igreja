@@ -1,9 +1,11 @@
-import { Link } from '@inertiajs/react';
 import AppLayout, { AppPage } from '@/layouts/AppLayout';
-import { LinkButton, SecondaryButton } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
+import { BackButton, EditButton, LinkButton } from '@/components/ui/Button';
 import { DeleteButton } from '@/components/ui/DeleteButton';
+import { DetailActions, DetailField, DetailGrid, DetailSection } from '@/components/ui/Detail';
 import { PageCard } from '@/components/ui/PageCard';
 import { formatDateBr, route } from '@/utils';
+import { WorshipFunctionIcon } from '@/utils/worshipFunctionIcon';
 
 interface Song {
     id: number;
@@ -19,10 +21,25 @@ interface Song {
     };
 }
 
+interface Assignment {
+    id: number;
+    worship_function_id: number;
+    member_id: number;
+    order: number;
+    worship_function?: {
+        id: number;
+        name: string;
+        slug?: string;
+        sort_order?: number;
+    };
+    member?: {
+        id: number;
+        full_name: string;
+    };
+}
+
 interface WorshipSet {
     id: number;
-    singer: string;
-    preacher: string;
     date: string;
     formatted_date: string;
     period: 'manha' | 'noite';
@@ -30,6 +47,7 @@ interface WorshipSet {
     order_notes: string | null;
     observations: string | null;
     songs: Song[];
+    assignments: Assignment[];
     created_at: string;
     updated_at: string;
 }
@@ -38,128 +56,131 @@ interface ShowProps {
     worshipSet: WorshipSet;
 }
 
+function groupAssignments(assignments: Assignment[]): Array<{ functionName: string; slug: string; members: string[] }> {
+    const grouped = new Map<string, { slug: string; members: Array<{ order: number; name: string }> }>();
+
+    assignments.forEach((assignment) => {
+        const functionName = assignment.worship_function?.name ?? 'Função';
+        const functionSlug = assignment.worship_function?.slug ?? 'vocal';
+        const memberName = assignment.member?.full_name;
+
+        if (!memberName) {
+            return;
+        }
+
+        const current = grouped.get(functionName) ?? { slug: functionSlug, members: [] };
+        current.members.push({ order: assignment.order, name: memberName });
+        grouped.set(functionName, current);
+    });
+
+    return Array.from(grouped.entries()).map(([functionName, data]) => ({
+        functionName,
+        slug: data.slug,
+        members: data.members.sort((left, right) => left.order - right.order).map((member) => member.name),
+    }));
+}
+
 function Show({ worshipSet }: ShowProps) {
+    const scheduleGroups = groupAssignments(worshipSet.assignments);
+    const title = `Culto — ${worshipSet.formatted_date ?? formatDateBr(worshipSet.date)}`;
+
     return (
         <AppPage>
-            <PageCard title={`Repertório - ${worshipSet.formatted_date ?? formatDateBr(worshipSet.date)}`} actions={route('worship-sets.edit', worshipSet.id)}>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="lg:col-span-2 space-y-6">
-                        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-                            <h3 className="text-lg font-medium text-neutral-dark dark:text-white mb-4">Informações do Culto</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <dt className="text-sm font-medium text-neutral-medium dark:text-gray-400">Data</dt>
-                                    <dd className="mt-1 text-sm text-neutral-dark dark:text-white font-medium">
-                                        {worshipSet.formatted_date ?? formatDateBr(worshipSet.date)}
-                                    </dd>
-                                </div>
-                                <div>
-                                    <dt className="text-sm font-medium text-neutral-medium dark:text-gray-400">Período</dt>
-                                    <dd className="mt-1">
-                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${worshipSet.period === 'manha' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'}`}>
-                                            {worshipSet.period_label ?? (worshipSet.period === 'manha' ? 'Manhã' : 'Noite')}
-                                        </span>
-                                    </dd>
-                                </div>
-                                <div>
-                                    <dt className="text-sm font-medium text-neutral-medium dark:text-gray-400">Cantor</dt>
-                                    <dd className="mt-1 text-sm text-neutral-dark dark:text-white">{worshipSet.singer}</dd>
-                                </div>
-                                <div>
-                                    <dt className="text-sm font-medium text-neutral-medium dark:text-gray-400">Ministro</dt>
-                                    <dd className="mt-1 text-sm text-neutral-dark dark:text-white">{worshipSet.preacher}</dd>
-                                </div>
-                            </div>
-                        </div>
+            <PageCard
+                title={title}
+                breadcrumbs={[
+                    { label: 'Cultos', href: route('worship-sets.index') },
+                    { label: worshipSet.formatted_date ?? formatDateBr(worshipSet.date) },
+                ]}
+                action={<EditButton href={route('worship-sets.edit', worshipSet.id)} size="md" />}
+            >
+                <div className="space-y-6">
+                    <DetailSection title="Culto">
+                        <DetailGrid>
+                            <DetailField label="Data" value={worshipSet.formatted_date ?? formatDateBr(worshipSet.date)} />
+                            <DetailField label="Período">
+                                <Badge tone={worshipSet.period === 'manha' ? 'warning' : 'info'}>
+                                    {worshipSet.period_label ?? (worshipSet.period === 'manha' ? 'Manhã' : 'Noite')}
+                                </Badge>
+                            </DetailField>
+                        </DetailGrid>
+                    </DetailSection>
 
-                        {worshipSet.songs.length > 0 && (
-                            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-                                <h3 className="text-lg font-medium text-neutral-dark dark:text-white mb-4">Repertório</h3>
-                                <div className="space-y-3">
-                                    {worshipSet.songs.map((song, index) => (
-                                        <div key={song.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                            <div className="flex items-center gap-3">
-                                                <span className="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-medium rounded-full">
-                                                    {index + 1}
-                                                </span>
-                                                <div>
-                                                    <h4 className="font-medium text-neutral-dark dark:text-white">{song.name}</h4>
-                                                    {song.key && (
-                                                        <p className="text-sm text-neutral-medium dark:text-gray-400">Tonalidade original: {song.key}</p>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                {song.pivot?.key_used && (
-                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                                                        Tom usado: {song.pivot.key_used}
-                                                    </span>
+                    <DetailSection title="Escala">
+                        {scheduleGroups.length > 0 ? (
+                            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                                {scheduleGroups.map((group) => (
+                                    <li
+                                        key={group.functionName}
+                                        className="rounded-lg border border-border bg-muted/40 p-3"
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground">
+                                                <WorshipFunctionIcon slug={group.slug} />
+                                            </span>
+                                            <p className="text-sm text-muted-foreground">{group.functionName}</p>
+                                        </div>
+                                        <ul className="mt-2 flex flex-wrap gap-1.5">
+                                            {group.members.map((name) => (
+                                                <li key={name}>
+                                                    <Badge>{name}</Badge>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-sm text-muted-foreground">Nenhuma pessoa escalada para este culto.</p>
+                        )}
+                    </DetailSection>
+
+                    {worshipSet.songs.length > 0 && (
+                        <DetailSection title="Repertório">
+                            <ol className="space-y-3">
+                                {worshipSet.songs.map((song, index) => (
+                                    <li key={song.id} className="flex items-center justify-between gap-3 rounded-lg bg-muted/40 p-3">
+                                        <div className="flex items-center gap-3">
+                                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-medium text-primary-foreground">
+                                                {index + 1}
+                                            </span>
+                                            <div>
+                                                <h4 className="font-medium">{song.name}</h4>
+                                                {song.key && (
+                                                    <p className="text-sm text-muted-foreground">Tonalidade original: {song.key}</p>
                                                 )}
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+                                        {song.pivot?.key_used && <Badge tone="success">Tom usado: {song.pivot.key_used}</Badge>}
+                                    </li>
+                                ))}
+                            </ol>
+                        </DetailSection>
+                    )}
 
-                        {(worshipSet.order_notes || worshipSet.observations) && (
-                            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-                                <h3 className="text-lg font-medium text-neutral-dark dark:text-white mb-4">Observações</h3>
-                                {worshipSet.order_notes && (
-                                    <div className="mb-4">
-                                        <dt className="text-sm font-medium text-neutral-medium dark:text-gray-400 mb-2">Ordem das Músicas</dt>
-                                        <dd className="text-sm text-neutral-dark dark:text-white whitespace-pre-wrap">{worshipSet.order_notes}</dd>
-                                    </div>
-                                )}
-                                {worshipSet.observations && (
-                                    <div>
-                                        <dt className="text-sm font-medium text-neutral-medium dark:text-gray-400 mb-2">Observações Gerais</dt>
-                                        <dd className="text-sm text-neutral-dark dark:text-white whitespace-pre-wrap">{worshipSet.observations}</dd>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </div>
+                    {(worshipSet.order_notes || worshipSet.observations) && (
+                        <DetailSection title="Observações">
+                            <DetailGrid columns={1}>
+                                <DetailField label="Ordem das músicas" value={worshipSet.order_notes} />
+                                <DetailField label="Observações gerais" value={worshipSet.observations} />
+                            </DetailGrid>
+                        </DetailSection>
+                    )}
 
-                    <div className="space-y-6">
-                        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-                            <h3 className="text-lg font-medium text-neutral-dark dark:text-white mb-4">Ações</h3>
-                            <div className="space-y-3">
-                                <LinkButton href={route('worship-sets.edit', worshipSet.id)} className="w-full justify-center">
-                                    Editar Repertório
-                                </LinkButton>
-                                <LinkButton href={route('worship-sets.clone', worshipSet.id)} className="w-full justify-center">
-                                    Clonar Repertório
-                                </LinkButton>
-                                <DeleteButton href={route('worship-sets.destroy', worshipSet.id)}>
-                                    Excluir Repertório
-                                </DeleteButton>
-                                <Link href={route('worship-sets.index')}>
-                                    <SecondaryButton type="button" className="w-full justify-center">
-                                        Voltar à Lista
-                                    </SecondaryButton>
-                                </Link>
-                            </div>
-                        </div>
+                    <DetailSection title="Registro">
+                        <DetailGrid>
+                            <DetailField label="Criado em" value={formatDateBr(worshipSet.created_at)} />
+                            <DetailField label="Última atualização" value={formatDateBr(worshipSet.updated_at)} />
+                        </DetailGrid>
+                    </DetailSection>
 
-                        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-                            <h3 className="text-lg font-medium text-neutral-dark dark:text-white mb-4">Informações do Sistema</h3>
-                            <dl className="space-y-3 text-sm">
-                                <div>
-                                    <dt className="font-medium text-neutral-medium dark:text-gray-400">ID</dt>
-                                    <dd className="text-neutral-dark dark:text-white">{worshipSet.id}</dd>
-                                </div>
-                                <div>
-                                    <dt className="font-medium text-neutral-medium dark:text-gray-400">Criado em</dt>
-                                    <dd className="text-neutral-dark dark:text-white">{formatDateBr(worshipSet.created_at)}</dd>
-                                </div>
-                                <div>
-                                    <dt className="font-medium text-neutral-medium dark:text-gray-400">Última atualização</dt>
-                                    <dd className="text-neutral-dark dark:text-white">{formatDateBr(worshipSet.updated_at)}</dd>
-                                </div>
-                            </dl>
-                        </div>
-                    </div>
+                    <DetailActions>
+                        <BackButton href={route('worship-sets.index')}>Voltar à lista</BackButton>
+                        <LinkButton href={route('worship-sets.clone', worshipSet.id)} size="md">
+                            Clonar culto
+                        </LinkButton>
+                        <DeleteButton href={route('worship-sets.destroy', worshipSet.id)} />
+                    </DetailActions>
                 </div>
             </PageCard>
         </AppPage>

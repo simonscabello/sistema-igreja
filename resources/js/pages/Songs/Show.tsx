@@ -1,7 +1,8 @@
-import { Link } from '@inertiajs/react';
 import AppLayout, { AppPage } from '@/layouts/AppLayout';
-import { LinkButton, SecondaryButton } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
+import { BackButton, EditButton } from '@/components/ui/Button';
 import { DeleteButton } from '@/components/ui/DeleteButton';
+import { DetailActions, DetailField, DetailGrid, DetailSection, ExternalLink } from '@/components/ui/Detail';
 import { PageCard } from '@/components/ui/PageCard';
 import { formatDateBr, route } from '@/utils';
 
@@ -32,109 +33,57 @@ function Show({ song }: ShowProps) {
 
     return (
         <AppPage>
-            <PageCard title={song.name} actions={route('songs.edit', song.id)}>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="lg:col-span-2 space-y-6">
-                        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-                            <h3 className="text-lg font-medium text-neutral-dark dark:text-white mb-4">Informações da Música</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <dt className="text-sm font-medium text-neutral-medium dark:text-gray-400">Nome</dt>
-                                    <dd className="mt-1 text-sm text-neutral-dark dark:text-white">{song.name}</dd>
-                                </div>
-                                {song.key && (
-                                    <div>
-                                        <dt className="text-sm font-medium text-neutral-medium dark:text-gray-400">Tonalidade</dt>
-                                        <dd className="mt-1">
-                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                                                {song.key}
-                                            </span>
-                                        </dd>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        {song.tags.length > 0 && (
-                            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-                                <h3 className="text-lg font-medium text-neutral-dark dark:text-white mb-4">Tags</h3>
-                                <div className="flex flex-wrap gap-2">
-                                    {song.tags.map((tag) => (
-                                        <span key={tag.id} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-200">
-                                            {tag.name}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-                            <h3 className="text-lg font-medium text-neutral-dark dark:text-white mb-4">Links</h3>
-                            {hasLinks ? (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {song.youtube_link && (
-                                        <a href={song.youtube_link} target="_blank" rel="noreferrer" className="text-sm font-medium text-red-600 dark:text-red-400 hover:underline">
-                                            Assistir no YouTube
-                                        </a>
-                                    )}
-                                    {song.spotify_link && (
-                                        <a href={song.spotify_link} target="_blank" rel="noreferrer" className="text-sm font-medium text-green-600 dark:text-green-400 hover:underline">
-                                            Ouvir no Spotify
-                                        </a>
-                                    )}
-                                    {song.lyrics_link && (
-                                        <a href={song.lyrics_link} target="_blank" rel="noreferrer" className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">
-                                            Ver Letra
-                                        </a>
-                                    )}
-                                    {song.chords_link && (
-                                        <a href={song.chords_link} target="_blank" rel="noreferrer" className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline">
-                                            Ver Cifra
-                                        </a>
-                                    )}
-                                </div>
-                            ) : (
-                                <p className="text-neutral-medium dark:text-gray-400 text-sm">Nenhum link cadastrado para esta música.</p>
+            <PageCard
+                title={song.name}
+                breadcrumbs={[{ label: 'Músicas', href: route('songs.index') }, { label: song.name }]}
+                action={<EditButton href={route('songs.edit', song.id)} size="md" />}
+            >
+                <div className="space-y-6">
+                    <DetailSection title="Música">
+                        <DetailGrid>
+                            <DetailField label="Nome" value={song.name} />
+                            {song.key && (
+                                <DetailField label="Tonalidade">
+                                    <Badge>{song.key}</Badge>
+                                </DetailField>
                             )}
-                        </div>
-                    </div>
+                        </DetailGrid>
+                    </DetailSection>
 
-                    <div className="space-y-6">
-                        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-                            <h3 className="text-lg font-medium text-neutral-dark dark:text-white mb-4">Ações</h3>
-                            <div className="space-y-3">
-                                <LinkButton href={route('songs.edit', song.id)} className="w-full justify-center">
-                                    Editar Música
-                                </LinkButton>
-                                <DeleteButton href={route('songs.destroy', song.id)}>
-                                    Excluir Música
-                                </DeleteButton>
-                                <Link href={route('songs.index')}>
-                                    <SecondaryButton type="button" className="w-full justify-center">
-                                        Voltar à Lista
-                                    </SecondaryButton>
-                                </Link>
+                    {song.tags.length > 0 && (
+                        <DetailSection title="Tags">
+                            <div className="flex flex-wrap gap-2">
+                                {song.tags.map((tag) => (
+                                    <Badge key={tag.id}>{tag.name}</Badge>
+                                ))}
                             </div>
-                        </div>
+                        </DetailSection>
+                    )}
 
-                        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-                            <h3 className="text-lg font-medium text-neutral-dark dark:text-white mb-4">Informações do Sistema</h3>
-                            <dl className="space-y-3 text-sm">
-                                <div>
-                                    <dt className="font-medium text-neutral-medium dark:text-gray-400">ID</dt>
-                                    <dd className="text-neutral-dark dark:text-white">{song.id}</dd>
-                                </div>
-                                <div>
-                                    <dt className="font-medium text-neutral-medium dark:text-gray-400">Criado em</dt>
-                                    <dd className="text-neutral-dark dark:text-white">{formatDateBr(song.created_at)}</dd>
-                                </div>
-                                <div>
-                                    <dt className="font-medium text-neutral-medium dark:text-gray-400">Última atualização</dt>
-                                    <dd className="text-neutral-dark dark:text-white">{formatDateBr(song.updated_at)}</dd>
-                                </div>
-                            </dl>
-                        </div>
-                    </div>
+                    <DetailSection title="Links">
+                        {hasLinks ? (
+                            <div className="flex flex-col gap-2">
+                                {song.youtube_link && <ExternalLink href={song.youtube_link}>Assistir no YouTube</ExternalLink>}
+                                {song.spotify_link && <ExternalLink href={song.spotify_link}>Ouvir no Spotify</ExternalLink>}
+                                {song.lyrics_link && <ExternalLink href={song.lyrics_link}>Ver letra</ExternalLink>}
+                                {song.chords_link && <ExternalLink href={song.chords_link}>Ver cifra</ExternalLink>}
+                            </div>
+                        ) : (
+                            <p className="text-sm text-muted-foreground">Nenhum link cadastrado para esta música.</p>
+                        )}
+                    </DetailSection>
+
+                    <DetailSection title="Registro">
+                        <DetailGrid>
+                            <DetailField label="Criado em" value={formatDateBr(song.created_at)} />
+                            <DetailField label="Última atualização" value={formatDateBr(song.updated_at)} />
+                        </DetailGrid>
+                    </DetailSection>
+
+                    <DetailActions>
+                        <BackButton href={route('songs.index')}>Voltar à lista</BackButton>
+                        <DeleteButton href={route('songs.destroy', song.id)}>Excluir</DeleteButton>
+                    </DetailActions>
                 </div>
             </PageCard>
         </AppPage>

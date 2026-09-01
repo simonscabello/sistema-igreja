@@ -1,9 +1,9 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { Link, useForm } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import AppLayout, { AppPage } from '@/layouts/AppLayout';
 import { Alert } from '@/components/ui/Alert';
 import { Avatar } from '@/components/ui/Avatar';
-import { PrimaryButton, SecondaryButton } from '@/components/ui/Button';
+import { CancelButton, SaveButton } from '@/components/ui/Button';
 import { AddressFields } from '@/components/ui/AddressFields';
 import { DateInput, FileInput, Select, TextInput } from '@/components/ui/Input';
 import { FormActions, FormPanel, FormSection } from '@/components/ui/FormSection';
@@ -58,7 +58,10 @@ function Create() {
         setPhotoPreview(file ? URL.createObjectURL(file) : null);
     };
 
-    const handleAddressChange = (field: 'zip_code' | 'street' | 'neighborhood' | 'city' | 'state' | 'number' | 'complement', value: string) => {
+    const handleAddressChange = (
+        field: 'zip_code' | 'street' | 'neighborhood' | 'city' | 'state' | 'number' | 'complement',
+        value: string,
+    ) => {
         setData(field, value);
     };
 
@@ -209,12 +212,8 @@ function Create() {
                     </FormPanel>
 
                     <FormActions>
-                        <Link href={route('members.index')}>
-                            <SecondaryButton type="button">Cancelar</SecondaryButton>
-                        </Link>
-                        <PrimaryButton type="submit" processing={processing}>
-                            Salvar membro
-                        </PrimaryButton>
+                        <CancelButton href={route('members.index')} />
+                        <SaveButton processing={processing}>Salvar membro</SaveButton>
                     </FormActions>
                 </form>
             </PageCard>

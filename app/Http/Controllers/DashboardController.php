@@ -92,6 +92,7 @@ class DashboardController extends Controller
     private function getProximoCulto(): ?array
     {
         $set = WorshipSet::withCount('songs')
+            ->with(['assignments.worshipFunction', 'assignments.member'])
             ->whereDate('date', '>=', Carbon::today())
             ->orderBy('date')
             ->orderBy('period')
@@ -101,13 +102,30 @@ class DashboardController extends Controller
             return null;
         }
 
+        $vocalNames = $set->assignments
+            ->filter(fn ($assignment) => $assignment->worshipFunction?->slug === 'vocal')
+            ->sortBy('order')
+            ->map(fn ($assignment) => $assignment->member?->full_name)
+            ->filter()
+            ->values()
+            ->all();
+
+        $direcaoNames = $set->assignments
+            ->filter(fn ($assignment) => $assignment->worshipFunction?->slug === 'direcao-do-culto')
+            ->sortBy('order')
+            ->map(fn ($assignment) => $assignment->member?->full_name)
+            ->filter()
+            ->values()
+            ->all();
+
         return [
             'id' => $set->id,
             'date' => $set->formatted_date,
             'period_label' => $set->period_label,
-            'singer' => $set->singer,
-            'preacher' => $set->preacher,
             'songs_count' => $set->songs_count,
+            'escala_definida' => $set->assignments->isNotEmpty(),
+            'vocal' => $vocalNames !== [] ? implode(', ', $vocalNames) : null,
+            'direcao' => $direcaoNames !== [] ? implode(', ', $direcaoNames) : null,
         ];
     }
 

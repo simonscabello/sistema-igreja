@@ -1,12 +1,14 @@
 import { ChangeEvent, FormEvent } from 'react';
-import Swal from 'sweetalert2';
-import { Link, router, useForm, usePage } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
+import { Eye, FileUp } from 'lucide-react';
 import AppLayout, { AppPage } from '@/layouts/AppLayout';
-import { Alert } from '@/components/ui/Alert';
-import { PrimaryButton, SecondaryButton } from '@/components/ui/Button';
+import { Button, PrimaryButton, SecondaryButton } from '@/components/ui/Button';
+import { DeleteButton } from '@/components/ui/DeleteButton';
 import { FileInput } from '@/components/ui/Input';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { PageCard } from '@/components/ui/PageCard';
-import { PageProps } from '@/types';
+import { DesktopOnly, MobileCard, MobileCardHeader, MobileList, Table, TableShell, TBody, Td, Th, THead, Tr } from '@/components/ui/DataTable';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { route } from '@/utils';
 
 interface Member {
@@ -34,8 +36,6 @@ function formatFileSize(bytes: number): string {
 }
 
 function Index({ member, files }: IndexProps) {
-    const { flash } = usePage<PageProps>().props;
-
     const { data, setData, post, processing, errors, reset } = useForm<{ files: File[] }>({
         files: [],
     });
@@ -52,134 +52,106 @@ function Index({ member, files }: IndexProps) {
         });
     };
 
-    const handleDelete = async (file: MemberFile) => {
-        const isDark = document.documentElement.classList.contains('dark');
-
-        const result = await Swal.fire({
-            title: 'Remover este arquivo?',
-            text: 'Esta ação não poderá ser desfeita.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3BA99C',
-            cancelButtonColor: '#F44336',
-            confirmButtonText: 'Sim, excluir',
-            cancelButtonText: 'Cancelar',
-            background: isDark ? '#1f2937' : '#fff',
-            color: isDark ? '#f3f4f6' : '#111827',
-        });
-
-        if (result.isConfirmed) {
-            router.delete(route('members.files.destroy', [member.id, file.id]));
-        }
-    };
-
     return (
         <AppPage>
-            <PageCard title={`Arquivos de ${member.full_name}`}>
-                {flash.success && (
-                    <Alert type="success" dismissible>
-                        <span className="font-medium">Sucesso!</span> {flash.success}
-                    </Alert>
+            <PageCard
+                title={`Arquivos de ${member.full_name}`}
+                description="Documentos vinculados ao cadastro pastoral."
+                breadcrumbs={[
+                    { label: 'Membros', href: route('members.index') },
+                    { label: member.full_name, href: route('members.show', member.id) },
+                    { label: 'Arquivos' },
+                ]}
+            >
+                <Card className="mb-6 shadow-none">
+                    <CardHeader>
+                        <CardTitle className="text-base">Enviar arquivos</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <form onSubmit={handleUpload} className="flex flex-col items-start gap-4 sm:flex-row sm:items-end">
+                            <div className="w-full flex-1">
+                                <FileInput id="files" label="Arquivos" multiple required onChange={handleFileChange} error={errors.files} />
+                            </div>
+                            <PrimaryButton type="submit" disabled={processing || data.files.length === 0} icon={FileUp}>
+                                Enviar
+                            </PrimaryButton>
+                        </form>
+                    </CardContent>
+                </Card>
+
+                {files.length === 0 ? (
+                    <EmptyState title="Nenhum arquivo enviado" description="Envie comprovantes ou documentos deste membro." />
+                ) : (
+                    <>
+                        <DesktopOnly>
+                            <TableShell>
+                                <Table>
+                                    <THead>
+                                        <Th>Nome</Th>
+                                        <Th>Tamanho</Th>
+                                        <Th align="right">
+                                            <span className="sr-only">Ações</span>
+                                        </Th>
+                                    </THead>
+                                    <TBody>
+                                        {files.map((file) => (
+                                            <Tr key={file.id}>
+                                                <Td className="font-medium">{file.original_name}</Td>
+                                                <Td className="tabular">{formatFileSize(file.size)} KB</Td>
+                                                <Td align="right">
+                                                    <div className="inline-flex items-center gap-1">
+                                                        <Button variant="ghost" size="sm" asChild icon={false}>
+                                                            <a href={file.url} target="_blank" rel="noopener noreferrer">
+                                                                <Eye className="h-4 w-4" />
+                                                                Abrir
+                                                            </a>
+                                                        </Button>
+                                                        <DeleteButton
+                                                            href={route('members.files.destroy', { member: member.id, file: file.id })}
+                                                            compact
+                                                            title="Remover este arquivo?"
+                                                            text="Esta ação não poderá ser desfeita."
+                                                        />
+                                                    </div>
+                                                </Td>
+                                            </Tr>
+                                        ))}
+                                    </TBody>
+                                </Table>
+                            </TableShell>
+                        </DesktopOnly>
+
+                        <MobileList>
+                            {files.map((file) => (
+                                <MobileCard key={file.id}>
+                                    <MobileCardHeader
+                                        actions={
+                                            <div className="inline-flex items-center gap-1">
+                                                <Button variant="ghost" size="sm" asChild icon={false}>
+                                                    <a href={file.url} target="_blank" rel="noopener noreferrer">
+                                                        <Eye className="h-4 w-4" />
+                                                        Abrir
+                                                    </a>
+                                                </Button>
+                                                <DeleteButton
+                                                    href={route('members.files.destroy', { member: member.id, file: file.id })}
+                                                    compact
+                                                    title="Remover este arquivo?"
+                                                />
+                                            </div>
+                                        }
+                                    >
+                                        <p className="font-medium">{file.original_name}</p>
+                                        <p className="text-sm text-muted-foreground">{formatFileSize(file.size)} KB</p>
+                                    </MobileCardHeader>
+                                </MobileCard>
+                            ))}
+                        </MobileList>
+                    </>
                 )}
 
-                <form onSubmit={handleUpload} className="mb-8">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4">
-                        <div className="flex-1 w-full">
-                            <FileInput
-                                id="files"
-                                label="Enviar arquivos"
-                                multiple
-                                required
-                                onChange={handleFileChange}
-                                error={errors.files}
-                            />
-                        </div>
-                        <PrimaryButton type="submit" disabled={processing || data.files.length === 0}>
-                            Enviar
-                        </PrimaryButton>
-                    </div>
-                </form>
-
-                <div className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
-                    <h3 className="font-semibold p-4 border-b border-neutral-medium dark:border-gray-700 text-neutral-dark dark:text-gray-300">
-                        Arquivos vinculados
-                    </h3>
-
-                    <div className="hidden md:block overflow-x-auto">
-                        <table className="w-full text-left">
-                            <thead className="bg-neutral-light dark:bg-gray-700">
-                                <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Nome</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Tamanho</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Visualizar</th>
-                                    <th className="px-6 py-3 text-right text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-neutral-medium dark:divide-gray-700">
-                                {files.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={4} className="px-6 py-4 text-center text-neutral-medium dark:text-gray-500">
-                                            Nenhum arquivo enviado.
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    files.map((file) => (
-                                        <tr key={file.id}>
-                                            <td className="px-6 py-3 text-sm text-neutral-dark dark:text-gray-300">{file.original_name}</td>
-                                            <td className="px-6 py-3 text-sm text-neutral-dark dark:text-gray-300">{formatFileSize(file.size)} KB</td>
-                                            <td className="px-6 py-3 text-sm">
-                                                <a href={file.url} target="_blank" rel="noopener noreferrer" className="text-primary underline">
-                                                    Abrir
-                                                </a>
-                                            </td>
-                                            <td className="px-6 py-3 text-sm text-right">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleDelete(file)}
-                                                    className="text-red-600 hover:underline"
-                                                >
-                                                    Excluir
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div className="md:hidden divide-y divide-neutral-medium dark:divide-gray-700">
-                        {files.length === 0 ? (
-                            <div className="p-4 text-center text-neutral-medium dark:text-gray-500">
-                                Nenhum arquivo enviado.
-                            </div>
-                        ) : (
-                            files.map((file) => (
-                                <div key={file.id} className="p-4 space-y-2">
-                                    <div className="font-medium text-neutral-dark dark:text-gray-300">{file.original_name}</div>
-                                    <div className="text-sm text-gray-500 dark:text-gray-400">{formatFileSize(file.size)} KB</div>
-                                    <div className="flex gap-4 pt-2">
-                                        <a href={file.url} target="_blank" rel="noopener noreferrer" className="text-primary underline text-sm">
-                                            Abrir
-                                        </a>
-                                        <button
-                                            type="button"
-                                            onClick={() => handleDelete(file)}
-                                            className="text-red-600 hover:underline text-sm"
-                                        >
-                                            Excluir
-                                        </button>
-                                    </div>
-                                </div>
-                            ))
-                        )}
-                    </div>
-                </div>
-
                 <div className="mt-6">
-                    <Link href={route('members.show', member.id)}>
-                        <SecondaryButton type="button">Voltar ao membro</SecondaryButton>
-                    </Link>
+                    <SecondaryButton href={route('members.show', member.id)}>Voltar ao membro</SecondaryButton>
                 </div>
             </PageCard>
         </AppPage>

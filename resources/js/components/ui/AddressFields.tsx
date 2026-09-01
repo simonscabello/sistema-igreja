@@ -95,7 +95,7 @@ export function AddressFields({ data, errors = {}, onChange }: AddressFieldsProp
                 onChange={(event) => onChange('state', event.target.value)}
                 error={errors.state}
             />
-            {loading && <p className="text-sm text-ink-muted md:col-span-2">Buscando CEP…</p>}
+            {loading && <p className="text-sm text-muted-foreground md:col-span-2">Buscando CEP…</p>}
         </div>
     );
 }

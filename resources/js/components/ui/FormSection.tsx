@@ -1,4 +1,5 @@
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export function FormSection({
     title,
@@ -20,10 +21,8 @@ export function FormSection({
     return (
         <section className="space-y-4">
             <div>
-                <h2 className="text-base font-semibold text-ink dark:text-ink-inverse">{title}</h2>
-                {description && (
-                    <p className="mt-1 text-sm text-ink-muted dark:text-ink-inverse/70">{description}</p>
-                )}
+                <h2 className="text-base font-semibold">{title}</h2>
+                {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
             </div>
             <div className={cn('grid gap-4', columnClass)}>{children}</div>
         </section>
@@ -32,14 +31,33 @@ export function FormSection({
 
 export function FormPanel({ children, className }: { children: React.ReactNode; className?: string }) {
     return (
-        <div
-            className={cn(
-                'rounded-xl border border-line bg-surface p-4 sm:p-6 dark:border-line-dark dark:bg-surface-dark',
-                className,
+        <Card className={cn('shadow-none', className)}>
+            <CardContent className="p-4 sm:p-6">{children}</CardContent>
+        </Card>
+    );
+}
+
+export function FormCard({
+    title,
+    description,
+    children,
+    className,
+}: {
+    title?: string;
+    description?: string;
+    children: React.ReactNode;
+    className?: string;
+}) {
+    return (
+        <Card className={cn('shadow-none', className)}>
+            {(title || description) && (
+                <CardHeader>
+                    {title && <CardTitle>{title}</CardTitle>}
+                    {description && <CardDescription>{description}</CardDescription>}
+                </CardHeader>
             )}
-        >
-            {children}
-        </div>
+            <CardContent className={cn(!(title || description) && 'pt-6')}>{children}</CardContent>
+        </Card>
     );
 }
 
@@ -47,7 +65,7 @@ export function FormActions({ children, className }: { children: React.ReactNode
     return (
         <div
             className={cn(
-                'sticky bottom-0 z-10 -mx-1 mt-8 flex flex-col-reverse gap-3 border-t border-line bg-canvas/95 px-1 py-4 backdrop-blur sm:flex-row sm:justify-end dark:border-line-dark dark:bg-canvas-dark/95',
+                'sticky bottom-0 z-10 -mx-1 mt-8 flex flex-col-reverse gap-3 border-t bg-background/95 px-1 py-4 backdrop-blur sm:flex-row sm:justify-end',
                 className,
             )}
         >

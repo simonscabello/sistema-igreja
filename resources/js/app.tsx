@@ -8,13 +8,12 @@ const appName = import.meta.env.VITE_APP_NAME || 'Sistema Igreja';
 
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
-    resolve: (name) =>
-        resolvePageComponent(`./pages/${name}.tsx`, import.meta.glob('./pages/**/*.tsx')),
+    resolve: (name) => resolvePageComponent(`./pages/${name}.tsx`, import.meta.glob('./pages/**/*.tsx')),
     setup({ el, App, props }) {
         (window as unknown as { __inertia_page?: unknown }).__inertia_page = props.initialPage;
         createRoot(el).render(<App {...props} />);
     },
     progress: {
-        color: '#3BA99C',
+        color: '#18181B',
     },
 });

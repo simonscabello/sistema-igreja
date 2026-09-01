@@ -20,9 +20,7 @@ function ForgotPassword() {
 
     return (
         <>
-            <div className="mb-4 text-sm text-ink-muted dark:text-ink-inverse/70">
-                Informe o e-mail da conta. Enviamos um link para criar uma senha nova.
-            </div>
+            <div className="mb-4 text-sm text-muted-foreground">Informe o e-mail da conta. Enviamos um link para criar uma senha nova.</div>
 
             {flash.status && (
                 <Alert type="success" className="mb-4">

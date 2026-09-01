@@ -5,6 +5,8 @@ import { Can } from '@/components/layout/Can';
 import { Avatar } from '@/components/ui/Avatar';
 import { Badge } from '@/components/ui/Badge';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuthUser, useCan } from '@/hooks/useCan';
 import { formatCurrency, formatNumber, route } from '@/utils';
 
@@ -30,9 +32,10 @@ interface ProximoCulto {
     id: number;
     date: string;
     period_label: string;
-    singer: string;
-    preacher: string;
     songs_count: number;
+    escala_definida: boolean;
+    vocal: string | null;
+    direcao: string | null;
 }
 
 interface DashboardProps {
@@ -62,30 +65,21 @@ function greeting(name: string): string {
 }
 
 function todayLabel(): string {
-    return new Intl.DateTimeFormat('pt-BR', {
+    const label = new Intl.DateTimeFormat('pt-BR', {
         weekday: 'long',
         day: 'numeric',
         month: 'long',
     }).format(new Date());
+
+    return label.charAt(0).toUpperCase() + label.slice(1);
 }
 
-function QuickLink({
-    href,
-    icon,
-    children,
-}: {
-    href: string;
-    icon: React.ReactNode;
-    children: React.ReactNode;
-}) {
+function QuickLink({ href, icon, children }: { href: string; icon: React.ReactNode; children: React.ReactNode }) {
     return (
-        <Link
-            href={href}
-            className="inline-flex min-h-touch items-center gap-2 rounded-lg border border-line bg-surface px-3 text-sm font-medium text-ink hover:border-primary/40 hover:text-primary dark:border-line-dark dark:bg-surface-dark dark:text-ink-inverse"
-        >
+        <Button href={href} variant="secondary" icon={false}>
             {icon}
             {children}
-        </Link>
+        </Button>
     );
 }
 
@@ -112,13 +106,9 @@ function Dashboard({
             <Head title="Início" />
             <div className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 sm:py-8 lg:px-8">
                 <header className="mb-8">
-                    <p className="text-sm capitalize text-ink-muted dark:text-ink-inverse/60">{todayLabel()}</p>
-                    <h1 className="mt-1 text-2xl font-semibold tracking-tight text-ink dark:text-ink-inverse sm:text-3xl">
-                        {user ? greeting(user.name) : 'Início'}
-                    </h1>
-                    <p className="mt-1 text-sm text-ink-muted dark:text-ink-inverse/70">
-                        O que pede atenção nesta semana.
-                    </p>
+                    <p className="text-sm text-muted-foreground">{todayLabel()}</p>
+                    <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">{user ? greeting(user.name) : 'Início'}</h1>
+                    <p className="mt-1 text-sm text-muted-foreground">O que pede atenção nesta semana.</p>
                 </header>
 
                 <div className="mb-8 flex flex-wrap gap-2">
@@ -149,10 +139,8 @@ function Dashboard({
                         {canMembers && (
                             <section>
                                 <div className="mb-3 flex items-end justify-between gap-3">
-                                    <h2 className="text-base font-semibold text-ink dark:text-ink-inverse">
-                                        Aniversariantes de {monthName}
-                                    </h2>
-                                    <span className="text-sm text-ink-muted tabular">{aniversariantesDoMes.length}</span>
+                                    <h2 className="text-base font-semibold">Aniversariantes de {monthName}</h2>
+                                    <span className="text-sm text-muted-foreground tabular">{aniversariantesDoMes.length}</span>
                                 </div>
 
                                 {aniversariantesDoMes.length === 0 ? (
@@ -162,52 +150,55 @@ function Dashboard({
                                         icon={<Cake className="h-8 w-8" />}
                                     />
                                 ) : (
-                                    <ul className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface dark:divide-line-dark dark:border-line-dark dark:bg-surface-dark">
-                                        {aniversariantesDoMes.map((aniversariante, index) => {
-                                            const content = (
-                                                <>
-                                                    <Avatar
-                                                        name={aniversariante.nome}
-                                                        imageUrl={aniversariante.foto_url}
-                                                        size="w-10 h-10"
-                                                    />
-                                                    <div className="min-w-0 flex-1">
-                                                        <p className="truncate font-medium text-ink dark:text-ink-inverse">
-                                                            {aniversariante.nome}
-                                                        </p>
-                                                        <p className="text-sm text-ink-muted dark:text-ink-inverse/60">
-                                                            {aniversariante.mobile ?? aniversariante.tipo}
-                                                        </p>
-                                                    </div>
-                                                    <div className="flex shrink-0 flex-col items-end gap-1">
-                                                        <span className="tabular text-sm font-medium text-ink dark:text-ink-inverse">
-                                                            {aniversariante.data}
-                                                        </span>
-                                                        {aniversariante.is_today && <Badge tone="warning">Hoje</Badge>}
-                                                    </div>
-                                                </>
-                                            );
+                                    <Card className="shadow-none">
+                                        <CardContent className="p-0">
+                                            <ul className="divide-y">
+                                                {aniversariantesDoMes.map((aniversariante, index) => {
+                                                    const content = (
+                                                        <>
+                                                            <Avatar
+                                                                name={aniversariante.nome}
+                                                                imageUrl={aniversariante.foto_url}
+                                                                size="h-10 w-10"
+                                                            />
+                                                            <div className="min-w-0 flex-1">
+                                                                <p className="truncate font-medium">{aniversariante.nome}</p>
+                                                                <p className="text-sm text-muted-foreground">
+                                                                    {aniversariante.mobile ?? aniversariante.tipo}
+                                                                </p>
+                                                            </div>
+                                                            <div className="flex shrink-0 flex-col items-end gap-1">
+                                                                <span className="tabular text-sm font-medium">{aniversariante.data}</span>
+                                                                {aniversariante.is_today && <Badge tone="warning">Hoje</Badge>}
+                                                            </div>
+                                                        </>
+                                                    );
 
-                                            if (aniversariante.id) {
-                                                return (
-                                                    <li key={aniversariante.id}>
-                                                        <Link
-                                                            href={route('members.show', aniversariante.id)}
-                                                            className="flex items-center gap-3 px-4 py-3 hover:bg-canvas dark:hover:bg-white/5"
+                                                    if (aniversariante.id) {
+                                                        return (
+                                                            <li key={aniversariante.id}>
+                                                                <Link
+                                                                    href={route('members.show', aniversariante.id)}
+                                                                    className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50"
+                                                                >
+                                                                    {content}
+                                                                </Link>
+                                                            </li>
+                                                        );
+                                                    }
+
+                                                    return (
+                                                        <li
+                                                            key={`${aniversariante.nome}-${index}`}
+                                                            className="flex items-center gap-3 px-4 py-3"
                                                         >
                                                             {content}
-                                                        </Link>
-                                                    </li>
-                                                );
-                                            }
-
-                                            return (
-                                                <li key={`${aniversariante.nome}-${index}`} className="flex items-center gap-3 px-4 py-3">
-                                                    {content}
-                                                </li>
-                                            );
-                                        })}
-                                    </ul>
+                                                        </li>
+                                                    );
+                                                })}
+                                            </ul>
+                                        </CardContent>
+                                    </Card>
                                 )}
                             </section>
                         )}
@@ -215,9 +206,7 @@ function Dashboard({
                         {canVisitors && (
                             <section>
                                 <div className="mb-3 flex items-end justify-between gap-3">
-                                    <h2 className="text-base font-semibold text-ink dark:text-ink-inverse">
-                                        Visitantes recentes
-                                    </h2>
+                                    <h2 className="text-base font-semibold">Visitantes recentes</h2>
                                     {visitantesQuerendoContato > 0 && (
                                         <Badge tone="success">{visitantesQuerendoContato} querem contato</Badge>
                                     )}
@@ -230,28 +219,30 @@ function Dashboard({
                                         icon={<UserPlus className="h-8 w-8" />}
                                     />
                                 ) : (
-                                    <ul className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface dark:divide-line-dark dark:border-line-dark dark:bg-surface-dark">
-                                        {ultimosVisitantes.map((visitante) => (
-                                            <li key={visitante.id}>
-                                                <Link
-                                                    href={route('visitors.show', visitante.id)}
-                                                    className="flex items-center gap-3 px-4 py-3 hover:bg-canvas dark:hover:bg-white/5"
-                                                >
-                                                    <div className="min-w-0 flex-1">
-                                                        <p className="truncate font-medium text-ink dark:text-ink-inverse">
-                                                            {visitante.nome}
-                                                        </p>
-                                                        <p className="text-sm text-ink-muted dark:text-ink-inverse/60">
-                                                            {visitante.primeira_visita}
-                                                            {visitante.mobile ? ` · ${visitante.mobile}` : ''}
-                                                        </p>
-                                                    </div>
-                                                    {visitante.wants_contact && <Badge tone="success">Contato</Badge>}
-                                                    <ArrowRight className="h-4 w-4 shrink-0 text-ink-muted" />
-                                                </Link>
-                                            </li>
-                                        ))}
-                                    </ul>
+                                    <Card className="shadow-none">
+                                        <CardContent className="p-0">
+                                            <ul className="divide-y">
+                                                {ultimosVisitantes.map((visitante) => (
+                                                    <li key={visitante.id}>
+                                                        <Link
+                                                            href={route('visitors.show', visitante.id)}
+                                                            className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50"
+                                                        >
+                                                            <div className="min-w-0 flex-1">
+                                                                <p className="truncate font-medium">{visitante.nome}</p>
+                                                                <p className="text-sm text-muted-foreground">
+                                                                    {visitante.primeira_visita}
+                                                                    {visitante.mobile ? ` · ${visitante.mobile}` : ''}
+                                                                </p>
+                                                            </div>
+                                                            {visitante.wants_contact && <Badge tone="success">Contato</Badge>}
+                                                            <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+                                                        </Link>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </CardContent>
+                                    </Card>
                                 )}
                             </section>
                         )}
@@ -259,88 +250,97 @@ function Dashboard({
 
                     <aside className="space-y-4">
                         {(canMembers || canVisitors || canFinance) && (
-                            <div className="rounded-xl border border-line bg-surface p-4 dark:border-line-dark dark:bg-surface-dark">
-                                <p className="text-sm text-ink-muted dark:text-ink-inverse/60">Números</p>
-                                <dl className="mt-3 space-y-3">
-                                    {canMembers && (
-                                        <div className="flex items-baseline justify-between gap-3">
-                                            <dt className="text-sm text-ink dark:text-ink-inverse">Membros</dt>
-                                            <dd className="tabular text-lg font-semibold text-ink dark:text-ink-inverse">
-                                                {formatNumber(totalMembros)}
-                                            </dd>
-                                        </div>
-                                    )}
-                                    {canVisitors && (
-                                        <div className="flex items-baseline justify-between gap-3">
-                                            <dt className="text-sm text-ink dark:text-ink-inverse">Visitantes</dt>
-                                            <dd className="tabular text-lg font-semibold text-ink dark:text-ink-inverse">
-                                                {formatNumber(totalVisitantes)}
-                                            </dd>
-                                        </div>
-                                    )}
+                            <Card className="shadow-none">
+                                <CardHeader className="pb-3">
+                                    <CardTitle className="text-sm font-medium text-muted-foreground">Números</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <dl className="space-y-3">
+                                        {canMembers && (
+                                            <div className="flex items-baseline justify-between gap-3">
+                                                <dt className="text-sm">Membros</dt>
+                                                <dd className="tabular text-lg font-semibold">{formatNumber(totalMembros)}</dd>
+                                            </div>
+                                        )}
+                                        {canVisitors && (
+                                            <div className="flex items-baseline justify-between gap-3">
+                                                <dt className="text-sm">Visitantes</dt>
+                                                <dd className="tabular text-lg font-semibold">{formatNumber(totalVisitantes)}</dd>
+                                            </div>
+                                        )}
+                                        {canFinance && (
+                                            <div className="flex items-baseline justify-between gap-3 border-t pt-3">
+                                                <dt className="text-sm">Saldo em caixa</dt>
+                                                <dd
+                                                    className={`tabular text-lg font-semibold ${
+                                                        saldoAtual >= 0 ? 'text-entrada' : 'text-saida'
+                                                    }`}
+                                                >
+                                                    {formatCurrency(saldoAtual)}
+                                                </dd>
+                                            </div>
+                                        )}
+                                    </dl>
                                     {canFinance && (
-                                        <div className="flex items-baseline justify-between gap-3 border-t border-line pt-3 dark:border-line-dark">
-                                            <dt className="text-sm text-ink dark:text-ink-inverse">Saldo em caixa</dt>
-                                            <dd
-                                                className={`tabular text-lg font-semibold ${
-                                                    saldoAtual >= 0 ? 'text-entrada' : 'text-saida'
-                                                }`}
-                                            >
-                                                {formatCurrency(saldoAtual)}
-                                            </dd>
-                                        </div>
+                                        <Link
+                                            href={route('financial.dashboard.index')}
+                                            className="mt-4 inline-flex items-center gap-1 text-sm font-medium hover:underline"
+                                        >
+                                            Ver movimentação
+                                            <ArrowRight className="h-4 w-4" />
+                                        </Link>
                                     )}
-                                </dl>
-                                {canFinance && (
-                                    <Link
-                                        href={route('financial.dashboard.index')}
-                                        className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary hover:text-primary-dark"
-                                    >
-                                        Ver movimentação
-                                        <ArrowRight className="h-4 w-4" />
-                                    </Link>
-                                )}
-                            </div>
+                                </CardContent>
+                            </Card>
                         )}
 
                         {canWorship && (
-                            <div className="rounded-xl border border-line bg-surface p-4 dark:border-line-dark dark:bg-surface-dark">
-                                <div className="mb-3 flex items-center gap-2 text-ink dark:text-ink-inverse">
-                                    <Church className="h-4 w-4 text-primary" />
-                                    <h2 className="text-sm font-semibold">Próximo culto</h2>
-                                </div>
-                                {proximoCulto ? (
-                                    <>
-                                        <p className="text-lg font-semibold text-ink dark:text-ink-inverse">
-                                            {proximoCulto.date}
-                                            <span className="ml-2 text-sm font-medium text-ink-muted">
-                                                {proximoCulto.period_label}
-                                            </span>
-                                        </p>
-                                        <p className="mt-1 text-sm text-ink-muted dark:text-ink-inverse/70">
-                                            {proximoCulto.singer ? `Cantor: ${proximoCulto.singer}` : 'Cantor ainda não definido'}
-                                        </p>
-                                        <p className="text-sm text-ink-muted dark:text-ink-inverse/70">
-                                            {proximoCulto.songs_count} {proximoCulto.songs_count === 1 ? 'música' : 'músicas'}
-                                        </p>
-                                        <Link
-                                            href={route('worship-sets.show', proximoCulto.id)}
-                                            className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary hover:text-primary-dark"
-                                        >
-                                            Abrir repertório
-                                            <ArrowRight className="h-4 w-4" />
-                                        </Link>
-                                    </>
-                                ) : (
-                                    <p className="text-sm text-ink-muted dark:text-ink-inverse/70">
-                                        Monte o repertório do próximo domingo.
-                                    </p>
-                                )}
-                            </div>
+                            <Card className="shadow-none">
+                                <CardHeader className="pb-3">
+                                    <CardTitle className="flex items-center gap-2 text-sm">
+                                        <Church className="h-4 w-4 text-muted-foreground" />
+                                        Próximo culto
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    {proximoCulto ? (
+                                        <>
+                                            <p className="text-lg font-semibold">
+                                                {proximoCulto.date}
+                                                <span className="ml-2 text-sm font-medium text-muted-foreground">
+                                                    {proximoCulto.period_label}
+                                                </span>
+                                            </p>
+                                            <p className="mt-1 text-sm text-muted-foreground">
+                                                {proximoCulto.vocal
+                                                    ? `Vocal: ${proximoCulto.vocal}`
+                                                    : proximoCulto.escala_definida
+                                                      ? 'Vocal ainda não definido'
+                                                      : 'Escala ainda não definida'}
+                                            </p>
+                                            {proximoCulto.direcao && (
+                                                <p className="text-sm text-muted-foreground">Direção: {proximoCulto.direcao}</p>
+                                            )}
+                                            <p className="text-sm text-muted-foreground">
+                                                {proximoCulto.songs_count} {proximoCulto.songs_count === 1 ? 'música' : 'músicas'}
+                                            </p>
+                                            <Link
+                                                href={route('worship-sets.show', proximoCulto.id)}
+                                                className="mt-3 inline-flex items-center gap-1 text-sm font-medium hover:underline"
+                                            >
+                                                Abrir repertório
+                                                <ArrowRight className="h-4 w-4" />
+                                            </Link>
+                                        </>
+                                    ) : (
+                                        <p className="text-sm text-muted-foreground">Monte o repertório do próximo domingo.</p>
+                                    )}
+                                </CardContent>
+                            </Card>
                         )}
 
                         {aniversariantesHoje.length > 0 && canMembers && (
-                            <p className="rounded-xl bg-accent-subtle px-4 py-3 text-sm text-amber-950 dark:bg-accent/20 dark:text-accent-subtle">
+                            <p className="rounded-xl border border-warning/30 bg-warning/10 px-4 py-3 text-sm text-warning-foreground">
                                 {aniversariantesHoje.length === 1
                                     ? `${aniversariantesHoje[0].nome} faz aniversário hoje.`
                                     : `${aniversariantesHoje.length} pessoas fazem aniversário hoje.`}

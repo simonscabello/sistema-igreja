@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
-import { CircleAlert, CircleCheck, Info, TriangleAlert, X } from 'lucide-react';
-import { cn } from '@/utils';
+import { useState } from 'react';
+import { CircleAlert, CircleCheck, Info, LoaderCircle, TriangleAlert, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Alert as UiAlert, AlertDescription } from '@/components/ui/alert';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 type AlertType = 'success' | 'warning' | 'error' | 'info';
 
 const alertClasses: Record<AlertType, string> = {
-    success:
-        'bg-entrada-soft text-entrada border-entrada/20 dark:bg-entrada/15 dark:text-emerald-300 dark:border-entrada/30',
-    warning:
-        'bg-accent-subtle text-amber-950 border-accent/30 dark:bg-accent/15 dark:text-accent-subtle dark:border-accent/30',
-    error: 'bg-saida-soft text-saida border-saida/20 dark:bg-saida/15 dark:text-red-300 dark:border-saida/30',
-    info: 'bg-primary/10 text-primary-dark border-primary/20 dark:bg-primary/15 dark:text-primary-light dark:border-primary/30',
+    success: 'border-entrada/30 bg-entrada/10 text-entrada [&>svg]:text-entrada dark:text-emerald-300',
+    warning: 'border-warning/30 bg-warning/10 text-warning-foreground [&>svg]:text-warning',
+    error: 'border-destructive/30 bg-destructive/10 text-destructive [&>svg]:text-destructive',
+    info: 'border-info/30 bg-info/10 text-info-foreground [&>svg]:text-info',
 };
 
 const icons: Record<AlertType, typeof CircleCheck> = {
@@ -25,9 +25,10 @@ interface AlertProps {
     dismissible?: boolean;
     children: React.ReactNode;
     className?: string;
+    onDismiss?: () => void;
 }
 
-export function Alert({ type = 'success', dismissible = false, children, className }: AlertProps) {
+export function Alert({ type = 'success', dismissible = false, children, className, onDismiss }: AlertProps) {
     const [visible, setVisible] = useState(true);
     const Icon = icons[type];
 
@@ -36,39 +37,30 @@ export function Alert({ type = 'success', dismissible = false, children, classNa
     }
 
     return (
-        <div
-            className={cn('mb-4 flex items-start gap-3 rounded-xl border p-3.5 text-sm', alertClasses[type], className)}
-            role="alert"
-        >
-            <Icon className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-            <div className="min-w-0 flex-1">{children}</div>
-            {dismissible && (
-                <button
-                    type="button"
-                    onClick={() => setVisible(false)}
-                    className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg hover:bg-black/5 dark:hover:bg-white/10"
-                    aria-label="Fechar"
-                >
-                    <X className="h-4 w-4" />
-                </button>
-            )}
-        </div>
+        <UiAlert className={cn('mb-4', alertClasses[type], className)}>
+            <Icon className="h-4 w-4" />
+            <AlertDescription className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">{children}</div>
+                {dismissible && (
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setVisible(false);
+                            onDismiss?.();
+                        }}
+                        className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md hover:bg-foreground/10"
+                        aria-label="Fechar"
+                    >
+                        <X className="h-4 w-4" />
+                    </button>
+                )}
+            </AlertDescription>
+        </UiAlert>
     );
 }
 
-export { EmptyState } from './EmptyState';
-
 export function Spinner({ className }: { className?: string }) {
-    return (
-        <div
-            className={cn(
-                'inline-block h-5 w-5 animate-spin rounded-full border-2 border-primary border-r-transparent',
-                className,
-            )}
-            role="status"
-            aria-label="Carregando"
-        />
-    );
+    return <LoaderCircle className={cn('h-5 w-5 animate-spin text-muted-foreground', className)} aria-label="Carregando" />;
 }
 
 interface ModalProps {
@@ -88,44 +80,16 @@ const maxWidthClasses = {
 };
 
 export function Modal({ show, onClose, title, children, maxWidth = 'md' }: ModalProps) {
-    useEffect(() => {
-        if (!show) {
-            return;
-        }
-
-        const onKey = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                onClose();
-            }
-        };
-
-        document.addEventListener('keydown', onKey);
-
-        return () => document.removeEventListener('keydown', onKey);
-    }, [onClose, show]);
-
-    if (!show) {
-        return null;
-    }
-
     return (
-        <div className="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby={title ? 'modal-title' : undefined}>
-            <div className="flex min-h-full items-center justify-center p-4">
-                <button type="button" className="fixed inset-0 bg-canvas-dark/60" onClick={onClose} aria-label="Fechar" />
-                <div
-                    className={cn(
-                        'relative w-full rounded-xl border border-line bg-surface p-6 shadow-float dark:border-line-dark dark:bg-surface-dark',
-                        maxWidthClasses[maxWidth],
-                    )}
-                >
-                    {title && (
-                        <h3 id="modal-title" className="mb-4 text-lg font-semibold text-ink dark:text-ink-inverse">
-                            {title}
-                        </h3>
-                    )}
-                    {children}
-                </div>
-            </div>
-        </div>
+        <Dialog open={show} onOpenChange={(open) => !open && onClose()}>
+            <DialogContent className={maxWidthClasses[maxWidth]}>
+                {title && (
+                    <DialogHeader>
+                        <DialogTitle>{title}</DialogTitle>
+                    </DialogHeader>
+                )}
+                {children}
+            </DialogContent>
+        </Dialog>
     );
 }

@@ -1,9 +1,31 @@
 import { Link } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
-import { cn } from '@/utils';
+import {
+    ArrowLeft,
+    Check,
+    Copy,
+    Eye,
+    Filter,
+    KeyRound,
+    LoaderCircle,
+    LogIn,
+    Mail,
+    Pencil,
+    Plus,
+    RotateCcw,
+    Save,
+    Search,
+    Send,
+    Trash2,
+    X,
+    type LucideIcon,
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button as UiButton, buttonVariants } from '@/components/ui/button';
 
-type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost' | 'link';
+type ButtonVariant = 'primary' | 'secondary' | 'neutral' | 'danger' | 'ghost' | 'danger-ghost' | 'link';
 type ButtonSize = 'sm' | 'md';
+
+export const actionFillClass = 'bg-primary text-primary-foreground hover:bg-primary/90';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: ButtonVariant;
@@ -11,23 +33,68 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     href?: string;
     method?: 'get' | 'post' | 'put' | 'patch' | 'delete';
     as?: 'button' | 'link';
+    asChild?: boolean;
     processing?: boolean;
+    icon?: LucideIcon | false;
 }
 
-const variantClasses: Record<ButtonVariant, string> = {
-    primary:
-        'bg-primary text-white hover:bg-primary-dark focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-    secondary:
-        'bg-surface text-ink border border-line hover:bg-canvas dark:bg-surface-dark dark:text-ink-inverse dark:border-line-dark dark:hover:bg-white/5',
-    danger: 'bg-saida text-white hover:bg-red-800 focus-visible:ring-2 focus-visible:ring-saida focus-visible:ring-offset-2',
-    ghost: 'bg-transparent text-ink-muted hover:bg-canvas hover:text-ink dark:text-ink-inverse/70 dark:hover:bg-white/5 dark:hover:text-ink-inverse',
-    link: 'bg-transparent text-primary hover:text-primary-dark px-0 py-0 min-h-0 h-auto',
+const variantMap: Record<ButtonVariant, 'default' | 'outline' | 'secondary' | 'destructive' | 'ghost' | 'link'> = {
+    primary: 'default',
+    secondary: 'outline',
+    neutral: 'secondary',
+    danger: 'destructive',
+    ghost: 'ghost',
+    'danger-ghost': 'ghost',
+    link: 'link',
 };
 
-const sizeClasses: Record<ButtonSize, string> = {
-    sm: 'min-h-9 px-3 text-sm',
-    md: 'min-h-touch px-4 text-sm',
-};
+function extractLabel(children: React.ReactNode): string {
+    if (typeof children === 'string' || typeof children === 'number') {
+        return String(children).trim();
+    }
+
+    if (Array.isArray(children)) {
+        return children
+            .map((child) => extractLabel(child))
+            .join(' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    return '';
+}
+
+const inferredIcons: Array<[RegExp, LucideIcon]> = [
+    [/^clonar/i, Copy],
+    [/^excluir/i, Trash2],
+    [/^cancelar/i, X],
+    [/^voltar/i, ArrowLeft],
+    [/^(salvar|atualizar|cadastrar)/i, Save],
+    [/^(criar|nova |novo |adicionar)/i, Plus],
+    [/^buscar/i, Search],
+    [/^filtrar/i, Filter],
+    [/^enviar/i, Send],
+    [/^entrar/i, LogIn],
+    [/^ver\b/i, Eye],
+    [/^editar/i, Pencil],
+    [/^confirmar/i, Check],
+    [/^tentar/i, RotateCcw],
+    [/^(alterar senha|redefinir)/i, KeyRound],
+    [/^reenviar/i, Mail],
+    [/^copiar/i, Copy],
+];
+
+function inferIcon(children: React.ReactNode): LucideIcon | undefined {
+    const label = extractLabel(children);
+
+    if (!label) {
+        return undefined;
+    }
+
+    const match = inferredIcons.find(([pattern]) => pattern.test(label));
+
+    return match?.[1];
+}
 
 export function Button({
     variant = 'primary',
@@ -35,39 +102,50 @@ export function Button({
     href,
     method = 'get',
     as,
+    asChild = false,
     className,
     children,
     type = 'button',
     processing = false,
     disabled,
+    icon,
     ...props
 }: ButtonProps) {
-    const classes = cn(
-        'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50',
-        variantClasses[variant],
-        variant !== 'link' && sizeClasses[size],
-        className,
-    );
+    const mapped = variantMap[variant];
+    const uiSize = size === 'sm' ? 'sm' : 'default';
+    const extra = variant === 'danger-ghost' ? 'text-destructive hover:bg-destructive/10 hover:text-destructive' : undefined;
+
+    if (asChild) {
+        return (
+            <UiButton variant={mapped} size={uiSize} className={cn(extra, className)} asChild disabled={disabled || processing}>
+                {children}
+            </UiButton>
+        );
+    }
+
+    const Icon = icon === false ? undefined : (icon ?? inferIcon(children));
 
     const content = (
         <>
-            {processing && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden />}
+            {processing ? <LoaderCircle className="animate-spin" aria-hidden /> : Icon && <Icon aria-hidden />}
             {children}
         </>
     );
 
     if (href || as === 'link') {
         return (
-            <Link href={href ?? '#'} method={method} className={classes}>
-                {content}
-            </Link>
+            <UiButton variant={mapped} size={uiSize} className={cn(extra, className)} asChild disabled={disabled || processing}>
+                <Link href={href ?? '#'} method={method}>
+                    {content}
+                </Link>
+            </UiButton>
         );
     }
 
     return (
-        <button type={type} className={classes} disabled={disabled || processing} {...props}>
+        <UiButton type={type} variant={mapped} size={uiSize} className={cn(extra, className)} disabled={disabled || processing} {...props}>
             {content}
-        </button>
+        </UiButton>
     );
 }
 
@@ -79,6 +157,10 @@ export function SecondaryButton(props: Omit<ButtonProps, 'variant'>) {
     return <Button variant="secondary" {...props} />;
 }
 
+export function NeutralButton(props: Omit<ButtonProps, 'variant'>) {
+    return <Button variant="neutral" {...props} />;
+}
+
 export function DangerButton(props: Omit<ButtonProps, 'variant'>) {
     return <Button variant="danger" {...props} />;
 }
@@ -87,14 +169,106 @@ export function LinkButton({
     href,
     className,
     children,
+    size = 'sm',
 }: {
     href: string;
     className?: string;
     children: React.ReactNode;
+    size?: ButtonSize;
 }) {
     return (
-        <Link href={href} className={cn(variantClasses.link, 'inline-flex items-center text-sm font-medium', className)}>
+        <Button href={href} variant="ghost" size={size} className={className}>
             {children}
-        </Link>
+        </Button>
     );
 }
+
+export function CreateButton({ children = 'Adicionar', ...props }: Omit<ButtonProps, 'variant' | 'icon'>) {
+    return (
+        <Button variant="primary" icon={Plus} {...props}>
+            {children}
+        </Button>
+    );
+}
+
+export function SaveButton({ children = 'Salvar', ...props }: Omit<ButtonProps, 'variant' | 'icon'>) {
+    return (
+        <Button variant="primary" type="submit" icon={Save} {...props}>
+            {children}
+        </Button>
+    );
+}
+
+export function CancelButton({ children = 'Cancelar', ...props }: Omit<ButtonProps, 'variant' | 'icon'>) {
+    return (
+        <Button variant="secondary" icon={X} {...props}>
+            {children}
+        </Button>
+    );
+}
+
+export function SearchButton({ children = 'Buscar', ...props }: Omit<ButtonProps, 'variant' | 'icon'>) {
+    return (
+        <Button variant="neutral" type="submit" icon={Search} {...props}>
+            {children}
+        </Button>
+    );
+}
+
+export function FilterButton({ children = 'Filtrar', ...props }: Omit<ButtonProps, 'variant' | 'icon'>) {
+    return (
+        <Button variant="neutral" type="submit" icon={Filter} {...props}>
+            {children}
+        </Button>
+    );
+}
+
+export function ViewButton({
+    href,
+    children = 'Ver',
+    size = 'sm',
+    className,
+}: {
+    href: string;
+    children?: React.ReactNode;
+    size?: ButtonSize;
+    className?: string;
+}) {
+    return (
+        <Button href={href} variant="ghost" size={size} icon={Eye} className={className}>
+            {children}
+        </Button>
+    );
+}
+
+export function EditButton({
+    href,
+    children = 'Editar',
+    size = 'sm',
+    className,
+}: {
+    href: string;
+    children?: React.ReactNode;
+    size?: ButtonSize;
+    className?: string;
+}) {
+    return (
+        <Button href={href} variant="neutral" size={size} icon={Pencil} className={className}>
+            {children}
+        </Button>
+    );
+}
+
+export function BackButton({ href, children = 'Voltar', className }: { href: string; children?: React.ReactNode; className?: string }) {
+    return (
+        <Button href={href} variant="secondary" icon={ArrowLeft} className={className}>
+            {children}
+        </Button>
+    );
+}
+
+export function RowActions({ children, className }: { children: React.ReactNode; className?: string }) {
+    return <div className={cn('inline-flex flex-wrap items-center justify-end gap-1 sm:flex-nowrap', className)}>{children}</div>;
+}
+
+export { buttonVariants };

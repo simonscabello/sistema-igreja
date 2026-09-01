@@ -1,23 +1,24 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RootRedirectController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\MemberController;
-use App\Http\Controllers\VisitorController;
-use App\Http\Controllers\FinancialCategoryController;
-use App\Http\Controllers\FinancialTransactionController;
-use App\Http\Controllers\FinancialSubcategoryController;
-use App\Http\Controllers\FinancialReportController;
-use App\Http\Controllers\FinancialDashboardController;
 use App\Http\Controllers\CampaignController;
-use App\Http\Controllers\SongController;
-use App\Http\Controllers\WorshipSetController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FileController;
-use App\Http\Controllers\RoleController;
+use App\Http\Controllers\FinancialCategoryController;
+use App\Http\Controllers\FinancialDashboardController;
+use App\Http\Controllers\FinancialReportController;
+use App\Http\Controllers\FinancialSubcategoryController;
+use App\Http\Controllers\FinancialTransactionController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RootRedirectController;
+use App\Http\Controllers\SongController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VisitorController;
+use App\Http\Controllers\WorshipFunctionController;
+use App\Http\Controllers\WorshipSetController;
 use Illuminate\Support\Facades\Route;
 
 // Rota raiz
@@ -86,6 +87,16 @@ Route::middleware(['auth', 'password.changed'])->group(function () {
         Route::get('/{song}/edit', [SongController::class, 'edit'])->name('edit');
         Route::put('/{song}', [SongController::class, 'update'])->name('update');
         Route::delete('/{song}', [SongController::class, 'destroy'])->name('destroy');
+    });
+
+    // Gestão de louvor - Funções
+    Route::prefix('worship/functions')->name('worship-functions.')->group(function () {
+        Route::get('/', [WorshipFunctionController::class, 'index'])->name('index');
+        Route::get('/create', [WorshipFunctionController::class, 'create'])->name('create');
+        Route::post('/', [WorshipFunctionController::class, 'store'])->name('store');
+        Route::get('/{worship_function}/edit', [WorshipFunctionController::class, 'edit'])->name('edit');
+        Route::put('/{worship_function}', [WorshipFunctionController::class, 'update'])->name('update');
+        Route::delete('/{worship_function}', [WorshipFunctionController::class, 'destroy'])->name('destroy');
     });
 
     // Gestão de louvor - Repertórios

@@ -1,6 +1,21 @@
-import Swal from 'sweetalert2';
+import { useState } from 'react';
 import { router } from '@inertiajs/react';
-import { DangerButton } from './Button';
+import { Trash2 } from 'lucide-react';
+import { Button } from './Button';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { buttonVariants } from '@/components/ui/button';
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { cn } from '@/lib/utils';
 
 interface DeleteButtonProps {
     href: string;
@@ -8,6 +23,8 @@ interface DeleteButtonProps {
     title?: string;
     text?: string;
     className?: string;
+    compact?: boolean;
+    asMenuItem?: boolean;
 }
 
 export function DeleteButton({
@@ -16,31 +33,46 @@ export function DeleteButton({
     title = 'Excluir este registro?',
     text = 'Isso não pode ser desfeito.',
     className,
+    compact = false,
+    asMenuItem = false,
 }: DeleteButtonProps) {
-    const handleClick = async () => {
-        const isDark = document.documentElement.classList.contains('dark');
-
-        const result = await Swal.fire({
-            title,
-            text,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#B42318',
-            cancelButtonColor: '#4D6561',
-            confirmButtonText: 'Excluir',
-            cancelButtonText: 'Manter',
-            background: isDark ? '#162624' : '#fff',
-            color: isDark ? '#E8F2F0' : '#1C3330',
-        });
-
-        if (result.isConfirmed) {
-            router.delete(href);
-        }
-    };
+    const [open, setOpen] = useState(false);
 
     return (
-        <DangerButton type="button" onClick={handleClick} className={className} size="sm">
-            {children}
-        </DangerButton>
+        <AlertDialog open={open} onOpenChange={setOpen}>
+            <AlertDialogTrigger asChild>
+                {asMenuItem ? (
+                    <DropdownMenuItem
+                        className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+                        onSelect={(event) => event.preventDefault()}
+                    >
+                        <Trash2 />
+                        {children}
+                    </DropdownMenuItem>
+                ) : (
+                    <Button
+                        type="button"
+                        className={className}
+                        size={compact ? 'sm' : 'md'}
+                        variant={compact ? 'danger-ghost' : 'danger'}
+                        icon={Trash2}
+                    >
+                        {children}
+                    </Button>
+                )}
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>{title}</AlertDialogTitle>
+                    <AlertDialogDescription>{text}</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel>Manter</AlertDialogCancel>
+                    <AlertDialogAction className={cn(buttonVariants({ variant: 'destructive' }))} onClick={() => router.delete(href)}>
+                        Excluir
+                    </AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
     );
 }

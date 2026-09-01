@@ -1,25 +1,95 @@
-@import "./datepicker-custom.css";
-@import "./sweetalert-custom.css";
 @tailwind base;
-@import 'flowbite';
+@tailwind components;
 @tailwind utilities;
 
 @layer base {
+    :root {
+        --background: 0 0% 98%;
+        --foreground: 240 10% 3.9%;
+        --card: 0 0% 100%;
+        --card-foreground: 240 10% 3.9%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 240 10% 3.9%;
+        --primary: 240 5.9% 10%;
+        --primary-foreground: 0 0% 98%;
+        --secondary: 240 4.8% 95.9%;
+        --secondary-foreground: 240 5.9% 10%;
+        --muted: 240 4.8% 95.9%;
+        --muted-foreground: 240 3.8% 46.1%;
+        --accent: 240 4.8% 95.9%;
+        --accent-foreground: 240 5.9% 10%;
+        --destructive: 0 72.2% 50.6%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 240 5.9% 90%;
+        --input: 240 5.9% 90%;
+        --ring: 240 5.9% 10%;
+        --warning: 38 92% 50%;
+        --warning-foreground: 32 95% 18%;
+        --info: 217 91% 60%;
+        --info-foreground: 224 76% 28%;
+        --radius: 0.5rem;
+        --sidebar: 0 0% 100%;
+        --sidebar-foreground: 240 10% 3.9%;
+        --sidebar-border: 240 5.9% 90%;
+        --sidebar-accent: 240 4.8% 95.9%;
+        --sidebar-accent-foreground: 240 5.9% 10%;
+    }
+
+    .dark {
+        --background: 240 10% 3.9%;
+        --foreground: 0 0% 98%;
+        --card: 240 6% 7%;
+        --card-foreground: 0 0% 98%;
+        --popover: 240 6% 7%;
+        --popover-foreground: 0 0% 98%;
+        --primary: 0 0% 98%;
+        --primary-foreground: 240 5.9% 10%;
+        --secondary: 240 3.7% 15.9%;
+        --secondary-foreground: 0 0% 98%;
+        --muted: 240 3.7% 15.9%;
+        --muted-foreground: 240 5% 64.9%;
+        --accent: 240 3.7% 15.9%;
+        --accent-foreground: 0 0% 98%;
+        --destructive: 0 72% 51%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 240 3.7% 15.9%;
+        --input: 240 3.7% 15.9%;
+        --ring: 240 4.9% 83.9%;
+        --warning: 38 92% 50%;
+        --warning-foreground: 48 96% 89%;
+        --info: 213 94% 68%;
+        --info-foreground: 213 97% 87%;
+        --sidebar: 240 8% 5%;
+        --sidebar-foreground: 0 0% 98%;
+        --sidebar-border: 240 3.7% 15.9%;
+        --sidebar-accent: 240 3.7% 15.9%;
+        --sidebar-accent-foreground: 0 0% 98%;
+    }
+
+    * {
+        @apply border-border;
+    }
+
     html {
         -webkit-tap-highlight-color: transparent;
         text-rendering: optimizeLegibility;
     }
 
     body {
-        @apply bg-canvas text-ink antialiased dark:bg-canvas-dark dark:text-ink-inverse;
+        @apply bg-background text-foreground antialiased;
     }
 
     ::selection {
-        background: rgba(47, 138, 126, 0.28);
+        background: hsl(var(--foreground) / 0.16);
+    }
+
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: hsl(var(--muted-foreground) / 0.45) transparent;
     }
 
     :focus-visible {
-        outline: 2px solid #2F8A7E;
+        outline: 2px solid hsl(var(--ring));
         outline-offset: 2px;
     }
 
@@ -41,15 +111,9 @@
     }
 }
 
-input[data-currency-mask="true"] {
+input[data-currency-mask='true'] {
     font-variant-numeric: tabular-nums;
     font-weight: 500;
-}
-
-input[data-currency-mask="true"]:focus {
-    outline: none;
-    border-color: #2F8A7E;
-    box-shadow: 0 0 0 1px #2F8A7E;
 }
 
 .advanced-select-source {

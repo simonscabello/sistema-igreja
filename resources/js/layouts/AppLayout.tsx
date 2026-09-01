@@ -4,6 +4,8 @@ import { PageProps } from '@/types';
 import { ThemeProvider, useTheme } from '@/hooks/useTheme';
 import { Header, Sidebar } from '@/components/layout/Sidebar';
 import { FlashMessages } from '@/components/layout/Can';
+import { Toaster } from '@/components/ui/sonner';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
     const { auth, app } = usePage<PageProps>().props;
@@ -11,10 +13,8 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
     const { theme, toggleTheme } = useTheme();
 
     return (
-        <div className="flex min-h-dvh flex-1">
-            {auth.user && (
-                <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} appName={app.name} />
-            )}
+        <div className="flex min-h-dvh flex-1 bg-background">
+            {auth.user && <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} appName={app.name} />}
             <div className={auth.user ? 'flex min-h-dvh min-w-0 flex-1 flex-col lg:ml-60' : 'flex min-h-dvh min-w-0 flex-1 flex-col'}>
                 {auth.user && (
                     <Header
@@ -29,9 +29,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
                 <main id="conteudo" className="min-w-0 flex-1">
                     {children}
                 </main>
-                <footer className="border-t border-line py-3 text-center text-xs text-ink-muted dark:border-line-dark dark:text-ink-inverse/50">
-                    {app.name}
-                </footer>
+                <footer className="border-t py-3 text-center text-xs text-muted-foreground">{app.name}</footer>
             </div>
         </div>
     );
@@ -40,13 +38,16 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     return (
         <ThemeProvider>
-            <a
-                href="#conteudo"
-                className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-primary focus:px-3 focus:py-2 focus:text-white"
-            >
-                Ir para o conteúdo
-            </a>
-            <AppLayoutContent>{children}</AppLayoutContent>
+            <TooltipProvider delayDuration={200}>
+                <a
+                    href="#conteudo"
+                    className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-primary-foreground"
+                >
+                    Ir para o conteúdo
+                </a>
+                <AppLayoutContent>{children}</AppLayoutContent>
+                <Toaster />
+            </TooltipProvider>
         </ThemeProvider>
     );
 }

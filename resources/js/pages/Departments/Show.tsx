@@ -1,7 +1,8 @@
-import { Link } from '@inertiajs/react';
 import AppLayout, { AppPage } from '@/layouts/AppLayout';
-import { LinkButton, SecondaryButton } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
+import { BackButton, EditButton } from '@/components/ui/Button';
 import { DeleteButton } from '@/components/ui/DeleteButton';
+import { DetailActions, DetailField, DetailGrid, DetailSection } from '@/components/ui/Detail';
 import { PageCard } from '@/components/ui/PageCard';
 import { route } from '@/utils';
 
@@ -28,10 +29,10 @@ interface ShowProps {
 
 function MemberCard({ member }: { member: Member }) {
     return (
-        <div className="bg-neutral-light dark:bg-gray-700 p-4 rounded-lg">
-            <h4 className="font-medium text-neutral-dark dark:text-gray-300">{member.full_name}</h4>
-            {member.email && <p className="text-sm text-neutral-medium dark:text-gray-400">{member.email}</p>}
-            {member.mobile && <p className="text-sm text-neutral-medium dark:text-gray-400">{member.mobile}</p>}
+        <div className="rounded-lg border bg-muted/40 p-4">
+            <h4 className="font-medium">{member.full_name}</h4>
+            {member.email && <p className="text-sm text-muted-foreground">{member.email}</p>}
+            {member.mobile && <p className="text-sm text-muted-foreground">{member.mobile}</p>}
         </div>
     );
 }
@@ -39,79 +40,57 @@ function MemberCard({ member }: { member: Member }) {
 function Show({ department }: ShowProps) {
     return (
         <AppPage>
-            <PageCard title="Detalhes do Departamento">
+            <PageCard
+                title={department.title}
+                breadcrumbs={[{ label: 'Departamentos', href: route('departments.index') }, { label: department.title }]}
+                action={
+                    <>
+                        <EditButton href={route('departments.edit', department.id)} size="md" />
+                        <DeleteButton href={route('departments.destroy', department.id)} />
+                    </>
+                }
+            >
                 <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <h3 className="text-lg font-medium text-neutral-dark dark:text-gray-300 mb-4">Informações Gerais</h3>
-                            <dl className="space-y-3">
-                                <div>
-                                    <dt className="text-sm font-medium text-neutral-medium dark:text-gray-400">Título</dt>
-                                    <dd className="text-sm text-neutral-dark dark:text-gray-300">{department.title}</dd>
-                                </div>
-                                {department.description && (
-                                    <div>
-                                        <dt className="text-sm font-medium text-neutral-medium dark:text-gray-400">Descrição</dt>
-                                        <dd className="text-sm text-neutral-dark dark:text-gray-300">{department.description}</dd>
-                                    </div>
-                                )}
-                                <div>
-                                    <dt className="text-sm font-medium text-neutral-medium dark:text-gray-400">Status</dt>
-                                    <dd className="text-sm text-neutral-dark dark:text-gray-300">
-                                        {department.is_active ? (
-                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                                                Ativo
-                                            </span>
-                                        ) : (
-                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                                                Inativo
-                                            </span>
-                                        )}
-                                    </dd>
-                                </div>
-                                <div>
-                                    <dt className="text-sm font-medium text-neutral-medium dark:text-gray-400">Total de Membros</dt>
-                                    <dd className="text-sm text-neutral-dark dark:text-gray-300">
-                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                            {department.members_count} membros
-                                        </span>
-                                    </dd>
-                                </div>
-                            </dl>
-                        </div>
-                    </div>
+                    <DetailSection title="Informações">
+                        <DetailGrid>
+                            <DetailField label="Título" value={department.title} />
+                            <DetailField label="Descrição" value={department.description} />
+                            <DetailField label="Status">
+                                <Badge tone={department.is_active ? 'success' : 'neutral'}>
+                                    {department.is_active ? 'Ativo' : 'Inativo'}
+                                </Badge>
+                            </DetailField>
+                            <DetailField label="Total de membros">
+                                <Badge tone="info">
+                                    {department.members_count} {department.members_count === 1 ? 'membro' : 'membros'}
+                                </Badge>
+                            </DetailField>
+                        </DetailGrid>
+                    </DetailSection>
 
                     {department.responsible_members.length > 0 && (
-                        <div className="border-t border-neutral-medium pt-6">
-                            <h3 className="text-lg font-medium text-neutral-dark dark:text-gray-300 mb-4">Líderes</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <DetailSection title="Líderes">
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                                 {department.responsible_members.map((member) => (
                                     <MemberCard key={member.id} member={member} />
                                 ))}
                             </div>
-                        </div>
+                        </DetailSection>
                     )}
 
                     {department.members.length > 0 && (
-                        <div className="border-t border-neutral-medium pt-6">
-                            <h3 className="text-lg font-medium text-neutral-dark dark:text-gray-300 mb-4">Membros</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <DetailSection title="Membros">
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                                 {department.members.map((member) => (
                                     <MemberCard key={member.id} member={member} />
                                 ))}
                             </div>
-                        </div>
+                        </DetailSection>
                     )}
 
-                    <div className="border-t border-neutral-medium pt-6">
-                        <div className="flex gap-4">
-                            <Link href={route('departments.index')}>
-                                <SecondaryButton type="button">Voltar</SecondaryButton>
-                            </Link>
-                            <LinkButton href={route('departments.edit', department.id)}>Editar</LinkButton>
-                            <DeleteButton href={route('departments.destroy', department.id)} />
-                        </div>
-                    </div>
+                    <DetailActions>
+                        <BackButton href={route('departments.index')} />
+                    </DetailActions>
                 </div>
             </PageCard>
         </AppPage>

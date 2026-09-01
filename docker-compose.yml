@@ -1,3 +1,8 @@
+# Ambiente de desenvolvimento: apenas MySQL.
+# A aplicação Laravel roda no host com PHP 8.5 (extensões: pdo_mysql, mbstring,
+# openssl, gd, xml, curl, zip, bcmath, intl, tokenizer, ctype, fileinfo).
+# Redis, workers e scheduler não fazem parte deste Compose.
+
 services:
   mysql:
     image: mysql:8.0

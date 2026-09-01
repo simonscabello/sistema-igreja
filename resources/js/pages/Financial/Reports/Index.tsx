@@ -2,6 +2,7 @@ import { Link } from '@inertiajs/react';
 import { ArrowRight, CalendarDays, ChartColumn, LayoutList } from 'lucide-react';
 import AppLayout, { AppPage } from '@/layouts/AppLayout';
 import { PageCard } from '@/components/ui/PageCard';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { route } from '@/utils';
 
 const reports = [
@@ -33,29 +34,28 @@ function Index() {
                 description="Escolha o recorte. Os números vêm das transações já lançadas."
                 breadcrumbs={[{ label: 'Finanças', href: route('financial.dashboard.index') }, { label: 'Relatórios' }]}
             >
-                <ul className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface dark:divide-line-dark dark:border-line-dark dark:bg-surface-dark">
+                <div className="grid gap-4 md:grid-cols-3">
                     {reports.map((report) => {
                         const Icon = report.icon;
 
                         return (
-                            <li key={report.href}>
-                                <Link
-                                    href={route(report.href)}
-                                    className="flex items-start gap-4 px-4 py-4 hover:bg-canvas dark:hover:bg-white/5 sm:px-5"
-                                >
-                                    <span className="mt-0.5 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                                        <Icon className="h-5 w-5" />
-                                    </span>
-                                    <span className="min-w-0 flex-1">
-                                        <span className="block font-semibold text-ink dark:text-ink-inverse">{report.title}</span>
-                                        <span className="mt-0.5 block text-sm text-ink-muted dark:text-ink-inverse/70">{report.use}</span>
-                                    </span>
-                                    <ArrowRight className="mt-2 h-4 w-4 shrink-0 text-ink-muted" />
-                                </Link>
-                            </li>
+                            <Link key={report.href} href={route(report.href)} className="group">
+                                <Card className="h-full shadow-none transition-colors group-hover:bg-muted/40">
+                                    <CardHeader>
+                                        <span className="mb-2 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                                            <Icon className="h-5 w-5" />
+                                        </span>
+                                        <CardTitle className="flex items-center justify-between gap-2 text-base">
+                                            {report.title}
+                                            <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                                        </CardTitle>
+                                        <CardDescription>{report.use}</CardDescription>
+                                    </CardHeader>
+                                </Card>
+                            </Link>
                         );
                     })}
-                </ul>
+                </div>
             </PageCard>
         </AppPage>
     );

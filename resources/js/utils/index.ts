@@ -1,6 +1,8 @@
 import { route as ziggyRoute } from 'ziggy-js';
 import { PageProps } from './types';
 
+export { cn } from '@/lib/utils';
+
 export function route(name: string, params?: Record<string, unknown> | number, absolute?: boolean): string {
     const page = (window as unknown as { __inertia_page?: { props: PageProps } }).__inertia_page;
     const ziggy = page?.props?.ziggy ?? (window as unknown as { Ziggy?: PageProps['ziggy'] }).Ziggy;
@@ -26,7 +28,7 @@ export function formatDateBr(value: string | null | undefined): string {
 }
 
 export function formatCurrency(value: number | string | null | undefined): string {
-    const amount = typeof value === 'string' ? parseFloat(value) : value ?? 0;
+    const amount = typeof value === 'string' ? parseFloat(value) : (value ?? 0);
 
     return new Intl.NumberFormat('pt-BR', {
         style: 'currency',
@@ -45,8 +47,4 @@ export function getInitials(name: string): string {
         .slice(0, 2)
         .map((part) => part[0]?.toUpperCase() ?? '')
         .join('');
-}
-
-export function cn(...classes: Array<string | false | null | undefined>): string {
-    return classes.filter(Boolean).join(' ');
 }

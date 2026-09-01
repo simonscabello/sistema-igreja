@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import { router } from '@inertiajs/react';
 import AppLayout, { AppPage } from '@/layouts/AppLayout';
-import { LinkButton } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
+import { EditButton, RowActions, ViewButton } from '@/components/ui/Button';
+import { ActionsTh, DesktopOnly, MobileCard, MobileCardHeader, MobileList, Table, TableShell, TBody, Td, Th, THead, Tr } from '@/components/ui/DataTable';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { PageCard, Pagination, SearchForm } from '@/components/ui/PageCard';
 import { Select } from '@/components/ui/Input';
 import { route } from '@/utils';
 import { Paginated } from '@/types';
+import { Building2 } from 'lucide-react';
 
 interface Department {
     id: number;
@@ -29,25 +33,10 @@ const STATUS_OPTIONS = [
     { value: 'inactive', label: 'Inativos' },
 ];
 
-function StatusBadge({ isActive }: { isActive: boolean }) {
-    if (isActive) {
-        return (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                Ativo
-            </span>
-        );
-    }
-
-    return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-            Inativo
-        </span>
-    );
-}
-
 function Index({ departments, filters = {} }: IndexProps) {
     const [search, setSearch] = useState(filters.search ?? '');
     const [status, setStatus] = useState(filters.status ?? '');
+    const empty = departments.data.length === 0;
 
     const handleSearch = () => {
         router.get(
@@ -65,104 +54,90 @@ function Index({ departments, filters = {} }: IndexProps) {
                 actions={route('departments.create')}
                 actionsLabel="Novo departamento"
             >
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-4 gap-3">
-                    <SearchForm
-                        action={route('departments.index')}
-                        placeholder="Buscar departamentos..."
-                        value={search}
-                        onChange={setSearch}
-                        onSubmit={handleSearch}
+                <div className="mb-4">
+                    <SearchForm placeholder="Buscar departamentos..." value={search} onChange={setSearch} onSubmit={handleSearch}>
+                        <div className="w-full sm:w-48">
+                            <Select
+                                id="status"
+                                value={status}
+                                onChange={(event) => setStatus(event.target.value)}
+                                options={STATUS_OPTIONS}
+                                placeholder=""
+                            />
+                        </div>
+                    </SearchForm>
+                </div>
+
+                {empty ? (
+                    <EmptyState
+                        title={search || status ? 'Nenhum departamento encontrado' : 'Nenhum departamento cadastrado'}
+                        description={search || status ? 'Tente outro nome ou status.' : 'Cadastre os ministérios da igreja.'}
+                        actionLabel={search || status ? undefined : 'Novo departamento'}
+                        actionHref={search || status ? undefined : route('departments.create')}
+                        icon={<Building2 className="h-8 w-8" />}
                     />
-                    <div className="w-full sm:w-48">
-                        <Select
-                            id="status"
-                            value={status}
-                            onChange={(event) => setStatus(event.target.value)}
-                            options={STATUS_OPTIONS}
-                            placeholder=""
-                        />
-                    </div>
-                    <button
-                        type="button"
-                        onClick={handleSearch}
-                        className="inline-flex items-center justify-center px-4 py-3 text-sm bg-primary text-white rounded-md hover:bg-primary-dark"
-                    >
-                        Buscar
-                    </button>
-                </div>
+                ) : (
+                    <>
+                        <DesktopOnly>
+                            <TableShell>
+                                <Table>
+                                    <THead>
+                                        <Th>Título</Th>
+                                        <Th>Descrição</Th>
+                                        <Th>Membros</Th>
+                                        <Th>Status</Th>
+                                        <ActionsTh />
+                                    </THead>
+                                    <TBody>
+                                        {departments.data.map((department) => (
+                                            <Tr key={department.id}>
+                                                <Td className="font-medium">{department.title}</Td>
+                                                <Td className="max-w-xs truncate text-muted-foreground">{department.description ?? '—'}</Td>
+                                                <Td className="tabular">{department.members_count}</Td>
+                                                <Td>
+                                                    <Badge tone={department.is_active ? 'success' : 'neutral'}>
+                                                        {department.is_active ? 'Ativo' : 'Inativo'}
+                                                    </Badge>
+                                                </Td>
+                                                <Td align="right">
+                                                    <RowActions>
+                                                        <ViewButton href={route('departments.show', department.id)} />
+                                                        <EditButton href={route('departments.edit', department.id)} />
+                                                    </RowActions>
+                                                </Td>
+                                            </Tr>
+                                        ))}
+                                    </TBody>
+                                </Table>
+                            </TableShell>
+                        </DesktopOnly>
 
-                <div className="hidden lg:block overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                    <table className="min-w-full divide-y divide-neutral-medium dark:divide-gray-700">
-                        <thead className="bg-neutral-light dark:bg-gray-700">
-                            <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Título</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Descrição</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Membros</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Status</th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white dark:bg-gray-800 divide-y divide-neutral-medium dark:divide-gray-700">
-                            {departments.data.length === 0 ? (
-                                <tr>
-                                    <td colSpan={5} className="px-6 py-4 text-center text-neutral-medium dark:text-gray-500">
-                                        Nenhum departamento encontrado.
-                                    </td>
-                                </tr>
-                            ) : (
-                                departments.data.map((department) => (
-                                    <tr key={department.id} className="hover:bg-neutral-light dark:hover:bg-gray-700 transition-colors duration-200">
-                                        <td className="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300 font-medium">{department.title}</td>
-                                        <td className="px-6 py-4 text-neutral-dark dark:text-gray-300">
-                                            {department.description ? (
-                                                department.description.length > 50 ? `${department.description.slice(0, 50)}...` : department.description
-                                            ) : (
-                                                <span className="text-neutral-medium dark:text-gray-500">-</span>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                                {department.members_count} membros
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <StatusBadge isActive={department.is_active} />
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <div className="flex justify-end gap-2">
-                                                <LinkButton href={route('departments.show', department.id)} className="text-xs px-3 py-1">
-                                                    Ver
-                                                </LinkButton>
-                                                <LinkButton href={route('departments.edit', department.id)} className="text-xs px-3 py-1">
-                                                    Editar
-                                                </LinkButton>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                        <MobileList>
+                            {departments.data.map((department) => (
+                                <MobileCard key={department.id}>
+                                    <MobileCardHeader
+                                        actions={
+                                            <RowActions>
+                                                <ViewButton href={route('departments.show', department.id)} />
+                                                <EditButton href={route('departments.edit', department.id)} />
+                                            </RowActions>
+                                        }
+                                    >
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <p className="font-semibold">{department.title}</p>
+                                            <Badge tone={department.is_active ? 'success' : 'neutral'}>
+                                                {department.is_active ? 'Ativo' : 'Inativo'}
+                                            </Badge>
+                                        </div>
+                                        <p className="mt-1 text-sm text-muted-foreground">{department.members_count} membros</p>
+                                    </MobileCardHeader>
+                                </MobileCard>
+                            ))}
+                        </MobileList>
 
-                <div className="space-y-3 lg:hidden">
-                    {departments.data.length === 0 ? (
-                        <p className="py-8 text-center text-sm text-ink-muted">Nenhum departamento encontrado.</p>
-                    ) : (
-                        departments.data.map((department) => (
-                            <div key={department.id} className="rounded-xl border border-line bg-surface p-4 dark:border-line-dark dark:bg-surface-dark">
-                                <p className="font-semibold">{department.title}</p>
-                                <p className="mt-1 text-sm text-ink-muted">{department.members_count} membros</p>
-                                <div className="mt-3 flex gap-3">
-                                    <LinkButton href={route('departments.show', department.id)}>Ver</LinkButton>
-                                    <LinkButton href={route('departments.edit', department.id)}>Editar</LinkButton>
-                                </div>
-                            </div>
-                        ))
-                    )}
-                </div>
-
-                <Pagination paginator={departments} />
+                        <Pagination paginator={departments} />
+                    </>
+                )}
             </PageCard>
         </AppPage>
     );

@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { router } from '@inertiajs/react';
 import AppLayout, { AppPage } from '@/layouts/AppLayout';
-import { LinkButton } from '@/components/ui/Button';
-import { DeleteButton } from '@/components/ui/DeleteButton';
-import { Can } from '@/components/layout/Can';
+import { RowActionsMenu } from '@/components/ui/RowActionsMenu';
+import { ActionsTh, DesktopOnly, MobileCard, MobileCardHeader, MobileList, Table, TableShell, TBody, Td, Th, THead, Tr } from '@/components/ui/DataTable';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { PageCard, Pagination, SearchForm } from '@/components/ui/PageCard';
+import { useCan } from '@/hooks/useCan';
 import { route } from '@/utils';
 import { ActiveStatusBadge } from '../components/StatusBadge';
 import { PaginatedSubcategories } from '../types';
+import { Tag } from 'lucide-react';
 
 interface IndexProps {
     subcategories: PaginatedSubcategories;
@@ -18,73 +20,95 @@ interface IndexProps {
 
 function Index({ subcategories, filters = {} }: IndexProps) {
     const [search, setSearch] = useState(filters.search ?? '');
+    const empty = subcategories.data.length === 0;
+    const canManage = useCan('gerenciar_categorias_financeiras');
 
     const handleSearch = () => {
-        router.get(
-            route('financial.subcategories.index'),
-            { search: search || undefined },
-            { preserveState: true, replace: true },
-        );
+        router.get(route('financial.subcategories.index'), { search: search || undefined }, { preserveState: true, replace: true });
     };
 
     return (
         <AppPage>
-            <PageCard title="Subcategorias" description="Contas usadas nas transações. Não dá para apagar se já tiverem lançamentos." actions={route('financial.subcategories.create')} actionsLabel="Nova subcategoria">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3">
-                    <SearchForm
-                        action={route('financial.subcategories.index')}
-                        placeholder="Buscar subcategorias..."
-                        value={search}
-                        onChange={setSearch}
-                        onSubmit={handleSearch}
+            <PageCard
+                title="Subcategorias"
+                description="Contas usadas nas transações. Não dá para apagar se já tiverem lançamentos."
+                actions={route('financial.subcategories.create')}
+                actionsLabel="Nova subcategoria"
+            >
+                <div className="mb-4">
+                    <SearchForm placeholder="Buscar subcategorias..." value={search} onChange={setSearch} onSubmit={handleSearch} />
+                </div>
+
+                {empty ? (
+                    <EmptyState
+                        title={search ? 'Nenhuma subcategoria encontrada' : 'Nenhuma subcategoria cadastrada'}
+                        description={search ? 'Tente outro nome.' : 'Crie as contas usadas nos lançamentos.'}
+                        actionLabel={search ? undefined : 'Nova subcategoria'}
+                        actionHref={search ? undefined : route('financial.subcategories.create')}
+                        icon={<Tag className="h-8 w-8" />}
                     />
-                </div>
+                ) : (
+                    <>
+                        <DesktopOnly>
+                            <TableShell>
+                                <Table>
+                                    <THead>
+                                        <Th>Nome</Th>
+                                        <Th>Categoria</Th>
+                                        <Th>Status</Th>
+                                        <ActionsTh />
+                                    </THead>
+                                    <TBody>
+                                        {subcategories.data.map((subcategory) => (
+                                            <Tr key={subcategory.id}>
+                                                <Td className="font-medium">{subcategory.name}</Td>
+                                                <Td>{subcategory.financial_category?.name ?? '—'}</Td>
+                                                <Td>
+                                                    <ActiveStatusBadge active={subcategory.active} />
+                                                </Td>
+                                                <Td align="right">
+                                                    <RowActionsMenu
+                                                        editHref={route('financial.subcategories.edit', subcategory.id)}
+                                                        deleteHref={
+                                                            canManage ? route('financial.subcategories.destroy', subcategory.id) : undefined
+                                                        }
+                                                    />
+                                                </Td>
+                                            </Tr>
+                                        ))}
+                                    </TBody>
+                                </Table>
+                            </TableShell>
+                        </DesktopOnly>
 
-                <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                    <table className="min-w-full divide-y divide-neutral-medium dark:divide-gray-700">
-                        <thead className="bg-neutral-light dark:bg-gray-700">
-                            <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Nome</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Categoria</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Status</th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white dark:bg-gray-800 divide-y divide-neutral-medium dark:divide-gray-700">
-                            {subcategories.data.length === 0 ? (
-                                <tr>
-                                    <td colSpan={4} className="px-6 py-4 text-center text-neutral-medium dark:text-gray-500">
-                                        Nenhuma subcategoria encontrada.
-                                    </td>
-                                </tr>
-                            ) : (
-                                subcategories.data.map((subcategory) => (
-                                    <tr key={subcategory.id} className="hover:bg-neutral-light dark:hover:bg-gray-700 transition-colors duration-200">
-                                        <td className="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">{subcategory.name}</td>
-                                        <td className="px-6 py-4 text-neutral-dark dark:text-gray-300">
-                                            {subcategory.financial_category?.name ?? '-'}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
+                        <MobileList>
+                            {subcategories.data.map((subcategory) => (
+                                <MobileCard key={subcategory.id}>
+                                    <MobileCardHeader
+                                        actions={
+                                            <RowActionsMenu
+                                                editHref={route('financial.subcategories.edit', subcategory.id)}
+                                                deleteHref={
+                                                    canManage ? route('financial.subcategories.destroy', subcategory.id) : undefined
+                                                }
+                                            />
+                                        }
+                                    >
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <p className="font-semibold">{subcategory.name}</p>
                                             <ActiveStatusBadge active={subcategory.active} />
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <div className="flex justify-end gap-2">
-                                                <LinkButton href={route('financial.subcategories.edit', subcategory.id)} className="text-xs px-3 py-1">
-                                                    Editar
-                                                </LinkButton>
-                                                <Can permission="gerenciar_categorias_financeiras">
-                                                    <DeleteButton href={route('financial.subcategories.destroy', subcategory.id)} />
-                                                </Can>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                                        </div>
+                                        <p className="mt-1 text-sm text-muted-foreground">
+                                            {subcategory.financial_category?.name ?? '—'}
+                                        </p>
+                                    </MobileCardHeader>
+                                </MobileCard>
+                            ))}
+                        </MobileList>
 
-                <Pagination paginator={subcategories} />
+                        <Pagination paginator={subcategories} />
+                    </>
+                )}
             </PageCard>
         </AppPage>
     );

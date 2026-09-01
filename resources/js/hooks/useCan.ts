@@ -8,7 +8,10 @@ export function useCan(permission: string): boolean {
 }
 
 export function useCanAny(permissions: string[]): boolean {
-    return permissions.some((permission) => useCan(permission));
+    const { auth } = usePage<PageProps>().props;
+    const userPermissions = auth.user?.permissions ?? [];
+
+    return permissions.some((permission) => userPermissions.includes(permission));
 }
 
 export function useAuthUser() {

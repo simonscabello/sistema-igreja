@@ -14,10 +14,11 @@ class DatabaseSeeder extends Seeder
     {
         if (App::environment('production')) {
             $this->command->error('Atenção: Seeders não devem ser executados no ambiente de produção!');
+
             return;
         }
 
-        $this->command->info('Iniciando seeders para ambiente: ' . App::environment());
+        $this->command->info('Iniciando seeders para ambiente: '.App::environment());
 
         $this->call([
             // Seeders de dados base
@@ -36,6 +37,7 @@ class DatabaseSeeder extends Seeder
 
             // Seeders de conteúdo
             SongSeeder::class,
+            WorshipFunctionSeeder::class,
             WorshipSetSeeder::class,
 
             // Outros seeders

@@ -34,13 +34,13 @@
         </script>
     @endif
 </head>
-<body class="font-sans antialiased bg-canvas dark:bg-canvas-dark min-h-dvh">
+<body class="font-sans antialiased bg-background min-h-dvh">
     <!--
       THESIS: church office desk, not a SaaS command center of identical KPI cards.
-      OWN-WORLD: mint-stone canvas, SIB teal #2F8A7E, Figtree, job-grouped nav.
+      OWN-WORLD: zinc canvas, near-black surfaces, high-contrast actions, Figtree, job-grouped nav.
       STORY: staff see where they are, what needs attention, and the next action.
       FIRST VIEWPORT: Início as this week's notice board — birthdays, visitors, caixa, next culto.
-      FORM: operate / secretaria SIB / restrained teal.
+      FORM: operate / secretaria SIB / restrained zinc dark.
       FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
     -->
     @inertia

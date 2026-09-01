@@ -2,17 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class WorshipSet extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'singer',
-        'preacher',
         'date',
         'period',
         'order_notes',
@@ -26,9 +25,14 @@ class WorshipSet extends Model
     public function songs(): BelongsToMany
     {
         return $this->belongsToMany(Song::class, 'song_worship_set')
-                    ->withPivot('order', 'key_used')
-                    ->withTimestamps()
-                    ->orderBy('pivot_order');
+            ->withPivot('order', 'key_used')
+            ->withTimestamps()
+            ->orderBy('pivot_order');
+    }
+
+    public function assignments(): HasMany
+    {
+        return $this->hasMany(WorshipSetAssignment::class);
     }
 
     public function getPeriodLabelAttribute(): string

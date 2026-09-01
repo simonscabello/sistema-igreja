@@ -3,9 +3,11 @@ import axios from 'axios';
 import Chart from 'react-apexcharts';
 import type { ApexOptions } from 'apexcharts';
 import AppLayout, { AppPage } from '@/layouts/AppLayout';
-import { Button } from '@/components/ui/Button';
+import { Button, CreateButton } from '@/components/ui/Button';
 import { PageCard } from '@/components/ui/PageCard';
-import { Spinner } from '@/components/ui/Alert';
+import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTheme } from '@/hooks/useTheme';
 import { cn, formatCurrency, route } from '@/utils';
 import { DashboardData } from '../types';
@@ -24,8 +26,8 @@ function Index() {
     const [data, setData] = useState<DashboardData | null>(null);
 
     const isDark = theme === 'dark';
-    const labelColor = isDark ? '#9CB3AF' : '#4D6561';
-    const gridColor = isDark ? '#2A3F3C' : '#D5E0DD';
+    const labelColor = isDark ? '#A1A1AA' : '#71717A';
+    const gridColor = isDark ? '#27272A' : '#E4E4E7';
 
     const loadData = useCallback(async (selectedPeriod: number) => {
         setLoading(true);
@@ -133,71 +135,61 @@ function Index() {
                 title="Caixa"
                 description="Entradas e saídas do período. O saldo considera só estas datas."
                 action={
-                    <Button href={route('financial.transactions.create')} size="sm">
+                    <CreateButton href={route('financial.transactions.create')} size="sm">
                         Nova transação
-                    </Button>
+                    </CreateButton>
                 }
             >
                 <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
                     <dl className="flex flex-wrap gap-x-8 gap-y-3">
                         <div>
-                            <dt className="text-sm text-ink-muted">Entradas</dt>
+                            <dt className="text-sm text-muted-foreground">Entradas</dt>
                             <dd className="tabular text-xl font-semibold text-entrada">{formatCurrency(data?.total_entradas ?? 0)}</dd>
                         </div>
                         <div>
-                            <dt className="text-sm text-ink-muted">Saídas</dt>
+                            <dt className="text-sm text-muted-foreground">Saídas</dt>
                             <dd className="tabular text-xl font-semibold text-saida">{formatCurrency(data?.total_saidas ?? 0)}</dd>
                         </div>
                         <div>
-                            <dt className="text-sm text-ink-muted">Saldo do período</dt>
-                            <dd
-                                className={cn(
-                                    'tabular text-xl font-semibold',
-                                    (data?.saldo ?? 0) >= 0 ? 'text-ink dark:text-ink-inverse' : 'text-saida',
-                                )}
-                            >
+                            <dt className="text-sm text-muted-foreground">Saldo do período</dt>
+                            <dd className={cn('tabular text-xl font-semibold', (data?.saldo ?? 0) >= 0 ? 'text-foreground' : 'text-saida')}>
                                 {formatCurrency(data?.saldo ?? 0)}
                             </dd>
                         </div>
                     </dl>
 
-                    <div className="flex rounded-lg border border-line p-0.5 dark:border-line-dark" role="group" aria-label="Período">
-                        {PERIOD_OPTIONS.map((option) => (
-                            <button
-                                key={option.value}
-                                type="button"
-                                onClick={() => setPeriod(option.value)}
-                                className={cn(
-                                    'min-h-9 rounded-md px-3 text-sm font-medium',
-                                    period === option.value
-                                        ? 'bg-primary text-white'
-                                        : 'text-ink-muted hover:text-ink dark:text-ink-inverse/70',
-                                )}
-                            >
-                                {option.label}
-                            </button>
-                        ))}
-                    </div>
+                    <Tabs value={String(period)} onValueChange={(value) => setPeriod(Number(value))}>
+                        <TabsList>
+                            {PERIOD_OPTIONS.map((option) => (
+                                <TabsTrigger key={option.value} value={String(option.value)}>
+                                    {option.label}
+                                </TabsTrigger>
+                            ))}
+                        </TabsList>
+                    </Tabs>
                 </div>
 
-                <div className="rounded-xl border border-line bg-surface p-4 dark:border-line-dark dark:bg-surface-dark sm:p-5">
-                    {error ? (
-                        <div className="flex h-80 flex-col items-center justify-center gap-3 text-sm text-ink-muted">
-                            Não foi possível carregar o gráfico.
-                            <Button variant="secondary" size="sm" onClick={() => loadData(period)}>
-                                Tentar de novo
-                            </Button>
-                        </div>
-                    ) : loading && !data ? (
-                        <div className="flex h-80 items-center justify-center">
-                            <Spinner />
-                        </div>
-                    ) : (
-                        <div className={loading ? 'opacity-60' : undefined}>
-                            <Chart options={chartOptions} series={chartSeries} type="area" height={320} />
-                        </div>
-                    )}
-                </div>
+                <Card className="shadow-none">
+                    <CardContent className="p-4 sm:p-5">
+                        {error ? (
+                            <div className="flex h-80 flex-col items-center justify-center gap-3 text-sm text-muted-foreground">
+                                Não foi possível carregar o gráfico.
+                                <Button variant="secondary" size="sm" onClick={() => loadData(period)}>
+                                    Tentar de novo
+                                </Button>
+                            </div>
+                        ) : loading && !data ? (
+                            <div className="flex h-80 flex-col justify-center gap-3">
+                                <Skeleton className="h-8 w-40" />
+                                <Skeleton className="h-64 w-full" />
+                            </div>
+                        ) : (
+                            <div className={loading ? 'opacity-60' : undefined}>
+                                <Chart options={chartOptions} series={chartSeries} type="area" height={320} />
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
             </PageCard>
         </AppPage>
     );

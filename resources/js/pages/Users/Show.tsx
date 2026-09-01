@@ -1,7 +1,8 @@
-import { Link } from '@inertiajs/react';
 import AppLayout, { AppPage } from '@/layouts/AppLayout';
-import { LinkButton, SecondaryButton } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
+import { BackButton, EditButton } from '@/components/ui/Button';
 import { DeleteButton } from '@/components/ui/DeleteButton';
+import { DetailActions, DetailField, DetailGrid, DetailSection } from '@/components/ui/Detail';
 import { PageCard } from '@/components/ui/PageCard';
 import { formatDateBr, route } from '@/utils';
 
@@ -28,59 +29,41 @@ interface ShowProps {
 function Show({ user }: ShowProps) {
     return (
         <AppPage>
-            <PageCard title="Detalhes do Usuário">
+            <PageCard
+                title={user.name}
+                breadcrumbs={[{ label: 'Usuários', href: route('users.index') }, { label: user.name }]}
+                action={
+                    <>
+                        <EditButton href={route('users.edit', user.id)} size="md" />
+                        <DeleteButton href={route('users.destroy', user.id)} title="Excluir usuário?" />
+                    </>
+                }
+            >
                 <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium text-neutral-dark dark:text-gray-300">Nome</label>
-                            <p className="mt-1 text-sm text-neutral-medium dark:text-gray-400 bg-neutral-light dark:bg-gray-700 px-3 py-2 rounded-md">
-                                {user.name}
-                            </p>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-neutral-dark dark:text-gray-300">Email</label>
-                            <p className="mt-1 text-sm text-neutral-medium dark:text-gray-400 bg-neutral-light dark:bg-gray-700 px-3 py-2 rounded-md">
-                                {user.email}
-                            </p>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-neutral-dark dark:text-gray-300">Deve alterar senha</label>
-                            <p className="mt-1 text-sm text-neutral-medium dark:text-gray-400 bg-neutral-light dark:bg-gray-700 px-3 py-2 rounded-md">
-                                {user.must_change_password ? 'Sim' : 'Não'}
-                            </p>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-neutral-dark dark:text-gray-300">Criado em</label>
-                            <p className="mt-1 text-sm text-neutral-medium dark:text-gray-400 bg-neutral-light dark:bg-gray-700 px-3 py-2 rounded-md">
-                                {formatDateBr(user.created_at)}
-                            </p>
-                        </div>
-                    </div>
+                    <DetailSection title="Dados de acesso">
+                        <DetailGrid>
+                            <DetailField label="Nome" value={user.name} />
+                            <DetailField label="E-mail" value={user.email} />
+                            <DetailField label="Deve alterar senha" value={user.must_change_password ? 'Sim' : 'Não'} />
+                            <DetailField label="Criado em" value={formatDateBr(user.created_at)} />
+                        </DetailGrid>
+                    </DetailSection>
 
-                    <div className="border-t border-neutral-medium pt-6">
-                        <h3 className="text-lg font-medium text-neutral-dark dark:text-gray-300 mb-4">Roles</h3>
+                    <DetailSection title="Papéis">
                         {user.roles.length === 0 ? (
-                            <p className="text-neutral-medium dark:text-gray-500">Nenhuma role atribuída.</p>
+                            <p className="text-sm text-muted-foreground">Nenhum papel atribuído.</p>
                         ) : (
                             <div className="flex flex-wrap gap-2">
                                 {user.roles.map((role) => (
-                                    <span key={role.id} className="inline-block bg-primary text-white text-xs px-3 py-1 rounded-full">
-                                        {role.display_name ?? role.name}
-                                    </span>
+                                    <Badge key={role.id}>{role.display_name ?? role.name}</Badge>
                                 ))}
                             </div>
                         )}
-                    </div>
+                    </DetailSection>
 
-                    <div className="border-t border-neutral-medium pt-6">
-                        <div className="flex gap-4">
-                            <Link href={route('users.index')}>
-                                <SecondaryButton type="button">Voltar</SecondaryButton>
-                            </Link>
-                            <LinkButton href={route('users.edit', user.id)}>Editar</LinkButton>
-                            <DeleteButton href={route('users.destroy', user.id)} title="Excluir usuário?" />
-                        </div>
-                    </div>
+                    <DetailActions>
+                        <BackButton href={route('users.index')} />
+                    </DetailActions>
                 </div>
             </PageCard>
         </AppPage>

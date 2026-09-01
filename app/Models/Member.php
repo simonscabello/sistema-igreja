@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Traits\HasFiles;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Collection;
 
 class Member extends Model
 {
@@ -43,13 +43,13 @@ class Member extends Model
     public function responsibleDepartments(): BelongsToMany
     {
         return $this->belongsToMany(Department::class, 'department_responsible_member')
-                    ->withTimestamps();
+            ->withTimestamps();
     }
 
     public function departments(): BelongsToMany
     {
         return $this->belongsToMany(Department::class, 'department_member')
-                    ->withTimestamps();
+            ->withTimestamps();
     }
 
     public function getAllDepartmentsAttribute(): Collection
@@ -60,5 +60,11 @@ class Member extends Model
     public function foto(): MorphToMany
     {
         return $this->files('foto_perfil');
+    }
+
+    public function worshipFunctions(): BelongsToMany
+    {
+        return $this->belongsToMany(WorshipFunction::class, 'member_worship_function')
+            ->withTimestamps();
     }
 }

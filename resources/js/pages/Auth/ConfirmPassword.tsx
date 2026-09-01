@@ -1,7 +1,7 @@
 import { FormEventHandler, ReactNode } from 'react';
-import { useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import GuestLayout from '@/layouts/GuestLayout';
-import { TextInput } from '@/components/ui/Input';
+import { PasswordInput } from '@/components/ui/Input';
 import { PrimaryButton } from '@/components/ui/Button';
 import { route } from '@/utils';
 
@@ -17,15 +17,14 @@ function ConfirmPassword() {
 
     return (
         <>
-            <div className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-                Esta é uma área segura da aplicação. Por favor, confirme sua senha antes de continuar.
-            </div>
+            <Head title="Confirmar senha" />
+            <h1 className="mb-1 text-center text-xl font-semibold text-foreground">Confirmar senha</h1>
+            <p className="mb-6 text-center text-sm text-muted-foreground">Área protegida. Confirme sua senha para continuar.</p>
 
-            <form onSubmit={submit}>
-                <TextInput
+            <form onSubmit={submit} className="space-y-4">
+                <PasswordInput
                     id="password"
                     label="Senha"
-                    type="password"
                     name="password"
                     value={data.password}
                     autoComplete="current-password"
@@ -34,8 +33,8 @@ function ConfirmPassword() {
                     onChange={(event) => setData('password', event.target.value)}
                 />
 
-                <div className="flex justify-end mt-4">
-                    <PrimaryButton type="submit" disabled={processing}>
+                <div className="flex justify-end pt-2">
+                    <PrimaryButton type="submit" processing={processing}>
                         Confirmar
                     </PrimaryButton>
                 </div>

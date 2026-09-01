@@ -1,6 +1,6 @@
 import { usePage } from '@inertiajs/react';
-import { useFlashMessages } from '@/hooks';
-import { Alert } from '@/components/ui/Alert';
+import { useEffect, useRef } from 'react';
+import { toast } from 'sonner';
 import { PageProps } from '@/types';
 
 interface CanProps {
@@ -25,42 +25,34 @@ export function Can({ permission, permissions, children }: CanProps) {
 }
 
 export function FlashMessages() {
-    const { flash, visible } = useFlashMessages();
+    const { flash } = usePage<PageProps>().props;
+    const lastKey = useRef<string>('');
 
-    if (!visible) {
-        return null;
-    }
+    useEffect(() => {
+        const key = [flash.success, flash.error, flash.warning, flash.status].filter(Boolean).join('|');
 
-    const hasMessage = flash.success || flash.error || flash.warning || flash.status;
+        if (!key || key === lastKey.current) {
+            return;
+        }
 
-    if (!hasMessage) {
-        return null;
-    }
+        lastKey.current = key;
 
-    return (
-        <div className="pointer-events-none fixed inset-x-0 top-16 z-[60] flex justify-center px-4 sm:justify-end sm:px-6">
-            <div className="pointer-events-auto w-full max-w-md">
-                {flash.success && (
-                    <Alert type="success" dismissible>
-                        {flash.success}
-                    </Alert>
-                )}
-                {flash.error && (
-                    <Alert type="error" dismissible>
-                        {flash.error}
-                    </Alert>
-                )}
-                {flash.warning && (
-                    <Alert type="warning" dismissible>
-                        {flash.warning}
-                    </Alert>
-                )}
-                {flash.status && flash.status !== 'profile-updated' && (
-                    <Alert type="info" dismissible>
-                        {flash.status}
-                    </Alert>
-                )}
-            </div>
-        </div>
-    );
+        if (flash.success) {
+            toast.success(flash.success);
+        }
+
+        if (flash.error) {
+            toast.error(flash.error);
+        }
+
+        if (flash.warning) {
+            toast.warning(flash.warning);
+        }
+
+        if (flash.status && flash.status !== 'profile-updated' && flash.status !== 'password-updated') {
+            toast.message(flash.status);
+        }
+    }, [flash.success, flash.error, flash.warning, flash.status]);
+
+    return null;
 }

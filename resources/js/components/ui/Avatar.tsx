@@ -1,4 +1,5 @@
 import { getInitials, cn } from '@/utils';
+import { Avatar as UiAvatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface AvatarProps {
     name: string;
@@ -7,26 +8,11 @@ interface AvatarProps {
     className?: string;
 }
 
-export function Avatar({ name, imageUrl, size = 'w-10 h-10', className }: AvatarProps) {
-    if (imageUrl) {
-        return (
-            <img
-                src={imageUrl}
-                alt={`Foto de ${name}`}
-                className={cn('h-full w-full rounded-full object-cover flex-shrink-0', size, className)}
-            />
-        );
-    }
-
+export function Avatar({ name, imageUrl, size = 'h-10 w-10', className }: AvatarProps) {
     return (
-        <div
-            className={cn(
-                'rounded-full bg-primary/10 text-primary dark:text-primary-light flex items-center justify-center font-semibold flex-shrink-0',
-                size,
-                className,
-            )}
-        >
-            {getInitials(name)}
-        </div>
+        <UiAvatar className={cn(size, className)}>
+            {imageUrl && <AvatarImage src={imageUrl} alt={`Foto de ${name}`} />}
+            <AvatarFallback className="text-sm font-semibold">{getInitials(name)}</AvatarFallback>
+        </UiAvatar>
     );
 }

@@ -1,9 +1,11 @@
-import { Link } from '@inertiajs/react';
 import AppLayout, { AppPage } from '@/layouts/AppLayout';
 import { Avatar } from '@/components/ui/Avatar';
 import { DeleteButton } from '@/components/ui/DeleteButton';
-import { Button, LinkButton, SecondaryButton } from '@/components/ui/Button';
+import { BackButton, Button, EditButton } from '@/components/ui/Button';
+import { DetailActions, DetailField, DetailGrid, DetailSection } from '@/components/ui/Detail';
 import { PageCard } from '@/components/ui/PageCard';
+import { Card, CardContent } from '@/components/ui/card';
+import { FolderOpen } from 'lucide-react';
 import { formatDateBr, route } from '@/utils';
 
 interface Member {
@@ -32,19 +34,6 @@ interface ShowProps {
     member: Member;
 }
 
-function DetailField({ label, value }: { label: string; value?: string | null }) {
-    if (!value) {
-        return null;
-    }
-
-    return (
-        <div>
-            <dt className="text-sm text-ink-muted dark:text-ink-inverse/60">{label}</dt>
-            <dd className="mt-0.5 text-sm text-ink dark:text-ink-inverse">{value}</dd>
-        </div>
-    );
-}
-
 function Show({ member }: ShowProps) {
     const hasAddress = member.street || member.neighborhood || member.city || member.state || member.zip_code;
 
@@ -55,46 +44,46 @@ function Show({ member }: ShowProps) {
                 breadcrumbs={[{ label: 'Membros', href: route('members.index') }, { label: member.full_name }]}
                 action={
                     <>
-                        <Button href={route('members.edit', member.id)}>Editar</Button>
+                        <EditButton href={route('members.edit', member.id)} size="md" />
                         <DeleteButton href={route('members.destroy', member.id)} />
                     </>
                 }
             >
-                <div className="flex flex-col gap-8 lg:flex-row">
-                    <div className="flex shrink-0 flex-col items-center lg:w-52">
-                        <Avatar name={member.full_name} imageUrl={member.foto_url} size="w-32 h-32" />
-                        {member.mobile && (
-                            <a href={`tel:${member.mobile}`} className="mt-3 text-sm font-medium text-primary">
-                                {member.mobile}
-                            </a>
-                        )}
-                    </div>
+                <div className="grid gap-6 lg:grid-cols-[16rem_minmax(0,1fr)]">
+                    <Card className="shadow-none">
+                        <CardContent className="flex flex-col items-center pt-6">
+                            <Avatar name={member.full_name} imageUrl={member.foto_url} size="h-32 w-32 text-2xl" />
+                            {member.mobile && (
+                                <a href={`tel:${member.mobile}`} className="mt-3 text-sm font-medium hover:underline">
+                                    {member.mobile}
+                                </a>
+                            )}
+                            {member.email && <p className="mt-1 text-sm text-muted-foreground">{member.email}</p>}
+                        </CardContent>
+                    </Card>
 
-                    <div className="min-w-0 flex-1 space-y-8">
-                        <section>
-                            <h2 className="mb-3 text-sm font-semibold text-ink dark:text-ink-inverse">Pessoais</h2>
-                            <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div className="space-y-6">
+                        <DetailSection title="Pessoais">
+                            <DetailGrid>
                                 <DetailField label="E-mail" value={member.email} />
                                 <DetailField label="Telefone" value={member.phone} />
                                 <DetailField label="Gênero" value={member.gender} />
                                 <DetailField label="Estado civil" value={member.marital_status} />
-                            </dl>
-                        </section>
+                            </DetailGrid>
+                        </DetailSection>
 
-                        <section>
-                            <h2 className="mb-3 text-sm font-semibold text-ink dark:text-ink-inverse">Datas</h2>
-                            <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                        <DetailSection title="Datas">
+                            <DetailGrid columns={4}>
                                 <DetailField label="Nascimento" value={formatDateBr(member.birth_date)} />
                                 <DetailField label="Batismo" value={member.baptism_date ? formatDateBr(member.baptism_date) : null} />
                                 <DetailField label="Admissão" value={member.admission_date ? formatDateBr(member.admission_date) : null} />
                                 <DetailField label="Casamento" value={member.wedding_date ? formatDateBr(member.wedding_date) : null} />
-                            </dl>
-                        </section>
+                            </DetailGrid>
+                        </DetailSection>
 
                         {hasAddress && (
-                            <section>
-                                <h2 className="mb-3 text-sm font-semibold text-ink dark:text-ink-inverse">Endereço</h2>
-                                <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <DetailSection title="Endereço">
+                                <DetailGrid>
                                     {member.street && (
                                         <DetailField
                                             label="Rua"
@@ -102,21 +91,18 @@ function Show({ member }: ShowProps) {
                                         />
                                     )}
                                     <DetailField label="Bairro" value={member.neighborhood} />
-                                    <DetailField
-                                        label="Cidade"
-                                        value={[member.city, member.state].filter(Boolean).join(' — ') || null}
-                                    />
+                                    <DetailField label="Cidade" value={[member.city, member.state].filter(Boolean).join(' — ') || null} />
                                     <DetailField label="CEP" value={member.zip_code} />
-                                </dl>
-                            </section>
+                                </DetailGrid>
+                            </DetailSection>
                         )}
 
-                        <div className="flex flex-wrap gap-3 border-t border-line pt-6 dark:border-line-dark">
-                            <Link href={route('members.index')}>
-                                <SecondaryButton type="button">Voltar à lista</SecondaryButton>
-                            </Link>
-                            <LinkButton href={route('members.files.index', member.id)}>Arquivos</LinkButton>
-                        </div>
+                        <DetailActions>
+                            <BackButton href={route('members.index')}>Voltar à lista</BackButton>
+                            <Button href={route('members.files.index', member.id)} variant="secondary" icon={FolderOpen}>
+                                Arquivos
+                            </Button>
+                        </DetailActions>
                     </div>
                 </div>
             </PageCard>

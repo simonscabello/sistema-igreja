@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import { router } from '@inertiajs/react';
 import AppLayout, { AppPage } from '@/layouts/AppLayout';
-import { LinkButton } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
+import { EditButton, RowActions, ViewButton } from '@/components/ui/Button';
+import { ActionsTh, DesktopOnly, MobileCard, MobileCardHeader, MobileList, Table, TableShell, TBody, Td, Th, THead, Tr } from '@/components/ui/DataTable';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { PageCard, Pagination, SearchForm } from '@/components/ui/PageCard';
 import { Select } from '@/components/ui/Input';
 import { route } from '@/utils';
 import { Paginated } from '@/types';
+import { Music } from 'lucide-react';
 
 interface Tag {
     id: number;
@@ -32,21 +36,44 @@ interface IndexProps {
     };
 }
 
+function SongLinks({ song }: { song: Song }) {
+    const links = [
+        song.youtube_link && { href: song.youtube_link, label: 'YouTube' },
+        song.spotify_link && { href: song.spotify_link, label: 'Spotify' },
+        song.lyrics_link && { href: song.lyrics_link, label: 'Letra' },
+        song.chords_link && { href: song.chords_link, label: 'Cifra' },
+    ].filter(Boolean) as Array<{ href: string; label: string }>;
+
+    if (links.length === 0) {
+        return <span className="text-muted-foreground">—</span>;
+    }
+
+    return (
+        <div className="flex flex-wrap gap-2">
+            {links.map((link) => (
+                <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-sm font-medium hover:underline"
+                >
+                    {link.label}
+                </a>
+            ))}
+        </div>
+    );
+}
+
 function Index({ songs, tags, filters = {} }: IndexProps) {
     const [search, setSearch] = useState(filters.search ?? '');
     const [tag, setTag] = useState(filters.tag ?? '');
+    const empty = songs.data.length === 0;
 
-    const tagOptions = [
-        { value: '', label: 'Todas as tags' },
-        ...tags.map((item) => ({ value: String(item.id), label: item.name })),
-    ];
+    const tagOptions = [{ value: '', label: 'Todas as tags' }, ...tags.map((item) => ({ value: String(item.id), label: item.name }))];
 
     const handleSearch = () => {
-        router.get(
-            route('songs.index'),
-            { search: search || undefined, tag: tag || undefined },
-            { preserveState: true, replace: true },
-        );
+        router.get(route('songs.index'), { search: search || undefined, tag: tag || undefined }, { preserveState: true, replace: true });
     };
 
     return (
@@ -57,140 +84,100 @@ function Index({ songs, tags, filters = {} }: IndexProps) {
                 actions={route('songs.create')}
                 actionsLabel="Nova música"
             >
-                <div className="flex flex-col sm:flex-row sm:items-end mb-4 gap-3">
-                    <SearchForm
-                        action={route('songs.index')}
-                        placeholder="Buscar músicas..."
-                        value={search}
-                        onChange={setSearch}
-                        onSubmit={handleSearch}
+                <div className="mb-4">
+                    <SearchForm placeholder="Buscar músicas..." value={search} onChange={setSearch} onSubmit={handleSearch}>
+                        <div className="w-full sm:w-48">
+                            <Select
+                                id="tag"
+                                value={tag}
+                                onChange={(event) => setTag(event.target.value)}
+                                options={tagOptions}
+                                placeholder=""
+                            />
+                        </div>
+                    </SearchForm>
+                </div>
+
+                {empty ? (
+                    <EmptyState
+                        title={search || tag ? 'Nenhuma música encontrada' : 'Nenhuma música cadastrada'}
+                        description={search || tag ? 'Tente outro nome ou tag.' : 'Inclua o repertório que a igreja já canta.'}
+                        actionLabel={search || tag ? undefined : 'Nova música'}
+                        actionHref={search || tag ? undefined : route('songs.create')}
+                        icon={<Music className="h-8 w-8" />}
                     />
-                    <div className="w-full sm:w-48">
-                        <Select
-                            id="tag"
-                            value={tag}
-                            onChange={(event) => setTag(event.target.value)}
-                            options={tagOptions}
-                            placeholder=""
-                        />
-                    </div>
-                    <button
-                        type="button"
-                        onClick={handleSearch}
-                        className="inline-flex items-center justify-center px-4 py-3 text-sm bg-primary text-white rounded-md hover:bg-primary-dark"
-                    >
-                        Buscar
-                    </button>
-                </div>
-
-                <div className="hidden lg:block overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                    <table className="min-w-full divide-y divide-neutral-medium dark:divide-gray-700">
-                        <thead className="bg-neutral-light dark:bg-gray-700">
-                            <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Nome</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Tonalidade</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Tags</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Links</th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-neutral-dark dark:text-gray-300 uppercase tracking-wider">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white dark:bg-gray-800 divide-y divide-neutral-medium dark:divide-gray-700">
-                            {songs.data.length === 0 ? (
-                                <tr>
-                                    <td colSpan={5} className="px-6 py-4 text-center text-neutral-medium dark:text-gray-500">
-                                        Nenhuma música encontrada.
-                                    </td>
-                                </tr>
-                            ) : (
-                                songs.data.map((song) => (
-                                    <tr key={song.id} className="hover:bg-neutral-light dark:hover:bg-gray-700 transition-colors duration-200">
-                                        <td className="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300 font-medium">{song.name}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-neutral-dark dark:text-gray-300">
-                                            {song.key ? (
-                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                                                    {song.key}
-                                                </span>
-                                            ) : (
-                                                <span className="text-neutral-medium dark:text-gray-500">-</span>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            {song.tags.length > 0 ? (
-                                                <div className="flex flex-wrap gap-1">
-                                                    {song.tags.slice(0, 3).map((item) => (
-                                                        <span key={item.id} className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-200">
-                                                            {item.name}
-                                                        </span>
-                                                    ))}
-                                                    {song.tags.length > 3 && (
-                                                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-200">
-                                                            +{song.tags.length - 3}
-                                                        </span>
+                ) : (
+                    <>
+                        <DesktopOnly>
+                            <TableShell>
+                                <Table>
+                                    <THead>
+                                        <Th>Nome</Th>
+                                        <Th>Tonalidade</Th>
+                                        <Th>Tags</Th>
+                                        <Th>Links</Th>
+                                        <ActionsTh />
+                                    </THead>
+                                    <TBody>
+                                        {songs.data.map((song) => (
+                                            <Tr key={song.id}>
+                                                <Td className="font-medium">{song.name}</Td>
+                                                <Td>
+                                                    {song.key ? (
+                                                        <Badge tone="primary">{song.key}</Badge>
+                                                    ) : (
+                                                        <span className="text-muted-foreground">—</span>
                                                     )}
-                                                </div>
-                                            ) : (
-                                                <span className="text-neutral-medium dark:text-gray-500">-</span>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex gap-2">
-                                                {song.youtube_link && (
-                                                    <a href={song.youtube_link} target="_blank" rel="noreferrer" className="text-red-600 hover:text-red-800 dark:text-red-400" title="YouTube">
-                                                        YT
-                                                    </a>
-                                                )}
-                                                {song.spotify_link && (
-                                                    <a href={song.spotify_link} target="_blank" rel="noreferrer" className="text-green-600 hover:text-green-800 dark:text-green-400" title="Spotify">
-                                                        SP
-                                                    </a>
-                                                )}
-                                                {song.lyrics_link && (
-                                                    <a href={song.lyrics_link} target="_blank" rel="noreferrer" className="text-blue-600 hover:text-blue-800 dark:text-blue-400" title="Letra">
-                                                        LT
-                                                    </a>
-                                                )}
-                                                {song.chords_link && (
-                                                    <a href={song.chords_link} target="_blank" rel="noreferrer" className="text-purple-600 hover:text-purple-800 dark:text-purple-400" title="Cifra">
-                                                        CF
-                                                    </a>
-                                                )}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <div className="flex justify-end gap-2">
-                                                <LinkButton href={route('songs.show', song.id)} className="text-xs px-3 py-1">
-                                                    Ver
-                                                </LinkButton>
-                                                <LinkButton href={route('songs.edit', song.id)} className="text-xs px-3 py-1">
-                                                    Editar
-                                                </LinkButton>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                                                </Td>
+                                                <Td>
+                                                    {song.tags.length > 0 ? (
+                                                        <div className="flex flex-wrap gap-1">
+                                                            {song.tags.slice(0, 3).map((item) => (
+                                                                <Badge key={item.id}>{item.name}</Badge>
+                                                            ))}
+                                                            {song.tags.length > 3 && <Badge>+{song.tags.length - 3}</Badge>}
+                                                        </div>
+                                                    ) : (
+                                                        <span className="text-muted-foreground">—</span>
+                                                    )}
+                                                </Td>
+                                                <Td>
+                                                    <SongLinks song={song} />
+                                                </Td>
+                                                <Td align="right">
+                                                    <RowActions>
+                                                        <ViewButton href={route('songs.show', song.id)} />
+                                                        <EditButton href={route('songs.edit', song.id)} />
+                                                    </RowActions>
+                                                </Td>
+                                            </Tr>
+                                        ))}
+                                    </TBody>
+                                </Table>
+                            </TableShell>
+                        </DesktopOnly>
 
-                <div className="space-y-3 lg:hidden">
-                    {songs.data.length === 0 ? (
-                        <p className="py-8 text-center text-sm text-ink-muted">Nenhuma música encontrada.</p>
-                    ) : (
-                        songs.data.map((song) => (
-                            <div key={song.id} className="rounded-xl border border-line bg-surface p-4 dark:border-line-dark dark:bg-surface-dark">
-                                <p className="font-semibold">{song.name}</p>
-                                {song.key && <p className="mt-1 text-sm text-ink-muted">Tom {song.key}</p>}
-                                <div className="mt-3 flex gap-3">
-                                    <LinkButton href={route('songs.show', song.id)}>Ver</LinkButton>
-                                    <LinkButton href={route('songs.edit', song.id)}>Editar</LinkButton>
-                                </div>
-                            </div>
-                        ))
-                    )}
-                </div>
+                        <MobileList>
+                            {songs.data.map((song) => (
+                                <MobileCard key={song.id}>
+                                    <MobileCardHeader
+                                        actions={
+                                            <RowActions>
+                                                <ViewButton href={route('songs.show', song.id)} />
+                                                <EditButton href={route('songs.edit', song.id)} />
+                                            </RowActions>
+                                        }
+                                    >
+                                        <p className="font-semibold">{song.name}</p>
+                                        {song.key && <p className="mt-1 text-sm text-muted-foreground">Tom {song.key}</p>}
+                                    </MobileCardHeader>
+                                </MobileCard>
+                            ))}
+                        </MobileList>
 
-                <Pagination paginator={songs} />
+                        <Pagination paginator={songs} />
+                    </>
+                )}
             </PageCard>
         </AppPage>
     );

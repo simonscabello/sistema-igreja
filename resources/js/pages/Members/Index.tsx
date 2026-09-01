@@ -2,19 +2,8 @@ import { useState } from 'react';
 import { router } from '@inertiajs/react';
 import AppLayout, { AppPage } from '@/layouts/AppLayout';
 import { Avatar } from '@/components/ui/Avatar';
-import { LinkButton } from '@/components/ui/Button';
-import {
-    DesktopOnly,
-    MobileCard,
-    MobileList,
-    Table,
-    TableShell,
-    TBody,
-    Td,
-    Th,
-    THead,
-    Tr,
-} from '@/components/ui/DataTable';
+import { EditButton, RowActions, ViewButton } from '@/components/ui/Button';
+import { ActionsTh, DesktopOnly, MobileCard, MobileCardHeader, MobileList, Table, TableShell, TBody, Td, Th, THead, Tr } from '@/components/ui/DataTable';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { PageCard, Pagination, SearchForm } from '@/components/ui/PageCard';
 import { formatDateBr, route } from '@/utils';
@@ -74,7 +63,7 @@ function Index({ members, filters = {} }: IndexProps) {
                                         <Th>Nome</Th>
                                         <Th>Telefone</Th>
                                         <Th>Nascimento</Th>
-                                        <Th align="right"> </Th>
+                                        <ActionsTh />
                                     </THead>
                                     <TBody>
                                         {members.data.map((member) => (
@@ -85,9 +74,7 @@ function Index({ members, filters = {} }: IndexProps) {
                                                         <div className="min-w-0">
                                                             <div className="font-medium">{member.full_name}</div>
                                                             {member.email && (
-                                                                <div className="truncate text-sm text-ink-muted dark:text-ink-inverse/60">
-                                                                    {member.email}
-                                                                </div>
+                                                                <div className="truncate text-sm text-muted-foreground">{member.email}</div>
                                                             )}
                                                         </div>
                                                     </div>
@@ -95,10 +82,10 @@ function Index({ members, filters = {} }: IndexProps) {
                                                 <Td className="tabular">{member.mobile}</Td>
                                                 <Td className="tabular">{formatDateBr(member.birth_date)}</Td>
                                                 <Td align="right">
-                                                    <div className="flex justify-end gap-3">
-                                                        <LinkButton href={route('members.show', member.id)}>Ver</LinkButton>
-                                                        <LinkButton href={route('members.edit', member.id)}>Editar</LinkButton>
-                                                    </div>
+                                                    <RowActions>
+                                                        <ViewButton href={route('members.show', member.id)} />
+                                                        <EditButton href={route('members.edit', member.id)} />
+                                                    </RowActions>
                                                 </Td>
                                             </Tr>
                                         ))}
@@ -110,17 +97,22 @@ function Index({ members, filters = {} }: IndexProps) {
                         <MobileList>
                             {members.data.map((member) => (
                                 <MobileCard key={member.id}>
-                                    <div className="flex items-center gap-3">
-                                        <Avatar name={member.full_name} imageUrl={member.foto_url} />
-                                        <div className="min-w-0 flex-1">
-                                            <div className="truncate font-semibold">{member.full_name}</div>
-                                            <div className="text-sm text-ink-muted">{member.mobile}</div>
+                                    <MobileCardHeader
+                                        actions={
+                                            <RowActions>
+                                                <ViewButton href={route('members.show', member.id)} />
+                                                <EditButton href={route('members.edit', member.id)} />
+                                            </RowActions>
+                                        }
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <Avatar name={member.full_name} imageUrl={member.foto_url} />
+                                            <div className="min-w-0">
+                                                <div className="truncate font-semibold">{member.full_name}</div>
+                                                <div className="text-sm text-muted-foreground">{member.mobile}</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="mt-3 flex justify-end gap-4 text-sm">
-                                        <LinkButton href={route('members.show', member.id)}>Ver</LinkButton>
-                                        <LinkButton href={route('members.edit', member.id)}>Editar</LinkButton>
-                                    </div>
+                                    </MobileCardHeader>
                                 </MobileCard>
                             ))}
                         </MobileList>

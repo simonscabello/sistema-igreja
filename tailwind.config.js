@@ -1,5 +1,6 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
+import tailwindcssAnimate from 'tailwindcss-animate';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -8,7 +9,6 @@ export default {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
         './resources/js/**/*.{js,ts,tsx}',
-        './node_modules/flowbite/**/*.js',
     ],
 
     theme: {
@@ -17,65 +17,118 @@ export default {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
             colors: {
+                border: 'hsl(var(--border))',
+                input: 'hsl(var(--input))',
+                ring: 'hsl(var(--ring))',
+                background: 'hsl(var(--background))',
+                foreground: 'hsl(var(--foreground))',
                 primary: {
-                    DEFAULT: '#2F8A7E',
-                    light: '#7ECFC4',
-                    dark: '#1F5F57',
-                    fg: '#F4FFFC',
+                    DEFAULT: 'hsl(var(--primary))',
+                    foreground: 'hsl(var(--primary-foreground))',
+                    light: 'hsl(var(--muted-foreground))',
+                    dark: 'hsl(var(--foreground))',
+                    fg: 'hsl(var(--primary-foreground))',
                 },
-                secondary: '#5E8F94',
-                canvas: {
-                    DEFAULT: '#F3F6F5',
-                    dark: '#0F1C1B',
+                secondary: {
+                    DEFAULT: 'hsl(var(--secondary))',
+                    foreground: 'hsl(var(--secondary-foreground))',
                 },
-                surface: {
-                    DEFAULT: '#FFFFFF',
-                    dark: '#162624',
+                destructive: {
+                    DEFAULT: 'hsl(var(--destructive))',
+                    foreground: 'hsl(var(--destructive-foreground))',
                 },
-                ink: {
-                    DEFAULT: '#1C3330',
-                    muted: '#4D6561',
-                    inverse: '#E8F2F0',
-                },
-                line: {
-                    DEFAULT: '#D5E0DD',
-                    dark: '#2A3F3C',
-                },
-                neutral: {
-                    light: '#F3F6F5',
-                    medium: '#C9D6D3',
-                    dark: '#1C3330',
+                muted: {
+                    DEFAULT: 'hsl(var(--muted))',
+                    foreground: 'hsl(var(--muted-foreground))',
                 },
                 accent: {
-                    DEFAULT: '#B8955A',
-                    subtle: '#E8D7B8',
+                    DEFAULT: 'hsl(var(--accent))',
+                    foreground: 'hsl(var(--accent-foreground))',
+                    subtle: 'hsl(var(--warning) / 0.18)',
+                },
+                popover: {
+                    DEFAULT: 'hsl(var(--popover))',
+                    foreground: 'hsl(var(--popover-foreground))',
+                },
+                card: {
+                    DEFAULT: 'hsl(var(--card))',
+                    foreground: 'hsl(var(--card-foreground))',
+                },
+                canvas: {
+                    DEFAULT: 'hsl(var(--background))',
+                    dark: 'hsl(var(--background))',
+                },
+                surface: {
+                    DEFAULT: 'hsl(var(--card))',
+                    dark: 'hsl(var(--card))',
+                },
+                ink: {
+                    DEFAULT: 'hsl(var(--foreground))',
+                    muted: 'hsl(var(--muted-foreground))',
+                    inverse: 'hsl(var(--foreground))',
+                },
+                line: {
+                    DEFAULT: 'hsl(var(--border))',
+                    dark: 'hsl(var(--border))',
+                },
+                warning: {
+                    DEFAULT: 'hsl(var(--warning))',
+                    foreground: 'hsl(var(--warning-foreground))',
+                },
+                info: {
+                    DEFAULT: 'hsl(var(--info))',
+                    foreground: 'hsl(var(--info-foreground))',
                 },
                 entrada: {
-                    DEFAULT: '#1F7A4D',
-                    soft: '#E6F5EC',
+                    DEFAULT: '#16A34A',
+                    soft: '#DCFCE7',
                 },
                 saida: {
-                    DEFAULT: '#B42318',
-                    soft: '#FCEBEA',
+                    DEFAULT: '#DC2626',
+                    soft: '#FEE2E2',
+                },
+                sidebar: {
+                    DEFAULT: 'hsl(var(--sidebar))',
+                    foreground: 'hsl(var(--sidebar-foreground))',
+                    border: 'hsl(var(--sidebar-border))',
+                    accent: 'hsl(var(--sidebar-accent))',
+                    'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
                 },
             },
-            boxShadow: {
-                surface: '0 1px 2px rgba(28, 51, 48, 0.06), 0 8px 24px rgba(28, 51, 48, 0.04)',
-                float: '0 10px 40px rgba(15, 28, 27, 0.18)',
-            },
             borderRadius: {
-                DEFAULT: '0.5rem',
+                lg: 'var(--radius)',
+                md: 'calc(var(--radius) - 2px)',
+                sm: 'calc(var(--radius) - 4px)',
+                DEFAULT: 'var(--radius)',
+            },
+            boxShadow: {
+                surface: '0 1px 2px rgba(0, 0, 0, 0.04)',
+                float: '0 16px 40px rgba(0, 0, 0, 0.28)',
             },
             minHeight: {
                 touch: '44px',
             },
-            transitionDuration: {
-                DEFAULT: '180ms',
+            minWidth: {
+                touch: '44px',
+            },
+            keyframes: {
+                'accordion-down': {
+                    from: { height: '0' },
+                    to: { height: 'var(--radix-accordion-content-height)' },
+                },
+                'accordion-up': {
+                    from: { height: 'var(--radix-accordion-content-height)' },
+                    to: { height: '0' },
+                },
+            },
+            animation: {
+                'accordion-down': 'accordion-down 0.2s ease-out',
+                'accordion-up': 'accordion-up 0.2s ease-out',
             },
         },
     },
 
     darkMode: 'class',
 
-    plugins: [forms, require('flowbite/plugin')],
+    plugins: [forms({ strategy: 'class' }), tailwindcssAnimate],
 };

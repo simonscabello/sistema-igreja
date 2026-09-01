@@ -2,10 +2,7 @@ import { useEffect, useState } from 'react';
 import { usePage } from '@inertiajs/react';
 import { PageProps } from '@/types';
 
-export function useDisjointSelection<T extends string | number>(
-    initialA: T[] = [],
-    initialB: T[] = [],
-) {
+export function useDisjointSelection<T extends string | number>(initialA: T[] = [], initialB: T[] = []) {
     const [selectedA, setSelectedA] = useState<T[]>(initialA);
     const [selectedB, setSelectedB] = useState<T[]>(initialB);
 

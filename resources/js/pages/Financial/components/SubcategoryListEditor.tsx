@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/Button';
 import { TextInput } from '@/components/ui/Input';
 import { SubcategoryFormItem } from '../types';
 import { ActiveToggle } from './ActiveToggle';
@@ -27,15 +28,11 @@ export function SubcategoryListEditor({ items, onChange, errors = {} }: Subcateg
 
     return (
         <div>
-            <div className="flex justify-between items-center mb-4">
-                <span className="block font-medium text-sm text-neutral-dark dark:text-gray-300">Subcategorias</span>
-                <button
-                    type="button"
-                    onClick={addItem}
-                    className="inline-flex items-center px-3 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700"
-                >
-                    + Adicionar
-                </button>
+            <div className="mb-4 flex items-center justify-between gap-3">
+                <span className="text-sm font-medium text-foreground">Subcategorias</span>
+                <Button type="button" variant="secondary" size="sm" onClick={addItem}>
+                    Adicionar
+                </Button>
             </div>
 
             <div className="space-y-3">
@@ -56,19 +53,19 @@ export function SubcategoryListEditor({ items, onChange, errors = {} }: Subcateg
                             onChange={(active) => updateItem(index, { active })}
                         />
                         {items.length > 1 && (
-                            <button
-                                type="button"
-                                onClick={() => removeItem(index)}
-                                className="inline-flex items-center px-3 py-1 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700"
-                            >
+                            <Button type="button" variant="danger" size="sm" onClick={() => removeItem(index)}>
                                 Remover
-                            </button>
+                            </Button>
                         )}
                     </div>
                 ))}
             </div>
 
-            {errors.subcategories && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.subcategories}</p>}
+            {errors.subcategories && (
+                <p className="mt-2 text-sm text-saida dark:text-red-400" role="alert">
+                    {errors.subcategories}
+                </p>
+            )}
         </div>
     );
 }

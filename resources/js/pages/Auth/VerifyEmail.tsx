@@ -1,5 +1,5 @@
 import { FormEventHandler, ReactNode } from 'react';
-import { Link, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import GuestLayout from '@/layouts/GuestLayout';
 import { PrimaryButton } from '@/components/ui/Button';
 import { Alert } from '@/components/ui/Alert';
@@ -17,30 +17,24 @@ function VerifyEmail() {
 
     return (
         <>
-            <div className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-                Obrigado por se cadastrar! Antes de começar, você poderia verificar seu endereço de e-mail clicando no
-                link que acabamos de enviar? Se você não recebeu o e-mail, ficaremos felizes em enviar outro.
-            </div>
+            <Head title="Verificar e-mail" />
+            <h1 className="mb-1 text-center text-xl font-semibold text-foreground">Verificar e-mail</h1>
+            <p className="mb-6 text-center text-sm text-muted-foreground">Enviamos um link de verificação. Se não chegou, pedimos outro.</p>
 
             {flash.status === 'verification-link-sent' && (
                 <Alert type="success" className="mb-4">
-                    Um novo link de verificação foi enviado para o endereço de e-mail fornecido durante o registro.
+                    Um novo link foi enviado para o e-mail cadastrado.
                 </Alert>
             )}
 
-            <div className="mt-4 flex items-center justify-between">
+            <div className="flex items-center justify-between gap-3">
                 <form onSubmit={resendVerification}>
-                    <PrimaryButton type="submit" disabled={processing}>
-                        Reenviar E-mail de Verificação
+                    <PrimaryButton type="submit" processing={processing}>
+                        Reenviar e-mail
                     </PrimaryButton>
                 </form>
 
-                <Link
-                    href={route('logout')}
-                    method="post"
-                    as="button"
-                    className="underline text-sm text-neutral-dark dark:text-gray-300 hover:text-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                >
+                <Link href={route('logout')} method="post" as="button" className="text-sm text-muted-foreground hover:text-foreground">
                     Sair
                 </Link>
             </div>
