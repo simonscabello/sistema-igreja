@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Campaign;
 use App\Http\Requests\StoreCampaignRequest;
 use App\Http\Requests\UpdateCampaignRequest;
-use Illuminate\Http\Request;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
+use App\Models\Campaign;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class CampaignController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index(Request $request): View
+    public function index(Request $request): Response
     {
         $this->authorize('visualizar_financeiro');
 
@@ -24,7 +25,7 @@ class CampaignController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
@@ -34,14 +35,14 @@ class CampaignController extends Controller
 
         $campaigns = $query->latest()->paginate(10);
 
-        return view('campaigns.index', compact('campaigns'));
+        return Inertia::render('Financial/Campaigns/Index', compact('campaigns'));
     }
 
-    public function create(): View
+    public function create(): Response
     {
         $this->authorize('gerenciar_campanhas');
 
-        return view('campaigns.create');
+        return Inertia::render('Financial/Campaigns/Create');
     }
 
     public function store(StoreCampaignRequest $request): RedirectResponse
@@ -49,22 +50,24 @@ class CampaignController extends Controller
         $this->authorize('gerenciar_campanhas');
 
         Campaign::create($request->validated());
+
         return redirect()->route('financial.campaigns.index')->with('success', 'Campanha criada com sucesso.');
     }
 
-    public function show(Campaign $campaign): View
+    public function show(Campaign $campaign): Response
     {
         $this->authorize('visualizar_financeiro');
 
         $campaign->load('transactions.subcategory.financialCategory');
-        return view('campaigns.show', compact('campaign'));
+
+        return Inertia::render('Financial/Campaigns/Show', compact('campaign'));
     }
 
-    public function edit(Campaign $campaign): View
+    public function edit(Campaign $campaign): Response
     {
         $this->authorize('gerenciar_campanhas');
 
-        return view('campaigns.edit', compact('campaign'));
+        return Inertia::render('Financial/Campaigns/Edit', compact('campaign'));
     }
 
     public function update(UpdateCampaignRequest $request, Campaign $campaign): RedirectResponse
@@ -72,6 +75,7 @@ class CampaignController extends Controller
         $this->authorize('gerenciar_campanhas');
 
         $campaign->update($request->validated());
+
         return redirect()->route('financial.campaigns.index')->with('success', 'Campanha atualizada com sucesso.');
     }
 
@@ -85,6 +89,7 @@ class CampaignController extends Controller
         }
 
         $campaign->delete();
+
         return redirect()->route('financial.campaigns.index')->with('success', 'Campanha excluída com sucesso.');
     }
 }

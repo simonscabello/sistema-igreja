@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\FinancialCategory;
 use App\Http\Requests\StoreFinancialCategoryRequest;
 use App\Http\Requests\UpdateFinancialCategoryRequest;
-use Illuminate\Contracts\View\View;
+use App\Models\FinancialCategory;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class FinancialCategoryController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request): Response
     {
         $this->authorize('gerenciar_categorias_financeiras');
 
@@ -21,20 +22,20 @@ class FinancialCategoryController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
         $categories = $query->latest()->paginate(10);
 
-        return view('financial-categories.index', compact('categories'));
+        return Inertia::render('Financial/Categories/Index', compact('categories'));
     }
 
-    public function create(): View
+    public function create(): Response
     {
         $this->authorize('gerenciar_categorias_financeiras');
 
-        return view('financial-categories.create');
+        return Inertia::render('Financial/Categories/Create');
     }
 
     public function store(StoreFinancialCategoryRequest $request): RedirectResponse
@@ -47,11 +48,11 @@ class FinancialCategoryController extends Controller
             ->with('success', 'Categoria criada com sucesso.');
     }
 
-    public function edit(FinancialCategory $financialCategory): View
+    public function edit(FinancialCategory $financialCategory): Response
     {
         $this->authorize('gerenciar_categorias_financeiras');
 
-        return view('financial-categories.edit', compact('financialCategory'));
+        return Inertia::render('Financial/Categories/Edit', compact('financialCategory'));
     }
 
     public function update(UpdateFinancialCategoryRequest $request, FinancialCategory $financialCategory): RedirectResponse
@@ -80,7 +81,7 @@ class FinancialCategoryController extends Controller
 
         $categoryId = $request->input('category_id');
 
-        if (!$categoryId) {
+        if (! $categoryId) {
             return response()->json([]);
         }
 
@@ -88,7 +89,7 @@ class FinancialCategoryController extends Controller
             ->where('active', true)
             ->find($categoryId);
 
-        if (!$category) {
+        if (! $category) {
             return response()->json([]);
         }
 

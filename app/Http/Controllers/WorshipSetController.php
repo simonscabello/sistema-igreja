@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\WorshipSet;
-use App\Models\Song;
 use App\Http\Requests\StoreWorshipSetRequest;
 use App\Http\Requests\UpdateWorshipSetRequest;
-use Illuminate\Contracts\View\View;
+use App\Models\Song;
+use App\Models\WorshipSet;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class WorshipSetController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request): Response
     {
         $this->authorize('visualizar_escalas_louvor');
 
@@ -22,7 +23,7 @@ class WorshipSetController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('singer', 'like', "%{$search}%")
-                  ->orWhere('preacher', 'like', "%{$search}%");
+                    ->orWhere('preacher', 'like', "%{$search}%");
             });
         }
 
@@ -40,17 +41,17 @@ class WorshipSetController extends Controller
 
         $worshipSets = $query->latest('date')->paginate(10);
 
-        return view('worship-sets.index', compact('worshipSets'));
+        return Inertia::render('WorshipSets/Index', compact('worshipSets'));
     }
 
-    public function create(): View
+    public function create(): Response
     {
         $this->authorize('gerenciar_escalas_louvor');
 
         $songs = Song::orderBy('name')->get();
         $clonedSet = null;
 
-        return view('worship-sets.create', compact('songs', 'clonedSet'));
+        return Inertia::render('WorshipSets/Create', compact('songs', 'clonedSet'));
     }
 
     public function store(StoreWorshipSetRequest $request): RedirectResponse
@@ -64,7 +65,7 @@ class WorshipSetController extends Controller
             foreach ($request->songs as $index => $songId) {
                 $songData[$songId] = [
                     'order' => $index + 1,
-                    'key_used' => $request->input("song_keys.{$songId}", null)
+                    'key_used' => $request->input("song_keys.{$songId}", null),
                 ];
             }
             $worshipSet->songs()->attach($songData);
@@ -74,23 +75,23 @@ class WorshipSetController extends Controller
             ->with('success', 'Repertório cadastrado com sucesso.');
     }
 
-    public function show(WorshipSet $worshipSet): View
+    public function show(WorshipSet $worshipSet): Response
     {
         $this->authorize('visualizar_escalas_louvor');
 
         $worshipSet->load('songs');
 
-        return view('worship-sets.show', compact('worshipSet'));
+        return Inertia::render('WorshipSets/Show', compact('worshipSet'));
     }
 
-    public function edit(WorshipSet $worshipSet): View
+    public function edit(WorshipSet $worshipSet): Response
     {
         $this->authorize('gerenciar_escalas_louvor');
 
         $worshipSet->load('songs');
         $songs = Song::orderBy('name')->get();
 
-        return view('worship-sets.edit', compact('worshipSet', 'songs'));
+        return Inertia::render('WorshipSets/Edit', compact('worshipSet', 'songs'));
     }
 
     public function update(UpdateWorshipSetRequest $request, WorshipSet $worshipSet): RedirectResponse
@@ -104,7 +105,7 @@ class WorshipSetController extends Controller
             foreach ($request->songs as $index => $songId) {
                 $songData[$songId] = [
                     'order' => $index + 1,
-                    'key_used' => $request->input("song_keys.{$songId}", null)
+                    'key_used' => $request->input("song_keys.{$songId}", null),
                 ];
             }
             $worshipSet->songs()->sync($songData);
@@ -126,7 +127,7 @@ class WorshipSetController extends Controller
             ->with('success', 'Repertório excluído com sucesso.');
     }
 
-    public function clone(WorshipSet $worshipSet): View
+    public function clone(WorshipSet $worshipSet): Response
     {
         $this->authorize('gerenciar_escalas_louvor');
 
@@ -140,6 +141,6 @@ class WorshipSetController extends Controller
 
         $clonedSet->songs = $worshipSet->songs;
 
-        return view('worship-sets.create', compact('songs', 'clonedSet'));
+        return Inertia::render('WorshipSets/Create', compact('songs', 'clonedSet'));
     }
 }

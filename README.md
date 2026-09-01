@@ -92,6 +92,20 @@ Após o seeder (`RolePermissionSeeder`):
 
 Registro público (`/register`) está desligado; novos usuários nascem pelo CRUD de usuários.
 
+## Frontend (React + Inertia)
+
+A interface autenticada é **React 19 + TypeScript** via **Inertia.js**. O Laravel continua responsável por rotas, sessão, validação e autorização.
+
+```bash
+npm run dev      # Vite com HMR (desenvolvimento)
+npm run build    # build de produção
+composer dev     # servidor Laravel + Vite + fila + logs
+```
+
+Código frontend em `resources/js/`. Única view Blade da aplicação: `resources/views/app.blade.php` (shell Inertia).
+
+Detalhes para agentes de IA: seção **Frontend React (Inertia)** em `AGENTS.md`.
+
 ## Serviços
 
 - **MySQL 8.0** — único container necessário (cache, sessão e fila usam o banco)

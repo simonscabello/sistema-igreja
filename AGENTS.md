@@ -8,11 +8,11 @@ Documentação complementar (não duplicar; algumas notas de implementação pod
 - `database/seeders/RolePermissionSeeder.php` — fonte de verdade de roles e permissões
 - `PERMISSOES_IMPLEMENTADAS.md` / `ROLES_PERMISSIONS_RESUMO.md` / `docs/permissoes.md` — notas de roles (o mapeamento de `FinancialReportController` nesses arquivos ainda cita `__invoke`; o controller atual usa `index` / `monthly` / `annualDetailed` / `annualSummary`)
 - `docs/upload-sistema.md` / `IMPLEMENTACAO_UPLOAD_TRANSACOES.md` — upload de arquivos
-- `MELHORIAS_CAMPO_VALOR.md` — máscara e validação de valores monetários
+- `MELHORIAS_CAMPO_VALOR.md` — máscara e validação de valores monetários (backend FormRequest; UI usa `CurrencyInput` React)
 
 A linha de desenvolvimento ativa é **`develop`**. `main` está congelada em junho/2025 e **não** contém auth nas rotas de domínio, Spatie, dashboards nem relatórios anuais. Não implemente features em `main` assumindo que ela é o produto atual.
 
-Não existe `master`. A branch remota `origin/feature/select-component` tem 1 commit à frente de `develop` (select avançado + páginas `/examples/select-*`); **esse código não está nesta branch**. O `x-select` atual é um `<select>` nativo Blade.
+Não existe `master`. A branch remota `origin/feature/select-component` ficou como ponteiro histórico.
 
 ---
 
@@ -26,7 +26,7 @@ Módulos atuais:
 
 | Módulo | Para que serve |
 |---|---|
-| Dashboard | Totais (membros, visitantes, departamentos, saldo), aniversariantes do mês, últimos visitantes, atalhos |
+| Dashboard | Semana da igreja: aniversariantes, visitantes recentes, saldo, próximo culto, atalhos |
 | Membros | Cadastro de pessoas, endereço, datas eclesiásticas, foto |
 | Visitantes | Registro de visitas, faixa etária, interesse em contato |
 | Departamentos | Ministérios, com líderes e membros (dois papéis distintos) |
@@ -38,7 +38,7 @@ Módulos atuais:
 | Repertórios | Setlist por culto (data, período manhã/noite, cantor, ministro) |
 | Usuários / roles / permissões | Administração (role `administrador`) |
 
-Não é um site público da igreja. O dashboard autenticado é `DashboardController` + `resources/views/dashboard.blade.php` (não o placeholder “Você está logado!” de `main`).
+Não é um site público da igreja. O dashboard autenticado é `DashboardController` + página React `Dashboard.tsx`.
 
 ---
 
@@ -49,15 +49,17 @@ Não é um site público da igreja. O dashboard autenticado é `DashboardControl
 | PHP 8.2+ (README recomenda 8.4) | Runtime |
 | Laravel 12.19 | Framework (`composer.lock`) |
 | Laravel Breeze 2.3 | Auth (login, reset de senha, perfil). **Registro público está comentado** em `routes/auth.php` |
+| Inertia.js 3 + React 19 + TypeScript | Interface (SPA-like com sessão Laravel) |
+| Ziggy | Rotas nomeadas no frontend (`route('members.index')`) |
 | Spatie Laravel Permission 6.20 | Roles e permissões (`spatie/laravel-permission`) |
 | Sentry Laravel 4.15 | Exceções via `Sentry\Laravel\Integration::handles()` em `bootstrap/app.php` |
 | MySQL 8.0 | Banco (Docker na porta **3311**) |
-| Blade | Frontend server-rendered |
-| Alpine.js 3 + `@alpinejs/mask` | Interatividade (tema, sidebar, selects encadeados, preview de foto, formulário de transação) |
-| Tailwind CSS 3 + Flowbite 3 | UI, datepicker, componentes |
-| Choices.js | Multiselect de departamentos e tags |
-| ApexCharts 3.46 | Gráfico do dashboard financeiro (`resources/js/financial-dashboard.js`) |
-| Vite 6 | Assets (`resources/css/app.css`, `financial-dashboard.css`, `app.js`, `financial-dashboard.js`) |
+| Tailwind CSS 3 | Estilos (tokens `primary`, `canvas`, `surface`, `ink`, `line`; dark mode `class`) |
+| Lucide React | Ícones da navegação e da UI |
+| ApexCharts 5 + react-apexcharts | Gráfico do dashboard financeiro |
+| react-number-format | Máscara de moeda BR na UI |
+| SweetAlert2 | Confirmação de exclusão |
+| Vite 6 | Build (`resources/css/app.css`, `resources/js/app.tsx`) |
 | Intervention Image 3 (driver GD) | Redimensionamento de imagens |
 | Pest 3 | Testes |
 | Docker Compose | **Somente MySQL**; a app roda no host |
@@ -73,22 +75,25 @@ Fila: `QUEUE_CONNECTION=database`, mas **não existem Jobs** em `app/Jobs`. Cach
 MVC clássico Laravel, **sem camada de repositório, DTO, Event/Listener de domínio ou API REST**. Existe **uma** Policy (`app/Policies/AdminPolicy.php`), mas os controllers **não a usam** — autorização real é `$this->authorize('nome_da_permissao')` (Spatie registra cada permissão como Gate).
 
 ```
-Browser (Blade + Alpine)
+Browser (React + Inertia)
  → routes/web.php (middleware auth + password.changed)
+ → HandleInertiaRequests (auth.user, flash, ziggy)
  → FormRequest (validação + normalização; authorize() === true)
- → Controller ($this->authorize('permissao') + CRUD)
+ → Controller ($this->authorize('permissao') + Inertia::render / redirect)
  → Eloquent Model
  → MySQL
- → view Blade
+ → props JSON → página React em resources/js/pages/
 ```
 
 O único service de aplicação é `app/Services/FileService.php` (upload/delete e processamento de imagem). **Regras de negócio ficam no controller, no FormRequest ou em accessors do model.** Não invente hexagonal/service-repository para uma feature isolada.
 
 Não existe `routes/api.php`. JSON pontual no mesmo controller web:
 
-- relatório financeiro se `ajax()` / `wantsJson()` (`FinancialReportController`)
+- relatório financeiro se `ajax()` / `wantsJson()` **e não for visita Inertia** (`X-Inertia`); visita Inertia deve renderizar a página React
 - dados do gráfico: `GET financial.dashboard.data` (`FinancialDashboardController::getData`)
 - subcategorias: `GET financial.categories.subcategories` (`FinancialCategoryController::getSubcategories`) — ver pontas sensíveis
+
+**Blade restante:** apenas `resources/views/app.blade.php` (shell Inertia: Vite, CSRF, Ziggy, Clarity). Templates de e-mail do framework permanecem em `vendor/`.
 
 Binding: implicit route model binding. Departamentos usam `{department}` / `Department $department` (rotas `departments.*`, não `departamentos.*`). Recursos financeiros usam prefixo `/financial` e names `financial.*`.
 
@@ -98,27 +103,26 @@ Binding: implicit route model binding. Departamentos usam `{department}` / `Depa
 
 ```
 app/
-  Console/Commands/SeedTransactionReport.php  comando avulso `seed:transaction-report`
-  Http/Controllers/  um controller por recurso + Auth/ (Breeze) + Dashboard + User/Role/Permission
-  Http/Middleware/EnsurePasswordChanged.php   alias `password.changed`
-  Http/Requests/     Store/Update por recurso
-  Models/            Eloquent + Traits/HasFiles.php
-  Policies/          só AdminPolicy (não usado pelos controllers)
-  Services/          só FileService
-  View/Components/   AppLayout, GuestLayout, SidebarDropdown
-bootstrap/app.php    rotas, aliases Spatie + password.changed, Sentry
-config/              defaults Laravel + permission.php + sentry.php; Clarity em config/services.php
-database/migrations/ fonte de verdade do schema
-database/seeders/    DatabaseSeeder bloqueia production
-database/factories/  User, Member, Department
-resources/views/     Blade por recurso + components/ + layouts/
-resources/js/        Alpine, SweetAlert, departamentos, financial-dashboard
-public/js/financial-transactions.js  Alpine helper de categoria/subcategoria (não passa pelo Vite)
-routes/web.php       rotas de domínio (grupo auth)
-routes/auth.php      Breeze; registro comentado
-tests/               Pest; Auth Breeze + Feature/Unit de Member
-deploy.sh            deploy em servidor (composer2, nvm, migrate --seed)
-docker-compose.yml   MySQL 8.0 em 3311
+  Http/Controllers/       um controller por recurso; GET → Inertia::render
+  Http/Middleware/        EnsurePasswordChanged + HandleInertiaRequests
+  Http/Requests/          Store/Update por recurso
+  Models/                 Eloquent + Traits/HasFiles.php
+  Services/               só FileService
+bootstrap/app.php         rotas, aliases Spatie + password.changed, Sentry, Inertia middleware
+resources/views/          só app.blade.php (root Inertia)
+resources/js/
+  app.tsx                 entry Vite + createInertiaApp
+  pages/                  páginas React (espelham rotas: Members/Index, Auth/Login, …)
+  layouts/                AppLayout, GuestLayout
+  components/ui/          Button, Input, PageCard, AdvancedSelect, …
+  components/layout/      Sidebar, Can, FlashMessages
+  hooks/                  useCan, useTheme, useViaCep, useDisjointSelection
+  utils/                  route (Ziggy), formatDateBr, formatCurrency
+  types/                  PageProps, Paginated, User
+resources/css/app.css     Tailwind + tokens
+routes/web.php            rotas de domínio (grupo auth)
+routes/auth.php           Breeze; registro comentado
+tests/                    Pest; assertInertia nos Feature tests de domínio
 ```
 
 Ausentes (não criar por “boas práticas” genéricas): `app/Jobs`, `app/Events`, `app/Listeners`, `app/Enums`, `app/Repositories`, `app/DTOs`, `routes/api.php`. Não criar Policies novas se o padrão do projeto é Spatie Gate pelo nome da permissão.
@@ -183,7 +187,7 @@ Dois N:N **disjuntos**:
 - `department_responsible_member` — líderes
 - `department_member` — membros
 
-Um `Member` **não pode** estar nas duas listas (`StoreDepartmentRequest` / `UpdateDepartmentRequest` `withValidator`). JS em `resources/js/departments/` reforça na UI. O banco **não** impede sobreposição entre as duas tabelas — só unique por par dentro de cada uma.
+Um `Member` **não pode** estar nas duas listas (`StoreDepartmentRequest` / `UpdateDepartmentRequest` `withValidator`). O `x-select` avançado em `resources/js/departments/department-member-selects.js` reforça na UI. O banco **não** impede sobreposição entre as duas tabelas — só unique por par dentro de cada uma.
 
 `is_active` boolean. Filtro de listagem: `status=active|inactive`.
 
@@ -310,7 +314,7 @@ Form escolhe categoria (Alpine filtra subcategorias ativas de `$categories`). S�
 ## Relatório / dashboard financeiro
 
 - HTML: `GET /financial/reports/monthly|annual/detailed|annual/summary`
-- JSON: mesmo endpoint com AJAX/`wantsJson()`
+- JSON: mesmo endpoint com AJAX/`wantsJson()` **sem** header `X-Inertia` (Inertia Link/router não pode cair no JSON)
 - Gráfico: view `financial-dashboard.index` + `GET /financial/dashboard/data?period=`
 
 ## CEP
@@ -379,12 +383,12 @@ Seed de dev (após `migrate --seed`): `admin@igreja.com` / `admin123`. Documenta
 
 | Integração | Onde | Cuidado |
 |---|---|---|
-| ViaCEP | JS inline em `resources/views/layouts/app.blade.php` | Depende de `#zip_code` e ids de endereço. Sem chave. Falha silencia e limpa campos. |
+| ViaCEP | `useViaCep` em `AddressFields` | Sem chave. Falha silencia e limpa rua/bairro/cidade/UF. |
 | Microsoft Clarity | `layouts/app.blade.php` e `guest.blade.php` se `config('services.clarity.id')` (`CLARITY_ID`) | Sem ID, o script não é emitido. Não commitar ID de produção no repo. |
 | Sentry | `bootstrap/app.php` + `config/sentry.php` | DSN via `SENTRY_LARAVEL_DSN` ou `SENTRY_DSN`. Sem DSN, SDK não envia. |
 | YouTube / Spotify / cifra / letra | URLs em `songs` | Sem API; `target="_blank"`. Validação `url`. |
-| CDN jsDelivr | Choices.js, SweetAlert2, datepicker pt-BR no layout | Layout quebra offline. Choices também está no `package.json`. |
-| fonts.bunny.net | Figtree no layout; Tailwind usa Fira Sans | Inconsistência visual menor. |
+| CDN jsDelivr | SweetAlert2, datepicker pt-BR no layout | Layout quebra offline. |
+| fonts.bunny.net | Figtree (única família da UI) |
 | Intervention/GD | `FileService::processImage` | Precisa da extensão `gd`. |
 | Mail | `MAIL_MAILER=log` | Reset de senha grava em `storage/logs`. |
 
@@ -398,27 +402,108 @@ Nunca documente ou commite tokens reais. AWS/Redis no `.env.example` são placeh
 
 Observadas no código — não inventar as que não existem.
 
-**Controllers:** resource methods padrão. Invokable só `RootRedirectController`. `FinancialReportController` e `FinancialDashboardController` são classes com métodos nomeados. Attach/sync no próprio controller. Tipos de retorno `View` / `RedirectResponse` / `JsonResponse` na maior parte.
+**Controllers:** resource methods padrão. GET retorna `Inertia\Response` via `Inertia::render('Modulo/Pagina', $props)`. Store/update/destroy retornam `RedirectResponse`. Invokable só `RootRedirectController`.
 
-**FormRequests:** `StoreXRequest` / `UpdateXRequest`. Sempre `authorize(): true`. Mensagens e `attributes()` em português. Datas BR e dinheiro BR em `prepareForValidation` **quando o form usa datepicker/currency**.
+**FormRequests:** `StoreXRequest` / `UpdateXRequest`. Sempre `authorize(): true`. Mensagens e `attributes()` em português. Datas BR e dinheiro BR em `prepareForValidation` — a UI React envia nesses formatos.
 
-**Autorização:** `$this->authorize('snake_case_portugues')` + `@can` na Blade + item na sidebar (desktop **e** mobile). Nova capacidade = nova string no `RolePermissionSeeder` e sync nas roles que devem tê-la.
+**Autorização:** `$this->authorize('snake_case_portugues')` no controller (obrigatório) + `<Can permission="...">` na UI React + item na sidebar (`components/layout/Sidebar.tsx`). Nova capacidade = nova string no `RolePermissionSeeder`.
 
-**Models:** `$fillable` + `$casts`. Accessors `getFooAttribute` (não `Attribute::get`). Sem observers.
+**Models:** `$fillable` + `$casts`. Accessors `getFooAttribute`. Sem observers.
 
-**Views:** `<x-app-layout>` + `<x-page-card>`. Listagens com busca GET, `paginate(10)`, alerta de sucesso. **Não** copiar `members/files/index.blade.php`.
+**Frontend React:** páginas em `resources/js/pages/`, layout via `Page.layout = (page) => <AppLayout>{page}</AppLayout>`. Formulários com `useForm` do `@inertiajs/react`. Uploads: `forceFormData: true`. Listagens: `PageCard` (shell da página: título, descrição, ação primária) + `SearchForm` + `TableShell`/`Pagination`. Não embrulhar a página inteira em um card extra.
 
-**Rotas:** domínio em `web.php` dentro do grupo autenticado. Prefixo `financial/` para o módulo financeiro; `worship/` para músicas/repertórios. Names: `financial.transactions.*`, `departments.*`, `songs.*`, `worship-sets.*`.
+**Rotas:** domínio em `web.php` dentro do grupo autenticado. Prefixo `financial/`; `worship/` para louvor. Names: `financial.transactions.*`, `departments.*`, `songs.*`, `worship-sets.*`.
 
-**Feedback:** `->with('success', '...')`. Erros de regra usam `->with('error', ...)`. Index de campanha/subcategoria **não** mostram `error`.
+**Feedback:** `->with('success', '...')` / `->with('error', '...')` — lidos via `flash` em `HandleInertiaRequests` e exibidos por `<FlashMessages />`.
 
-**JS:** Alpine no Blade; globais em `resources/js/app.js`. Delete: classe `btn-delete`. Dashboard financeiro: entry Vite separado. Transações: script em `public/js/` (não Vite).
+**Testes:** Pest + `RefreshDatabase`. Feature tests de domínio usam `userWithPermissions([...])` e `assertInertia`. RegistrationTest skipped (rotas comentadas).
 
-**Testes:** Pest + `RefreshDatabase` só em `tests/Feature` (`tests/Pest.php`). Factories: `User`, `Member`, `Department`. Testes de domínio quase só Member — e o Feature de Member autentica `User::factory()` **sem** permissão Spatie.
+**Padrão para feature nova:** rota → controller (`authorize` + `Inertia::render`) → FormRequest → model/migration → página TSX → link na sidebar → permissão no seeder se capacidade nova → teste Feature com permissões.
 
-**Não há:** PHP enums, DTOs, repositories, API Resource, `Log::`, filas de domínio.
+---
 
-**Padrão para feature nova:** rota no grupo auth → controller com `authorize` → FormRequest → model/migration → views no estilo existente → link na sidebar (dois blocos) → permissão no seeder se for capacidade nova.
+# Frontend React (Inertia)
+
+## Comunicação Laravel ↔ React
+
+1. Request HTTP normal (sessão + CSRF).
+2. Controller autoriza e retorna `Inertia::render('Members/Index', ['members' => $members])`.
+3. `HandleInertiaRequests` mescla props compartilhadas: `auth.user` (com `permissions[]`), `flash`, `app`, `ziggy`.
+4. React renderiza a página resolvida em `resources/js/pages/Members/Index.tsx`.
+5. Formulários POST/PUT/DELETE via `useForm` → redirect Laravel → flash na próxima visita.
+
+**Exceções JSON** (fetch axios no React): `financial.dashboard.data`. Relatórios só devolvem JSON se a request for AJAX/`wantsJson()` **sem** `X-Inertia`.
+
+## Estrutura de diretórios
+
+```
+resources/js/
+  app.tsx
+  pages/           # uma pasta por módulo (Members/, Financial/, Auth/, …)
+  layouts/         # AppLayout (autenticado), GuestLayout (login)
+  components/ui/   # Button, Input, PageCard, Badge, EmptyState, DataTable, FormSection, …
+  components/layout/  # Sidebar (nav por trabalho), Can, FlashMessages
+  hooks/           # useCan, useTheme, useViaCep, useDisjointSelection
+  utils/           # route(), formatDateBr, formatCurrency
+  types/           # PageProps, Paginated, User
+```
+
+## Design system e UX
+
+Identidade: secretaria da SIB — teal `#2F8A7E`, fundo mint-stone (`canvas`), superfície branca (`surface`), texto `ink`. Dark mode é o mesmo sistema, não cinza genérico. Família única: **Figtree**.
+
+Tokens Tailwind: `primary` / `primary-dark` / `primary-light`, `canvas` / `canvas-dark`, `surface` / `surface-dark`, `ink` / `ink-muted` / `ink-inverse`, `line` / `line-dark`, `entrada` / `saida`, `accent`. Preferir esses nomes a `gray-*` em telas novas.
+
+Componentes de página:
+
+- `PageCard` — shell: `Head` title, breadcrumbs, título, descrição, ação primária. Sem card externo.
+- `PageHeader` — só o cabeçalho, se a página não usar `PageCard`.
+- `TableShell` + `Table`/`Th`/`Td` — listagem desktop; `MobileList`/`MobileCard` no celular.
+- `EmptyState` — vazio com título, explicação e CTA opcional.
+- `FormPanel` + `FormSection` + `FormActions` — formulários longos (seções + barra de salvar).
+- `Badge` — status; não usar cor sozinha (texto no badge).
+- `Button` — `primary` (uma por tela), `secondary`, `danger`, `ghost`, `link`. Sem caixa-alta.
+- `FlashMessages` — toast no topo; sucesso some em 4s.
+
+Navegação (sidebar, agrupada por trabalho):
+
+- Início
+- Pessoas: Membros, Visitantes, Departamentos
+- Finanças: Caixa, Transações, Campanhas, Relatórios, Categorias, Subcategorias
+- Louvor: Músicas, Cultos
+- Sistema: Usuários, Papéis, Permissões
+
+Rótulos em português. “Roles” na UI é **Papéis**. Catálogo de louvor é **Músicas**; setlist é **Cultos**. Dashboard financeiro é **Caixa**.
+
+Convenções de UX:
+
+- Uma ação primária por tela (botão teal no cabeçalho). Ver/Editar na linha são links.
+- Copy curta e humana. Erro diz o que corrigir. Vazio diz o próximo passo.
+- Alvos de toque ≥ 44px (`min-h-touch`). Paginação visível no mobile.
+- Respeitar `prefers-reduced-motion`. Foco visível (`:focus-visible`).
+- Não empilhar cards só para “preencher”. Card = agrupamento real.
+
+## Nova página (checklist para IA)
+
+1. Rota em `routes/web.php` (grupo `auth` + `password.changed`).
+2. Permissão em `RolePermissionSeeder` se for capacidade nova.
+3. Controller: `$this->authorize('...')` + `return Inertia::render('Modulo/Acao', $props)`.
+4. Criar `resources/js/pages/Modulo/Acao.tsx` com layout `AppLayout` ou `GuestLayout`.
+5. `PageCard` com título, descrição e ação primária; conteúdo no canvas.
+6. Listagem: `SearchForm` + `TableShell` + `MobileList` + `EmptyState` + `Pagination`.
+7. Formulário: `FormPanel` / `FormSection`; datas `dd/mm/aaaa`; moeda `CurrencyInput`; upload `forceFormData: true`.
+8. Permissões com `<Can>`. Link no `Sidebar.tsx` no grupo certo, com ícone Lucide.
+9. Teste Feature: `userWithPermissions([...])` + `assertInertia(fn ($page) => $page->component('Modulo/Acao'))`.
+
+## Build e desenvolvimento
+
+```bash
+npm run dev      # Vite HMR (usar com php artisan serve ou composer dev)
+npm run build    # produção
+composer dev     # serve + queue + pail + vite
+```
+
+Entry Vite: `resources/js/app.tsx` + `resources/css/app.css`. Root Blade: `resources/views/app.blade.php`.
 
 ---
 
@@ -426,19 +511,17 @@ Observadas no código — não inventar as que não existem.
 
 | O quê | Onde |
 |---|---|
-| Rota web | `routes/web.php` no grupo `auth` + `password.changed` (auth Breeze só em `routes/auth.php`) |
-| Permissão | `RolePermissionSeeder` + `$this->authorize` + `@can` na sidebar/view |
-| Controller | `app/Http/Controllers/NomeController.php` |
+| Rota web | `routes/web.php` no grupo `auth` + `password.changed` |
+| Permissão | `RolePermissionSeeder` + `$this->authorize` + `<Can>` + sidebar |
+| Controller GET | `Inertia::render('Modulo/Pagina', $props)` |
 | Validação | `StoreNomeRequest` / `UpdateNomeRequest` |
-| Regra de negócio | Controller, ou accessor/método no model se for derivado (`Campaign::progress`). `FileService` só para arquivo |
+| Regra de negócio | Controller, accessor ou model. `FileService` só para arquivo |
 | Schema | `database/migrations/` |
-| Model | `app/Models/` com `$fillable`, `$casts`, ambos os lados da relação |
-| UI | `resources/views/<recurso>/` + componente em `components/` se reutilizável |
-| Menu | `resources/views/layouts/sidebar.blade.php` (duplicar nos dois blocos) |
-| Assets JS pontuais | `resources/js/` e import em `app.js` se for global; Vite `input` se for CSS/JS de página (como o dashboard financeiro) |
-| Testes | `tests/Feature/` com Pest; usuário de teste precisa da permissão Spatie se o controller autoriza |
-| Comando artisan | `app/Console/Commands/` (scheduler só se passar a existir tarefa real) |
-| JSON | No mesmo controller web, como relatórios/dashboard. Não criar `routes/api.php` só por costume |
+| Model | `app/Models/` |
+| UI | `resources/js/pages/Modulo/` + componentes reutilizáveis em `components/ui/` |
+| Menu | `resources/js/components/layout/Sidebar.tsx` |
+| Testes | `tests/Feature/` com `userWithPermissions` + `assertInertia` |
+| JSON pontual | No mesmo controller web (dashboard financeiro, relatórios) |
 
 Valores de enum: copiar os strings já persistidos; não introduzir PHP `enum` sem migrar o banco e os `in:` dos FormRequests.
 
@@ -478,7 +561,6 @@ Valores de enum: copiar os strings já persistidos; não introduzir PHP `enum` s
 - Não escrever views novas com `@extends('layouts.app')` / `@yield`.
 - Não introduzir API Sanctum/token sem decisão explícita: o app é sessão + Blade.
 - Não commitar secrets. `admin@igreja.com` / `admin123` e senha Docker são só desenvolvimento.
-- Não mergear `feature/select-component` substituindo `x-select` globalmente sem adaptar todos os forms (valores/erros).
 - Não trabalhar em `main` como se fosse o estado atual do produto.
 
 ---
@@ -524,9 +606,13 @@ O que existe:
 - `tests/Feature/Auth/*` — Breeze (login, registro, senha, verificação de e-mail)
 - `tests/Feature/Profile/ProfileTest.php`
 - `tests/Feature/Member/MemberControllerTest.php` e `MemberModelTest.php`
+- `tests/Feature/Department/DepartmentControllerTest.php`
+- `tests/Feature/Song/SongControllerTest.php`
+- `tests/Feature/WorshipSet/WorshipSetControllerTest.php`
+- `tests/Feature/Components/SelectComponentTest.php`
 - `tests/Unit/Member/*` — model e FormRequests de membro
 
-Não há testes de finanças, departamentos, louvor, dashboard, roles, anexos ou relatórios.
+Não há testes de finanças, dashboard, roles, anexos ou relatórios.
 
 Pendências concretas nos testes atuais (verificado com `php8.4 artisan test`: 15 falhas, 64 passando):
 
@@ -545,7 +631,6 @@ Não há CI (`.github/workflows`) nesta branch (foi adicionado e removido no his
 Registradas para contexto; **não refatorar só porque estão nesta lista.**
 
 - `main` desatualizada em relação a `develop` (58 commits).
-- `origin/feature/select-component` não mergeada; docs daquela branch pedem integração nos forms reais.
 - `AdminPolicy` usa role `admin`; seeder usa `administrador`. Policy aparentemente não é chamada.
 - Permissões de exportar relatórios sem implementação.
 - Testes de Member/Auth desalinhados com permissões e registro desligado.

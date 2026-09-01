@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Song;
-use App\Models\Tag;
 use App\Http\Requests\StoreSongRequest;
 use App\Http\Requests\UpdateSongRequest;
-use Illuminate\Contracts\View\View;
+use App\Models\Song;
+use App\Models\Tag;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class SongController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request): Response
     {
         $this->authorize('visualizar_musicas');
 
@@ -22,7 +23,7 @@ class SongController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('key', 'like', "%{$search}%");
+                    ->orWhere('key', 'like', "%{$search}%");
             });
         }
 
@@ -36,16 +37,16 @@ class SongController extends Controller
         $songs = $query->latest()->paginate(10);
         $tags = Tag::orderBy('name')->get();
 
-        return view('songs.index', compact('songs', 'tags'));
+        return Inertia::render('Songs/Index', compact('songs', 'tags'));
     }
 
-    public function create(): View
+    public function create(): Response
     {
         $this->authorize('gerenciar_musicas');
 
         $tags = Tag::orderBy('name')->get();
 
-        return view('songs.create', compact('tags'));
+        return Inertia::render('Songs/Create', compact('tags'));
     }
 
     public function store(StoreSongRequest $request): RedirectResponse
@@ -67,23 +68,23 @@ class SongController extends Controller
             ->with('success', 'Música cadastrada com sucesso.');
     }
 
-    public function show(Song $song): View
+    public function show(Song $song): Response
     {
         $this->authorize('visualizar_musicas');
 
         $song->load('tags');
 
-        return view('songs.show', compact('song'));
+        return Inertia::render('Songs/Show', compact('song'));
     }
 
-    public function edit(Song $song): View
+    public function edit(Song $song): Response
     {
         $this->authorize('gerenciar_musicas');
 
         $song->load('tags');
         $tags = Tag::orderBy('name')->get();
 
-        return view('songs.edit', compact('song', 'tags'));
+        return Inertia::render('Songs/Edit', compact('song', 'tags'));
     }
 
     public function update(UpdateSongRequest $request, Song $song): RedirectResponse

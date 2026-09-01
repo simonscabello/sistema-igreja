@@ -9,26 +9,27 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ForcePasswordChangeController extends Controller
 {
     /**
      * Show the force password change form.
      */
-    public function show(Request $request): View|RedirectResponse
+    public function show(Request $request): Response|RedirectResponse
     {
         // If user is not authenticated, redirect to login
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('login');
         }
 
         // If user doesn't need to change password, redirect to dashboard
-        if (!Auth::user()->must_change_password) {
+        if (! Auth::user()->must_change_password) {
             return redirect()->route('dashboard');
         }
 
-        return view('auth.force-password-change');
+        return Inertia::render('Auth/ForcePasswordChange');
     }
 
     /**
@@ -37,7 +38,7 @@ class ForcePasswordChangeController extends Controller
     public function update(ChangePasswordRequest $request): RedirectResponse
     {
         // If user is not authenticated, redirect to login
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('login');
         }
 
@@ -45,7 +46,7 @@ class ForcePasswordChangeController extends Controller
         $user = Auth::user();
 
         // If user doesn't need to change password, redirect to dashboard
-        if (!$user->must_change_password) {
+        if (! $user->must_change_password) {
             return redirect()->route('dashboard');
         }
 

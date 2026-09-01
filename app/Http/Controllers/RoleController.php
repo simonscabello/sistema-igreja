@@ -4,38 +4,38 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
-use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
-
-    public function index(Request $request): View
+    public function index(Request $request): Response
     {
         $this->authorize('gerenciar_roles');
 
         $query = Role::query();
 
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $query->where('name', 'like', '%'.$request->search.'%');
         }
 
         $roles = $query->orderBy('name')->paginate(10);
 
-        return view('roles.index', compact('roles'));
+        return Inertia::render('Roles/Index', compact('roles'));
     }
 
-    public function create(): View
+    public function create(): Response
     {
         $this->authorize('gerenciar_roles');
 
         $permissions = Permission::orderBy('name')->get();
         $groupedPermissions = $this->groupPermissionsByFeature($permissions);
 
-        return view('roles.create', compact('groupedPermissions'));
+        return Inertia::render('Roles/Create', compact('groupedPermissions'));
     }
 
     public function store(StoreRoleRequest $request): RedirectResponse
@@ -51,17 +51,17 @@ class RoleController extends Controller
         return redirect()->route('roles.index')->with('success', 'Role criado com sucesso.');
     }
 
-    public function show(Role $role): View
+    public function show(Role $role): Response
     {
         $this->authorize('gerenciar_roles');
 
         $role->load('permissions');
         $groupedPermissions = $this->groupPermissionsByFeature($role->permissions);
 
-        return view('roles.show', compact('role', 'groupedPermissions'));
+        return Inertia::render('Roles/Show', compact('role', 'groupedPermissions'));
     }
 
-    public function edit(Role $role): View
+    public function edit(Role $role): Response
     {
         $this->authorize('gerenciar_roles');
 
@@ -69,7 +69,7 @@ class RoleController extends Controller
         $groupedPermissions = $this->groupPermissionsByFeature($permissions);
         $role->load('permissions');
 
-        return view('roles.edit', compact('role', 'groupedPermissions'));
+        return Inertia::render('Roles/Edit', compact('role', 'groupedPermissions'));
     }
 
     public function update(UpdateRoleRequest $request, Role $role): RedirectResponse
@@ -105,37 +105,37 @@ class RoleController extends Controller
         $groups = [
             'Sistema e Usuários' => [
                 'permissions' => [],
-                'description' => 'Gerenciamento de usuários, roles e permissões do sistema'
+                'description' => 'Gerenciamento de usuários, roles e permissões do sistema',
             ],
             'Membros' => [
                 'permissions' => [],
-                'description' => 'Gestão de membros da igreja'
+                'description' => 'Gestão de membros da igreja',
             ],
             'Visitantes' => [
                 'permissions' => [],
-                'description' => 'Gestão de visitantes da igreja'
+                'description' => 'Gestão de visitantes da igreja',
             ],
             'Financeiro' => [
                 'permissions' => [],
-                'description' => 'Gestão financeira e transações'
+                'description' => 'Gestão financeira e transações',
             ],
             'Louvor' => [
                 'permissions' => [],
-                'description' => 'Gestão de músicas e escalas de louvor'
+                'description' => 'Gestão de músicas e escalas de louvor',
             ],
             'Departamentos' => [
                 'permissions' => [],
-                'description' => 'Gestão de departamentos da igreja'
+                'description' => 'Gestão de departamentos da igreja',
             ],
             'Relatórios' => [
                 'permissions' => [],
-                'description' => 'Visualização e exportação de relatórios'
-            ]
+                'description' => 'Visualização e exportação de relatórios',
+            ],
         ];
 
         foreach ($permissions as $permission) {
             $permissionName = $permission->name;
-            
+
             // Sistema e Usuários
             if (in_array($permissionName, ['gerenciar_roles', 'gerenciar_permissoes', 'gerenciar_usuarios'])) {
                 $groups['Sistema e Usuários']['permissions'][] = $permission;
@@ -151,7 +151,7 @@ class RoleController extends Controller
             // Financeiro
             elseif (in_array($permissionName, [
                 'visualizar_financeiro', 'criar_transacoes', 'editar_transacoes', 'excluir_transacoes',
-                'gerenciar_categorias_financeiras', 'gerenciar_campanhas', 'exportar_relatorios_financeiros'
+                'gerenciar_categorias_financeiras', 'gerenciar_campanhas', 'exportar_relatorios_financeiros',
             ])) {
                 $groups['Financeiro']['permissions'][] = $permission;
             }
@@ -170,8 +170,8 @@ class RoleController extends Controller
         }
 
         // Remove grupos vazios
-        return array_filter($groups, function($group) {
-            return !empty($group['permissions']);
+        return array_filter($groups, function ($group) {
+            return ! empty($group['permissions']);
         });
     }
 }

@@ -2,29 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Member;
-use App\Models\Visitor;
 use App\Models\Department;
 use App\Models\FinancialTransaction;
+use App\Models\Member;
+use App\Models\Visitor;
+use App\Models\WorshipSet;
 use Carbon\Carbon;
-use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class DashboardController extends Controller
 {
-    public function index(): View
+    public function index(): Response
     {
-        $dados = [
+        return Inertia::render('Dashboard', [
             'aniversariantesDoMes' => $this->getAniversariantesDoMes(),
             'ultimosVisitantes' => $this->getUltimosVisitantes(),
+            'visitantesQuerendoContato' => $this->getVisitantesQuerendoContato(),
+            'proximoCulto' => $this->getProximoCulto(),
             'totalMembros' => $this->getTotalMembros(),
             'totalVisitantes' => $this->getTotalVisitantes(),
             'totalDepartamentos' => $this->getTotalDepartamentos(),
             'saldoAtual' => $this->getSaldoAtual(),
-        ];
-
-        return view('dashboard', $dados);
+        ]);
     }
 
     private function getAniversariantesDoMes(): Collection
@@ -32,56 +33,82 @@ class DashboardController extends Controller
         $mesAtual = Carbon::now()->month;
         $hoje = Carbon::now();
 
-        // Aniversariantes membros
-        $membroAniversariantes = Member::with(['foto'])
+        return Member::with(['foto'])
             ->whereMonth('birth_date', $mesAtual)
             ->get()
             ->map(function ($membro) use ($hoje) {
-                $isToday = $membro->birth_date && 
-                          $membro->birth_date->month === $hoje->month && 
-                          $membro->birth_date->day === $hoje->day;
+                $isToday = $membro->birth_date
+                    && $membro->birth_date->month === $hoje->month
+                    && $membro->birth_date->day === $hoje->day;
 
                 $foto = $membro->foto->first();
-                $fotoUrl = $foto ? asset('storage/' . $foto->path) : asset('images/avatar-placeholder.png');
+                $fotoUrl = $foto
+                    ? asset('storage/'.$foto->path)
+                    : asset('images/avatar-placeholder.png');
 
                 return (object) [
+                    'id' => $membro->id,
                     'nome' => $membro->full_name,
                     'mobile' => $membro->mobile,
                     'data' => $membro->birth_date ? $membro->birth_date->format('d/m') : '',
                     'tipo' => 'Membro',
                     'foto_url' => $fotoUrl,
-                    'is_today' => $isToday
+                    'is_today' => $isToday,
                 ];
-            });
-
-        // Aniversariantes visitantes (assumindo que alguns podem ter birth_date se adicionarmos depois)
-        // Por enquanto vamos usar apenas membros já que visitantes não têm birth_date na estrutura atual
-
-        return $membroAniversariantes->sortBy([
-            ['is_today', 'desc'], // Aniversários de hoje primeiro
-            ['data', 'asc']       // Depois por ordem de data
-        ]);
+            })
+            ->sortBy([
+                ['is_today', 'desc'],
+                ['data', 'asc'],
+            ])
+            ->values();
     }
 
     private function getUltimosVisitantes(): Collection
     {
-        return Visitor::select('id', 'name', 'mobile', 'visit_date', 'created_at')
+        return Visitor::select('id', 'name', 'mobile', 'visit_date', 'created_at', 'wants_contact')
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get()
             ->map(function ($visitante) {
-                // Primeira visita é o created_at ou visit_date se informado
                 $primeiraVisita = $visitante->visit_date
                     ? Carbon::parse($visitante->visit_date)
                     : $visitante->created_at;
-             
+
                 return (object) [
                     'id' => $visitante->id,
                     'nome' => $visitante->name,
                     'mobile' => $visitante->mobile,
                     'primeira_visita' => $primeiraVisita->format('d/m/Y'),
+                    'wants_contact' => (bool) $visitante->wants_contact,
                 ];
             });
+    }
+
+    private function getVisitantesQuerendoContato(): int
+    {
+        return Visitor::where('wants_contact', true)->count();
+    }
+
+    private function getProximoCulto(): ?array
+    {
+        $set = WorshipSet::withCount('songs')
+            ->whereDate('date', '>=', Carbon::today())
+            ->orderBy('date')
+            ->orderBy('period')
+            ->first();
+
+        if (! $set) {
+            return null;
+        }
+
+        return [
+            'id' => $set->id,
+            'date' => $set->formatted_date,
+            'period_label' => $set->period_label,
+            'singer' => $set->singer,
+            'preacher' => $set->preacher,
+            'songs_count' => $set->songs_count,
+        ];
     }
 
     private function getTotalMembros(): int
@@ -103,8 +130,7 @@ class DashboardController extends Controller
     {
         $receitas = FinancialTransaction::where('type', 'entrada')->sum('amount');
         $despesas = FinancialTransaction::where('type', 'saida')->sum('amount');
-        
-        return $receitas - $despesas;
-    }
 
+        return round((float) $receitas - (float) $despesas, 2);
+    }
 }

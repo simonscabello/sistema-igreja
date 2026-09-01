@@ -3,18 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\FinancialTransaction;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Contracts\View\View;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class FinancialDashboardController extends Controller
 {
-    public function index(): View
+    public function index(): Response
     {
         $this->authorize('visualizar_financeiro');
 
-        return view('financial-dashboard.index');
+        return Inertia::render('Financial/Dashboard/Index');
     }
 
     public function getData(Request $request): JsonResponse
@@ -36,7 +37,7 @@ class FinancialDashboardController extends Controller
 
         foreach ($transactions as $transaction) {
             $date = Carbon::parse($transaction->date)->format('Y-m-d');
-            
+
             if ($transaction->type === 'entrada') {
                 $entradas[$date] = $transaction->total;
             } else {
@@ -54,7 +55,7 @@ class FinancialDashboardController extends Controller
             'total_entradas' => $totalEntradas,
             'total_saidas' => $totalSaidas,
             'saldo' => $saldo,
-            'periodo' => $period
+            'periodo' => $period,
         ]);
     }
-} 
+}

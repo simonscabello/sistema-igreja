@@ -5,42 +5,42 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Models\Role;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Inertia\Inertia;
+use Inertia\Response;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-
-    public function index(Request $request): View
+    public function index(Request $request): Response
     {
         $this->authorize('gerenciar_usuarios');
 
         $query = User::query();
 
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('email', 'like', '%' . $request->search . '%');
+            $query->where('name', 'like', '%'.$request->search.'%')
+                ->orWhere('email', 'like', '%'.$request->search.'%');
         }
 
         $users = $query->with('roles')->orderBy('name')->paginate(10);
 
-        return view('users.index', compact('users'));
+        return Inertia::render('Users/Index', compact('users'));
     }
 
-    public function create(): View
+    public function create(): Response
     {
         $this->authorize('gerenciar_usuarios');
 
         $roles = Role::orderBy('name')->get();
 
-        return view('users.create', compact('roles'));
+        return Inertia::render('Users/Create', compact('roles'));
     }
 
-    public function store(StoreUserRequest $request): View
+    public function store(StoreUserRequest $request): Response
     {
         $this->authorize('gerenciar_usuarios');
 
@@ -59,26 +59,26 @@ class UserController extends Controller
         }
 
         // Return view showing the generated password
-        return view('users.created', compact('user', 'temporaryPassword'));
+        return Inertia::render('Users/Created', compact('user', 'temporaryPassword'));
     }
 
-    public function show(User $user): View
+    public function show(User $user): Response
     {
         $this->authorize('gerenciar_usuarios');
 
         $user->load('roles');
 
-        return view('users.show', compact('user'));
+        return Inertia::render('Users/Show', compact('user'));
     }
 
-    public function edit(User $user): View
+    public function edit(User $user): Response
     {
         $this->authorize('gerenciar_usuarios');
 
         $roles = Role::orderBy('name')->get();
         $user->load('roles');
 
-        return view('users.edit', compact('user', 'roles'));
+        return Inertia::render('Users/Edit', compact('user', 'roles'));
     }
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse

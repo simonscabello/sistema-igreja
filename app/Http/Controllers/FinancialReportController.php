@@ -2,28 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\FinancialTransaction;
 use App\Models\FinancialCategory;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Contracts\View\View;
+use App\Models\FinancialTransaction;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class FinancialReportController extends Controller
 {
-    public function index(): View
+    public function index(): Response
     {
         $this->authorize('visualizar_financeiro');
 
-        return view('reports.financial.index');
+        return Inertia::render('Financial/Reports/Index');
     }
 
-    public function monthly(Request $request): View|JsonResponse
+    public function monthly(Request $request): Response|JsonResponse
     {
         $this->authorize('visualizar_financeiro');
 
         $month = $this->normalizeMonth($request->get('month', now()->month));
-        $year = $request->get('year', now()->year);
+        $year = (int) $request->get('year', now()->year);
 
         $transactions = FinancialTransaction::with('subcategory.financialCategory')
             ->whereYear('action_date', $year)
@@ -46,24 +47,24 @@ class FinancialReportController extends Controller
             'periodo' => [
                 'mes' => $month,
                 'ano' => $year,
-                'mes_nome' => Carbon::create($year, $month)->locale('pt_BR')->monthName
-            ]
+                'mes_nome' => Carbon::create($year, $month)->locale('pt_BR')->monthName,
+            ],
         ];
 
-        if ($request->ajax() || $request->wantsJson()) {
+        if ($this->shouldReturnJson($request)) {
             return response()->json($report);
         }
 
         $availableYears = $this->getAvailableYears();
 
-        return view('reports.financial.monthly', compact('report', 'availableYears'));
+        return Inertia::render('Financial/Reports/Monthly', compact('report', 'availableYears'));
     }
 
-    public function annualDetailed(Request $request): View|JsonResponse
+    public function annualDetailed(Request $request): Response|JsonResponse
     {
         $this->authorize('visualizar_financeiro');
 
-        $year = $request->get('year', now()->year);
+        $year = (int) $request->get('year', now()->year);
         $filterType = $request->get('type');
         $filterCategory = $request->get('category');
 
@@ -77,7 +78,7 @@ class FinancialReportController extends Controller
         }
 
         if ($filterCategory) {
-            $query->whereHas('subcategory.financialCategory', function($q) use ($filterCategory) {
+            $query->whereHas('subcategory.financialCategory', function ($q) use ($filterCategory) {
                 $q->where('id', $filterCategory);
             });
         }
@@ -112,7 +113,7 @@ class FinancialReportController extends Controller
                 'total_saidas' => $totalSaidas,
                 'saldo_mensal' => $totalEntradas - $totalSaidas,
                 'has_transactions' => count($entradas) > 0 || count($saidas) > 0,
-                'transactions' => $individualTransactions
+                'transactions' => $individualTransactions,
             ];
         }
 
@@ -123,25 +124,25 @@ class FinancialReportController extends Controller
             'ano' => $year,
             'filters' => [
                 'type' => $filterType,
-                'category' => $filterCategory
-            ]
+                'category' => $filterCategory,
+            ],
         ];
 
-        if ($request->ajax() || $request->wantsJson()) {
+        if ($this->shouldReturnJson($request)) {
             return response()->json($report);
         }
 
         $availableYears = $this->getAvailableYears();
         $categories = FinancialCategory::where('active', true)->orderBy('name')->get();
 
-        return view('reports.financial.annual-detailed', compact('report', 'availableYears', 'categories'));
+        return Inertia::render('Financial/Reports/AnnualDetailed', compact('report', 'availableYears', 'categories'));
     }
 
-    public function annualSummary(Request $request): View|JsonResponse
+    public function annualSummary(Request $request): Response|JsonResponse
     {
         $this->authorize('visualizar_financeiro');
 
-        $year = $request->get('year', now()->year);
+        $year = (int) $request->get('year', now()->year);
 
         $transactions = FinancialTransaction::with('subcategory.financialCategory')
             ->whereYear('action_date', $year)
@@ -166,7 +167,7 @@ class FinancialReportController extends Controller
                 'total_entradas' => $totalEntradas,
                 'total_saidas' => $totalSaidas,
                 'saldo_mensal' => $totalEntradas - $totalSaidas,
-                'has_transactions' => $totalEntradas > 0 || $totalSaidas > 0
+                'has_transactions' => $totalEntradas > 0 || $totalSaidas > 0,
             ];
         }
 
@@ -174,32 +175,43 @@ class FinancialReportController extends Controller
             'monthly_data' => $monthlyData,
             'yearly_totals' => $yearlyTotals,
             'saldo_anual' => $yearlyTotals['entradas'] - $yearlyTotals['saidas'],
-            'ano' => $year
+            'ano' => $year,
         ];
 
-        if ($request->ajax() || $request->wantsJson()) {
+        if ($this->shouldReturnJson($request)) {
             return response()->json($report);
         }
 
         $availableYears = $this->getAvailableYears();
 
-        return view('reports.financial.annual-summary', compact('report', 'availableYears'));
+        return Inertia::render('Financial/Reports/AnnualSummary', compact('report', 'availableYears'));
+    }
+
+    private function shouldReturnJson(Request $request): bool
+    {
+        if ($request->header('X-Inertia')) {
+            return false;
+        }
+
+        return $request->ajax() || $request->wantsJson();
     }
 
     private function normalizeMonth(int|string $month): int
     {
         if (is_numeric($month)) {
             $month = (int) $month;
+
             return $month >= 1 && $month <= 12 ? $month : now()->month;
         }
 
         $monthNames = [
             'janeiro' => 1, 'fevereiro' => 2, 'março' => 3, 'abril' => 4,
             'maio' => 5, 'junho' => 6, 'julho' => 7, 'agosto' => 8,
-            'setembro' => 9, 'outubro' => 10, 'novembro' => 11, 'dezembro' => 12
+            'setembro' => 9, 'outubro' => 10, 'novembro' => 11, 'dezembro' => 12,
         ];
 
         $monthLower = mb_strtolower(trim($month));
+
         return $monthNames[$monthLower] ?? now()->month;
     }
 
@@ -214,14 +226,14 @@ class FinancialReportController extends Controller
             $subcategoryName = $transaction->subcategory->name;
             $amount = $transaction->amount;
 
-            if (!isset($grouped[$categoryName])) {
+            if (! isset($grouped[$categoryName])) {
                 $grouped[$categoryName] = [
                     'total_categoria' => 0,
-                    'subcategorias' => []
+                    'subcategorias' => [],
                 ];
             }
 
-            if (!isset($grouped[$categoryName]['subcategorias'][$subcategoryName])) {
+            if (! isset($grouped[$categoryName]['subcategorias'][$subcategoryName])) {
                 $grouped[$categoryName]['subcategorias'][$subcategoryName] = 0;
             }
 
@@ -234,19 +246,18 @@ class FinancialReportController extends Controller
 
     private function getAvailableYears(): array
     {
-        $years = FinancialTransaction::selectRaw('YEAR(action_date) as year')
-            ->distinct()
-            ->orderBy('year', 'desc')
-            ->pluck('year')
-            ->toArray();
+        $years = FinancialTransaction::query()
+            ->orderByDesc('action_date')
+            ->pluck('action_date')
+            ->map(fn ($date) => Carbon::parse($date)->year)
+            ->unique()
+            ->values()
+            ->all();
 
-        // Se não houver transações, incluir pelo menos o ano atual
-        if (empty($years)) {
+        if ($years === []) {
             $years = [now()->year];
         }
 
-        // Criar array associativo para o componente select
         return array_combine($years, $years);
     }
-
 }

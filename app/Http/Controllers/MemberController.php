@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Member;
 use App\Http\Requests\StoreMemberRequest;
 use App\Http\Requests\UpdateMemberRequest;
+use App\Models\Member;
 use App\Services\FileService;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class MemberController extends Controller
 {
     use AuthorizesRequests;
-    
+
     public function __construct(private readonly FileService $fileService) {}
 
-    public function index(Request $request): View
+    public function index(Request $request): Response
     {
         $this->authorize('visualizar_membros');
 
@@ -27,22 +28,22 @@ class MemberController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('full_name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('mobile', 'like', "%{$search}%")
-                  ->orWhere('city', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('mobile', 'like', "%{$search}%")
+                    ->orWhere('city', 'like', "%{$search}%");
             });
         }
 
         $members = $query->latest()->paginate(10);
 
-        return view('members.index', compact('members'));
+        return Inertia::render('Members/Index', compact('members'));
     }
 
-    public function create(): View
+    public function create(): Response
     {
         $this->authorize('criar_membros');
 
-        return view('members.create');
+        return Inertia::render('Members/Create');
     }
 
     public function store(StoreMemberRequest $request): RedirectResponse
@@ -62,18 +63,22 @@ class MemberController extends Controller
             ->with('success', 'Membro cadastrado com sucesso.');
     }
 
-    public function show(Member $member): View
+    public function show(Member $member): Response
     {
         $this->authorize('visualizar_membros');
 
-        return view('members.show', compact('member'));
+        $member = $this->serializeMemberWithFoto($member);
+
+        return Inertia::render('Members/Show', compact('member'));
     }
 
-    public function edit(Member $member): View
+    public function edit(Member $member): Response
     {
         $this->authorize('editar_membros');
 
-        return view('members.edit', compact('member'));
+        $member = $this->serializeMemberWithFoto($member);
+
+        return Inertia::render('Members/Edit', compact('member'));
     }
 
     public function update(UpdateMemberRequest $request, Member $member): RedirectResponse
@@ -105,5 +110,19 @@ class MemberController extends Controller
 
         return redirect()->route('members.index')
             ->with('success', 'Membro excluído com sucesso.');
+    }
+
+    private function serializeMemberWithFoto(Member $member): array
+    {
+        $member->load('foto');
+
+        $data = $member->toArray();
+
+        $foto = $member->foto->first();
+        if ($foto) {
+            $data['foto_url'] = filled($foto->url) ? $foto->url : asset('storage/'.$foto->path);
+        }
+
+        return $data;
     }
 }

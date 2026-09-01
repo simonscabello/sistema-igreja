@@ -6,13 +6,14 @@ use App\Http\Requests\StoreFinancialSubcategoryRequest;
 use App\Http\Requests\UpdateFinancialSubcategoryRequest;
 use App\Models\FinancialCategory;
 use App\Models\FinancialSubcategory;
-use Illuminate\Http\Request;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class FinancialSubcategoryController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request): Response
     {
         $this->authorize('gerenciar_categorias_financeiras');
 
@@ -22,24 +23,24 @@ class FinancialSubcategoryController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhereHas('financialCategory', function ($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('financialCategory', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
         $subcategories = $query->orderBy('name')->paginate(10);
 
-        return view('financial-subcategories.index', compact('subcategories'));
+        return Inertia::render('Financial/Subcategories/Index', compact('subcategories'));
     }
 
-    public function create(): View
+    public function create(): Response
     {
         $this->authorize('gerenciar_categorias_financeiras');
 
         $categories = FinancialCategory::where('active', true)->get();
 
-        return view('financial-subcategories.create', compact('categories'));
+        return Inertia::render('Financial/Subcategories/Create', compact('categories'));
     }
 
     public function store(StoreFinancialSubcategoryRequest $request): RedirectResponse
@@ -50,7 +51,7 @@ class FinancialSubcategoryController extends Controller
 
         if (isset($data['subcategories']) && is_array($data['subcategories'])) {
             foreach ($data['subcategories'] as $subcategoryData) {
-                if (!empty($subcategoryData['name'])) {
+                if (! empty($subcategoryData['name'])) {
                     FinancialSubcategory::create([
                         'financial_category_id' => $data['financial_category_id'],
                         'name' => $subcategoryData['name'],
@@ -64,13 +65,13 @@ class FinancialSubcategoryController extends Controller
             ->with('success', 'Subcategorias criadas com sucesso!');
     }
 
-    public function edit(FinancialSubcategory $financialSubcategory): View
+    public function edit(FinancialSubcategory $financialSubcategory): Response
     {
         $this->authorize('gerenciar_categorias_financeiras');
 
         $categories = FinancialCategory::where('active', true)->get();
 
-        return view('financial-subcategories.edit', compact('financialSubcategory', 'categories'));
+        return Inertia::render('Financial/Subcategories/Edit', compact('financialSubcategory', 'categories'));
     }
 
     public function update(UpdateFinancialSubcategoryRequest $request, FinancialSubcategory $financialSubcategory): RedirectResponse

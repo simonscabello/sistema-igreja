@@ -41,7 +41,16 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function userWithPermissions(array $permissions): App\Models\User
 {
-    // ..
+    app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
+    $user = App\Models\User::factory()->create();
+
+    foreach ($permissions as $permission) {
+        Spatie\Permission\Models\Permission::findOrCreate($permission, 'web');
+        $user->givePermissionTo($permission);
+    }
+
+    return $user;
 }

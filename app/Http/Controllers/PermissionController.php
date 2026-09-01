@@ -4,34 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePermissionRequest;
 use App\Http\Requests\UpdatePermissionRequest;
-use Illuminate\Http\Request;
-use Spatie\Permission\Models\Permission;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
 {
-
-    public function index(Request $request): View
+    public function index(Request $request): Response
     {
         $this->authorize('gerenciar_permissoes');
 
         $query = Permission::query();
 
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $query->where('name', 'like', '%'.$request->search.'%');
         }
 
         $permissions = $query->orderBy('name')->paginate(10);
 
-        return view('permissions.index', compact('permissions'));
+        return Inertia::render('Permissions/Index', compact('permissions'));
     }
 
-    public function create(): View
+    public function create(): Response
     {
         $this->authorize('gerenciar_permissoes');
 
-        return view('permissions.create');
+        return Inertia::render('Permissions/Create');
     }
 
     public function store(StorePermissionRequest $request): RedirectResponse
@@ -43,18 +43,18 @@ class PermissionController extends Controller
         return redirect()->route('permissions.index')->with('success', 'Permissão criada com sucesso.');
     }
 
-    public function show(Permission $permission): View
+    public function show(Permission $permission): Response
     {
         $this->authorize('gerenciar_permissoes');
 
-        return view('permissions.show', compact('permission'));
+        return Inertia::render('Permissions/Show', compact('permission'));
     }
 
-    public function edit(Permission $permission): View
+    public function edit(Permission $permission): Response
     {
         $this->authorize('gerenciar_permissoes');
 
-        return view('permissions.edit', compact('permission'));
+        return Inertia::render('Permissions/Edit', compact('permission'));
     }
 
     public function update(UpdatePermissionRequest $request, Permission $permission): RedirectResponse

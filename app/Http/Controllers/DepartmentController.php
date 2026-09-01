@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Department;
-use App\Models\Member;
 use App\Http\Requests\StoreDepartmentRequest;
 use App\Http\Requests\UpdateDepartmentRequest;
-use Illuminate\Contracts\View\View;
+use App\Models\Department;
+use App\Models\Member;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class DepartmentController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request): Response
     {
         $this->authorize('visualizar_departamentos');
 
@@ -22,7 +23,7 @@ class DepartmentController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
@@ -37,15 +38,16 @@ class DepartmentController extends Controller
 
         $departments = $query->latest()->paginate(10);
 
-        return view('departments.index', compact('departments'));
+        return Inertia::render('Departments/Index', compact('departments'));
     }
 
-    public function create(): View
+    public function create(): Response
     {
         $this->authorize('gerenciar_departamentos');
 
-        $members = Member::orderBy('full_name')->get();
-        return view('departments.create', compact('members'));
+        $memberOptions = $this->memberSelectOptions();
+
+        return Inertia::render('Departments/Create', compact('memberOptions'));
     }
 
     public function store(StoreDepartmentRequest $request): RedirectResponse
@@ -66,22 +68,23 @@ class DepartmentController extends Controller
             ->with('success', 'Departamento cadastrado com sucesso.');
     }
 
-    public function show(Department $department): View
+    public function show(Department $department): Response
     {
         $this->authorize('visualizar_departamentos');
 
         $department->load(['responsibleMembers', 'members']);
-        return view('departments.show', compact('department'));
+
+        return Inertia::render('Departments/Show', compact('department'));
     }
 
-    public function edit(Department $department): View
+    public function edit(Department $department): Response
     {
         $this->authorize('gerenciar_departamentos');
 
-        $members = Member::orderBy('full_name')->get();
+        $memberOptions = $this->memberSelectOptions();
         $department->load(['responsibleMembers', 'members']);
 
-        return view('departments.edit', compact('department', 'members'));
+        return Inertia::render('Departments/Edit', compact('department', 'memberOptions'));
     }
 
     public function update(UpdateDepartmentRequest $request, Department $department): RedirectResponse
@@ -105,5 +108,26 @@ class DepartmentController extends Controller
 
         return redirect()->route('departments.index')
             ->with('success', 'Departamento excluído com sucesso.');
+    }
+
+    private function memberSelectOptions(): array
+    {
+        return Member::query()
+            ->with('foto')
+            ->orderBy('full_name')
+            ->get()
+            ->mapWithKeys(function (Member $member) {
+                $foto = $member->foto->first();
+                $image = null;
+                if ($foto) {
+                    $image = filled($foto->url) ? $foto->url : asset('storage/'.$foto->path);
+                }
+
+                return [$member->id => [
+                    'name' => $member->full_name,
+                    'image' => $image,
+                ]];
+            })
+            ->all();
     }
 }

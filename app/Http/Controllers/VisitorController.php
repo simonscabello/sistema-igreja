@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Visitor;
 use App\Http\Requests\StoreVisitorRequest;
 use App\Http\Requests\UpdateVisitorRequest;
-use Illuminate\Contracts\View\View;
+use App\Models\Visitor;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class VisitorController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request): Response
     {
         $this->authorize('visualizar_visitantes');
 
@@ -21,21 +22,21 @@ class VisitorController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('mobile', 'like', "%{$search}%")
-                  ->orWhere('full_address', 'like', "%{$search}%");
+                    ->orWhere('mobile', 'like', "%{$search}%")
+                    ->orWhere('full_address', 'like', "%{$search}%");
             });
         }
 
         $visitors = $query->orderBy('created_at', 'desc')->paginate(10);
 
-        return view('visitors.index', compact('visitors'));
+        return Inertia::render('Visitors/Index', compact('visitors'));
     }
 
-    public function create(): View
+    public function create(): Response
     {
         $this->authorize('criar_visitantes');
 
-        return view('visitors.create');
+        return Inertia::render('Visitors/Create');
     }
 
     public function store(StoreVisitorRequest $request): RedirectResponse
@@ -48,18 +49,18 @@ class VisitorController extends Controller
             ->with('success', 'Visitante cadastrado com sucesso.');
     }
 
-    public function show(Visitor $visitor): View
+    public function show(Visitor $visitor): Response
     {
         $this->authorize('visualizar_visitantes');
 
-        return view('visitors.show', compact('visitor'));
+        return Inertia::render('Visitors/Show', compact('visitor'));
     }
 
-    public function edit(Visitor $visitor): View
+    public function edit(Visitor $visitor): Response
     {
         $this->authorize('editar_visitantes');
 
-        return view('visitors.edit', compact('visitor'));
+        return Inertia::render('Visitors/Edit', compact('visitor'));
     }
 
     public function update(UpdateVisitorRequest $request, Visitor $visitor): RedirectResponse

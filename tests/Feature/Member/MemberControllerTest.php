@@ -1,12 +1,16 @@
 <?php
 
 use App\Models\Member;
-use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
-    $this->user = User::factory()->create();
+    $this->user = userWithPermissions([
+        'visualizar_membros',
+        'criar_membros',
+        'editar_membros',
+        'excluir_membros',
+    ]);
     $this->member = Member::factory()->create();
 });
 
@@ -16,8 +20,9 @@ describe('MemberController', function () {
             $response = $this->actingAs($this->user)->get(route('members.index'));
 
             $response->assertStatus(200);
-            $response->assertViewIs('members.index');
-            $response->assertViewHas('members');
+            $response->assertInertia(fn ($page) => $page
+                ->component('Members/Index')
+                ->has('members'));
         });
 
         it('filtra membros por busca', function () {
@@ -28,9 +33,9 @@ describe('MemberController', function () {
                 ->get(route('members.index', ['search' => 'João']));
 
             $response->assertStatus(200);
-            $response->assertViewHas('members', function ($members) use ($member1, $member2) {
-                return $members->contains($member1) && !$members->contains($member2);
-            });
+            $response->assertInertia(fn ($page) => $page
+                ->where('members.data', fn ($data) => collect($data)->pluck('id')->contains($member1->id)
+                    && ! collect($data)->pluck('id')->contains($member2->id)));
         });
 
         it('busca por email', function () {
@@ -40,9 +45,8 @@ describe('MemberController', function () {
                 ->get(route('members.index', ['search' => 'teste@example.com']));
 
             $response->assertStatus(200);
-            $response->assertViewHas('members', function ($members) use ($member) {
-                return $members->contains($member);
-            });
+            $response->assertInertia(fn ($page) => $page
+                ->where('members.data', fn ($data) => collect($data)->pluck('id')->contains($member->id)));
         });
 
         it('busca por celular', function () {
@@ -52,9 +56,8 @@ describe('MemberController', function () {
                 ->get(route('members.index', ['search' => '11999999999']));
 
             $response->assertStatus(200);
-            $response->assertViewHas('members', function ($members) use ($member) {
-                return $members->contains($member);
-            });
+            $response->assertInertia(fn ($page) => $page
+                ->where('members.data', fn ($data) => collect($data)->pluck('id')->contains($member->id)));
         });
 
         it('busca por cidade', function () {
@@ -64,9 +67,8 @@ describe('MemberController', function () {
                 ->get(route('members.index', ['search' => 'São Paulo']));
 
             $response->assertStatus(200);
-            $response->assertViewHas('members', function ($members) use ($member) {
-                return $members->contains($member);
-            });
+            $response->assertInertia(fn ($page) => $page
+                ->where('members.data', fn ($data) => collect($data)->pluck('id')->contains($member->id)));
         });
     });
 
@@ -75,7 +77,7 @@ describe('MemberController', function () {
             $response = $this->actingAs($this->user)->get(route('members.create'));
 
             $response->assertStatus(200);
-            $response->assertViewIs('members.create');
+            $response->assertInertia(fn ($page) => $page->component('Members/Create'));
         });
     });
 
@@ -179,8 +181,9 @@ describe('MemberController', function () {
                 ->get(route('members.show', $this->member));
 
             $response->assertStatus(200);
-            $response->assertViewIs('members.show');
-            $response->assertViewHas('member', $this->member);
+            $response->assertInertia(fn ($page) => $page
+                ->component('Members/Show')
+                ->where('member.id', $this->member->id));
         });
     });
 
@@ -190,8 +193,9 @@ describe('MemberController', function () {
                 ->get(route('members.edit', $this->member));
 
             $response->assertStatus(200);
-            $response->assertViewIs('members.edit');
-            $response->assertViewHas('member', $this->member);
+            $response->assertInertia(fn ($page) => $page
+                ->component('Members/Edit')
+                ->where('member.id', $this->member->id));
         });
     });
 

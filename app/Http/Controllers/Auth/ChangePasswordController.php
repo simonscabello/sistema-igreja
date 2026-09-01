@@ -4,11 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\View\View;
 use Illuminate\Validation\Rules;
 
 class ChangePasswordController extends Controller
@@ -16,9 +15,9 @@ class ChangePasswordController extends Controller
     /**
      * Show the mandatory password change form.
      */
-    public function show(): View
+    public function show(): RedirectResponse
     {
-        return view('auth.change-password');
+        return redirect()->route('password.force-change');
     }
 
     /**
